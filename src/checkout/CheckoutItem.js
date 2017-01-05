@@ -16,11 +16,13 @@ class CheckoutItem extends Component {
 
   handleAddFlocking() {
     this.setState({flocking: true, flockingValue: ''});
+    this.props.onStateChange(this.props.reactKey, this.props.price + this.props.flockingPrice);
   }
 
   handleFlockingRemove() {
     if(this.state.flockingValue.length < 1) {
       this.setState({flocking: false, flockingValue: ''});
+      this.props.onStateChange(this.props.reactKey, this.props.price);
     }
   }
 
@@ -52,10 +54,12 @@ class CheckoutItem extends Component {
 
 CheckoutItem.propTypes = {
   id: React.PropTypes.string,
+  reactKey: React.PropTypes.number.isRequired,
   name: React.PropTypes.string.isRequired,
   size: React.PropTypes.string.isRequired,
   price: React.PropTypes.number.isRequired,
-  flockingPrice: React.PropTypes.number
+  flockingPrice: React.PropTypes.number,
+  onStateChange: React.PropTypes.func.isRequired
 };
 
 export default CheckoutItem;
