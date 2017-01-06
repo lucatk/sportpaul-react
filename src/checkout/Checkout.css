@@ -1,6 +1,25 @@
 .Checkout {
   margin: 0;
   padding: 25px 40px;
+  position: relative;
+}
+
+.Checkout .back-link {
+  color: #4F79E3;
+  text-decoration: none;
+  position: fixed;
+  top: 25px;
+  left: 40px;
+}
+
+.Checkout .back-link span {
+  margin-right: 1px;
+  font-size: 1.1em;
+  font-weight: 800;
+}
+
+.Checkout .back-link:hover {
+  color: #83a1ec;
 }
 
 .Checkout .container {
@@ -8,7 +27,7 @@
   border-top: 2px solid #83a1ec;
   height: 100%;
   width: 70%;
-  margin: 0 auto;
+  margin: 40px auto;
 }
 
 .Checkout h1 {
