@@ -28,12 +28,18 @@
   height: 100%;
   width: 70%;
   margin: 40px auto;
+  padding: 0;
+}
+
+.Checkout .container .cart {
+  font-size: 1.1em;
 }
 
 .Checkout h1 {
   margin: 10px 16px;
   font-size: 1.2em;
   text-transform: uppercase;
+  font-weight: bold;
 }
 
 .Checkout .cart > p {
