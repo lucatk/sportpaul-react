@@ -1,0 +1,124 @@
+.admin .navbar {
+  margin-bottom: 30px;
+}
+
+.admin .container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.admin .container td {
+  vertical-align: middle;
+}
+
+.admin .container td button span.glyphicon {
+  top: 1.3px;
+}
+
+.admin .container .page-header {
+  font-size: 26px;
+  margin: 0 0 25px;
+}
+
+.admin .container .form-group label {
+  margin-top: 6px;
+}
+
+.admin .container .form-group label[for=inputLogo] {
+  margin-top: 16px;
+}
+
+.admin .container .form-group div {
+  position: relative;
+}
+
+.admin .container .form-group input[type=file] {
+  color: transparent;
+  border: none;
+  box-shadow: none;
+  margin-top: 10px;
+  width: initial;
+}
+
+.admin .container .form-group img {
+  position: absolute;
+  top: 22px;
+  right: 30px;
+  width: 120px;
+  display: block;
+}
+
+.admin .container .form-group label[for=inputProducts],
+.admin .container .form-group table {
+  margin-top: 116px;
+}
+
+.admin .container .form-group .col-sm-11 {
+  padding: 0 30px;
+}
+
+.admin .container .flocking {
+  width: 200px;
+}
+
+.admin .container .flocking .form-group {
+  margin: 0;
+}
+
+.admin .container .flocking .disabled {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.admin .container td.product-name,
+.admin .container td.buttons {
+  width: 25%;
+}
+
+.btn-toolbar .btn {
+  margin-left: 5px;
+}
+
+.modal-dialog .form-group {
+  overflow: auto;
+}
+
+.modal-dialog .form-group label {
+  line-height: 34px;
+  margin-bottom: 0;
+}
+
+.modal-dialog .form-group .sizes-edit .btn-toolbar {
+  margin: 0;
+}
+
+.modal-dialog .form-group .sizes-edit input {
+  max-width: 150px;
+  display: inline-block;
+}
+
+.modal-dialog .form-group .sizes-edit button {
+  margin-top: -4px;
+  float: none;
+}
+
+.modal-dialog .form-group .sizes-edit ul {
+  padding: 4px 5px 0;
+}
+
+.modal-dialog .form-group .sizes-edit ul p {
+  margin: 3px 0 0;
+}
+
+.modal-dialog .form-group .sizes-edit ul p span {
+  font-size: 18px;
+}
+
+.modal-dialog .form-group .flocking-edit input,
+.modal-dialog .form-group .price-edit input {
+  max-width: 150px;
+}
+
+.modal-dialog .form-group .flocking-edit label {
+  font-weight: normal;
+  margin: 0;
+}

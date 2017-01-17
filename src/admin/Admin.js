@@ -1,14 +1,18 @@
 import React, { Component } from 'react';
+
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
+
+import './Admin.css';
 
 class Admin extends Component {
   constructor(props) {
     super(props);
+    console.log(this.props.children);
   }
   render() {
     return (
-      <div>
+      <div className="admin">
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>
