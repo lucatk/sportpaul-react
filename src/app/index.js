@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, hashHistory } from 'react-router';
 
-import App from './app/App';
+import App from './main/App';
 import Checkout from './checkout/Checkout';
 
 import Admin from './admin/Admin';
