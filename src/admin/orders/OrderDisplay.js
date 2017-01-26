@@ -8,10 +8,10 @@ import {
   Glyphicon
 } from 'react-bootstrap';
 
-import ProductEditModal from './modals/ProductEditModal';
-import ProductRemovalModal from './modals/ProductRemovalModal';
+// import ProductEditModal from './modals/ProductEditModal';
+// import ProductRemovalModal from './modals/ProductRemovalModal';
 
-class ClubEditing extends Component {
+class OrderDisplay extends Component {
   constructor(props) {
     super(props);
 
@@ -34,21 +34,24 @@ class ClubEditing extends Component {
   }
   render() {
     return (
-      <div className="container" data-page="ClubEditing">
-        <h1 className="page-header">Verein bearbeiten <small>ID: {this.props.params.clubid}</small></h1>
+      <div className="container" data-page="OrderDisplay">
+        <h1 className="page-header">
+          Bestellung im Detail
+          <small> ID: {this.props.params.clubid}/{this.props.params.orderid}</small>
+          <Button bsStyle="danger" bsSize="small"><Glyphicon glyph="remove" /> Löschen</Button>
+        </h1>
         <form>
-          <FormGroup controlId="inputName">
-            <ControlLabel bsClass="col-sm-1 control-label">Name</ControlLabel>
-            <div className="col-sm-11">
-              <FormControl type="text" value="FC Steinhofen" placeholder="Geben Sie dem Verein einen Namen..." />
-            </div>
+          <FormGroup controlId="inputClub">
+            <ControlLabel bsClass="col-sm-1 control-label">Verein</ControlLabel>
+            <ControlLabel bsClass="col-sm-11">FC Steinhofen</ControlLabel>
           </FormGroup>
-          <FormGroup controlId="inputLogo">
-            <ControlLabel bsClass="col-sm-1 control-label">Logo</ControlLabel>
-            <div className="col-sm-11">
-              <input type="file" className="form-control" />
-              <img className="file-preview img-thumbnail" src="clublogos/fc48.png"/>
-            </div>
+          <FormGroup controlId="inputCustomer">
+            <ControlLabel bsClass="col-sm-1 control-label">Kunde</ControlLabel>
+            <ControlLabel bsClass="col-sm-11">Max Mustermann</ControlLabel>
+          </FormGroup>
+          <FormGroup controlId="inputDate">
+            <ControlLabel bsClass="col-sm-1 control-label">Bestelldatum</ControlLabel>
+            <ControlLabel bsClass="col-sm-11">02.01.2017 16:53 Uhr</ControlLabel>
           </FormGroup>
           <FormGroup controlId="inputProducts">
             <ControlLabel bsClass="col-sm-1 control-label">Produkte</ControlLabel>
@@ -56,11 +59,11 @@ class ClubEditing extends Component {
               <Table striped bordered hover>
                 <thead>
                   <tr>
-                    <th>#</th>
+                    <th>Produkt #</th>
                     <th>Name</th>
-                    <th>Größen</th>
-                    <th>Preis</th>
+                    <th>Größe</th>
                     <th>Beflockung</th>
+                    <th>Gesamtpreis</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -68,13 +71,13 @@ class ClubEditing extends Component {
                   <tr data-id="0" data-name="Testprodukt 1">
                     <td>0</td>
                     <td className="product-name">Testprodukt 1</td>
-                    <td>S, M, L, XL</td>
-                    <td>49,99 €</td>
-                    <td>Aufpreis: 2,49 €</td>
+                    <td>M</td>
+                    <td>M. Mustermann</td>
+                    <td>52,48 €</td>
                     <td className="buttons">
                       <ButtonToolbar>
-                        <Button bsSize="small" onClick={this.openEditProductModal}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
-                        <Button bsSize="small" bsStyle="danger" onClick={this.openRemoveProductModal}><Glyphicon glyph="remove" /> Löschen</Button>
+                        <Button bsSize="small" onClick={this.openEditProductModal}><Glyphicon glyph="pencil" /></Button>
+                        <Button bsSize="small" bsStyle="danger" onClick={this.openRemoveProductModal}><Glyphicon glyph="remove" /></Button>
                       </ButtonToolbar>
                     </td>
                   </tr>
@@ -83,12 +86,9 @@ class ClubEditing extends Component {
             </div>
           </FormGroup>
         </form>
-
-        <ProductEditModal ref="productEditModal" onEdit={this.editProduct} />
-        <ProductRemovalModal ref="productRemovalModal" onRemove={this.removeProduct} />
       </div>
     );
   }
 }
 
-export default ClubEditing;
+export default OrderDisplay;

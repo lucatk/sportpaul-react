@@ -44,7 +44,7 @@ class Clubs extends Component {
   render() {
     return (
       <div>
-        {!this.props.children && <div className="container">
+        {!this.props.children && <div className="container" data-page="Clubs">
           <h1 className="page-header">Vereine</h1>
           <Table striped bordered hover>
             <thead>
@@ -60,8 +60,32 @@ class Clubs extends Component {
               <tr data-id="0" data-name="FC Steinhofen">
                 <td>0</td>
                 <td>FC Steinhofen</td>
-                <td>0 ausstehende Bestellungen</td>
+                <td>1 ausstehende Bestellung</td>
                 <td>1 Produkt</td>
+                <td className="buttons">
+                  <ButtonToolbar>
+                    <Link to="/admin/clubs/edit/0"><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
+                    <Button bsStyle="danger" bsSize="small" onClick={this.openRemoveModal}><Glyphicon glyph="remove" /> Löschen</Button>
+                  </ButtonToolbar>
+                </td>
+              </tr>
+              <tr data-id="1" data-name="TSV Frommern">
+                <td>1</td>
+                <td>TSV Frommern</td>
+                <td>0 ausstehende Bestellungen</td>
+                <td>4 Produkte</td>
+                <td className="buttons">
+                  <ButtonToolbar>
+                    <Link to="/admin/clubs/edit/0"><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
+                    <Button bsStyle="danger" bsSize="small" onClick={this.openRemoveModal}><Glyphicon glyph="remove" /> Löschen</Button>
+                  </ButtonToolbar>
+                </td>
+              </tr>
+              <tr data-id="2" data-name="FV Rot-Weiß Ebingen">
+                <td>2</td>
+                <td>FV Rot-Weiß Ebingen</td>
+                <td>0 ausstehende Bestellungen</td>
+                <td>0 Produkte</td>
                 <td className="buttons">
                   <ButtonToolbar>
                     <Link to="/admin/clubs/edit/0"><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>

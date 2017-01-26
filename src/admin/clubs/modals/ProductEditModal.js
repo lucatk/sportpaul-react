@@ -20,11 +20,11 @@ class ProductEditModal extends Component {
         name: '',
         id: -1
       },
-      price: 0,
+      price: 49.99,
       flockingEnabled: false,
-      flockingPrice: 1,
+      flockingPrice: 2.49,
       sizeAddInput: '',
-      sizeList: []
+      sizeList: ['S', 'M', 'L', 'XL']
     };
 
     this.onPriceChange = this.onPriceChange.bind(this);
@@ -90,7 +90,7 @@ class ProductEditModal extends Component {
             <FormGroup controlId="inputProductName">
               <ControlLabel bsClass="col-sm-2 control-label">Name</ControlLabel>
               <div className="col-sm-10">
-                <FormControl type="text" value="" placeholder="Produkt-Name" />
+                <FormControl type="text" value="Testprodukt 1" placeholder="Produkt-Name" />
               </div>
             </FormGroup>
             <FormGroup controlId="inputProductSizes">

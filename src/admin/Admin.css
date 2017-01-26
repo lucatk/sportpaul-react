@@ -18,6 +18,16 @@
 .admin .container .page-header {
   font-size: 26px;
   margin: 0 0 25px;
+  position: relative;
+}
+
+.admin .container .page-header button {
+  float: right;
+}
+
+.admin .container[data-page=OrderDisplay] .form-group:not(:first-of-type) label,
+.admin .container[data-page=OrderDisplay] .form-group table {
+  margin: 10px 0;
 }
 
 .admin .container .form-group label {
@@ -37,24 +47,25 @@
   border: none;
   box-shadow: none;
   margin-top: 10px;
+  margin-left: -12px;
   width: initial;
 }
 
 .admin .container .form-group img {
   position: absolute;
   top: 22px;
-  right: 30px;
+  right: 60px;
   width: 120px;
   display: block;
 }
 
-.admin .container .form-group label[for=inputProducts],
-.admin .container .form-group table {
+.admin .container[data-page=ClubEditing] .form-group label[for=inputProducts],
+.admin .container[data-page=ClubEditing] .form-group table {
   margin-top: 116px;
 }
 
 .admin .container .form-group .col-sm-11 {
-  padding: 0 30px;
+  padding: 0 60px;
 }
 
 .admin .container .flocking {
@@ -69,9 +80,35 @@
   color: rgba(0, 0, 0, 0.3);
 }
 
-.admin .container td.product-name,
-.admin .container td.buttons {
+.admin .container[data-page=Orders] td.export-check {
+  width: 4%;
+}
+
+.admin .container[data-page=Orders] td.export-check input {
+  display: block;
+  margin: 0 auto;
+}
+
+.admin .container[data-page=Clubs] td.product-name,
+.admin .container[data-page=Clubs] td.buttons,
+.admin .container[data-page=ClubEditing] td.product-name,
+.admin .container[data-page=ClubEditing] td.buttons {
   width: 25%;
+}
+
+.admin .container[data-page=Orders] td.product-name,
+.admin .container[data-page=Orders] td.buttons {
+  width: 20%;
+}
+
+.admin .container[data-page=OrderDisplay] td.product-name,
+.admin .container[data-page=OrderDisplay] td.buttons {
+  width: 15%;
+}
+
+.admin .container label:not(.control-label) {
+  font-weight: normal;
+  cursor: auto;
 }
 
 .btn-toolbar .btn {

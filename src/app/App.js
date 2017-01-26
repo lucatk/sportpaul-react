@@ -13,14 +13,15 @@ class App extends Component {
 
     this.teams = ['FC Steinhofen', 'TSG Balingen'];
     var cartContents = [];
+    this.cartTotal = 0;
     if(localStorage && localStorage.getItem('lastUpdate') && Date.now() - localStorage.getItem('lastUpdate') < 86400000 && localStorage.cart && localStorage.cart.length > 0) {
       cartContents = JSON.parse(localStorage.getItem('cart'));
+      cartContents.forEach((el) => this.cartTotal += el.price);
     }
     this.state = {
       selectedTeam: this.teams[0],
       cartContents: cartContents
     };
-    this.cartTotal = 0;
 
     this.onTeamSelect = this.onTeamSelect.bind(this);
     this.onProductAddToCart = this.onProductAddToCart.bind(this);
