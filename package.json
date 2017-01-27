@@ -12,10 +12,6 @@
     "url": "git+https://github.com/luucdev/sportpaul-react.git"
   },
   "author": "Luca Killmaier",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/luucdev/sportpaul-react/issues"
-  },
   "homepage": "https://github.com/luucdev/sportpaul-react#readme",
   "dependencies": {
     "babel-core": "^6.22.1",
