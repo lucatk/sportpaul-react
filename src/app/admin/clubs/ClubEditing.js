@@ -18,6 +18,8 @@ class ClubEditing extends Component {
   constructor(props) {
     super(props);
 
+    this.loadedInfo = false;
+    this.loadedProducts = false;
     this.state = {
       id: -1,
       name: '',
@@ -28,7 +30,9 @@ class ClubEditing extends Component {
       showProductRemoveModal: false,
       scopeProductRemoveModal: -1,
       showProductAddModal: false,
-      toUpdateProducts: []
+      toUpdateProducts: [],
+      loadedInfo: false,
+      loadedProducts: false
     }
 
     $.post({
@@ -38,7 +42,10 @@ class ClubEditing extends Component {
       },
       success: function(data) {
         var parsed = JSON.parse(data);
-        this.setState(parsed);
+        this.setState({
+          ...parsed,
+          loadedInfo: true
+        });
         this.oldName = parsed.name;
       }.bind(this)
     });
@@ -56,7 +63,10 @@ class ClubEditing extends Component {
             productsArray[key].id = key;
           }
         }
-        this.setState({products: productsArray});
+        this.setState({
+          products: productsArray,
+          loadedProducts: true
+        });
       }.bind(this)
     });
 
@@ -70,7 +80,7 @@ class ClubEditing extends Component {
   }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, () => {
-      if((this.state.toUpdateProducts && this.state.toUpdateProducts.length > 0) || this.state.name !== this.oldName)
+      if(this.state.name && this.state.name.length > 0 && ((this.state.toUpdateProducts && this.state.toUpdateProducts.length > 0) || this.state.name !== this.oldName))
         return 'Sie haben ungesicherte Änderungen, sind Sie sicher, dass Sie diese Seite verlassen wollen?';
     })
   }
@@ -149,80 +159,96 @@ class ClubEditing extends Component {
     }
   }
   render() {
-    return (
-      <div className="container" data-page="ClubEditing">
-        <h1 className="page-header">
-          Verein bearbeiten <small>ID: {this.state.id}</small>
-          {((this.state.toUpdateProducts && this.state.toUpdateProducts.length > 0) || this.state.name !== this.oldName) && <div className="unsaved-changes"><small>Sie haben ungesicherte Änderungen!</small><Button bsStyle="success" bsSize="small" onClick={this.save}>Speichern</Button></div>}
-        </h1>
-        <form>
-          <FormGroup controlId="inputName">
-            <ControlLabel bsClass="col-sm-1 control-label">Name</ControlLabel>
-            <div className="col-sm-11">
-              <FormControl type="text" value={this.state.name} placeholder="Geben Sie dem Verein einen Namen..." onChange={this.onNameChange} />
-            </div>
-          </FormGroup>
-          <FormGroup controlId="inputLogo">
-            <ControlLabel bsClass="col-sm-1 control-label">Logo</ControlLabel>
-            <div className="col-sm-11">
-              <input type="file" className="form-control" />
-              <img className="file-preview img-thumbnail" src={this.state.logopath} />
-            </div>
-          </FormGroup>
-          <FormGroup controlId="inputProducts">
-            <ControlLabel bsClass="col-sm-1 control-label">Produkte</ControlLabel>
-            <div className="col-sm-11">
-              <Table striped bordered hover>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Name</th>
-                    <th>Preisgruppen</th>
-                    <th>Beflockung</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {this.state.products && Object.keys(this.state.products).length > 0
-                    ? this.state.products.map((row, i) =>
-                        <tr key={i} data-id={row.id} data-name={row.name}>
-                          <td>{row.id}</td>
-                          <td className="product-name">{row.name}</td>
-                          <td className="pricegroups">
-                            {JSON.parse(row.pricegroups).map((group, i) =>
-                              <div key={i}>
-                                <p className="sizes">{group.sizes.join(", ")}:</p>
-                                <p className="price">{group.price.toFixed(2).replace('.', ',')} €</p>
-                              </div>
-                            )}
-                          </td>
-                          <td>
-                            {row.flockingPrice && parseFloat(row.flockingPrice) >= 0
-                                  ? (parseFloat(row.flockingPrice) > 0
-                                    ? 'Aufpreis: ' + parseFloat(row.flockingPrice).toFixed(2).replace('.', ',') + ' €'
-                                    : 'kostenlos')
-                                  : 'keine Beflockung'}
-                          </td>
-                          <td className="buttons">
-                            <ButtonToolbar>
-                              <Button bsSize="small" onClick={this.openProductEditModal.bind(this, i)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
-                              <Button bsSize="small" bsStyle="danger" onClick={this.openProductRemoveModal.bind(this, i)}><Glyphicon glyph="trash" /> Löschen</Button>
-                            </ButtonToolbar>
-                          </td>
-                        </tr>
-                  ) : <tr className="no-data"><td colSpan="5">Keine Produkte vorhanden</td></tr>}
-                </tbody>
-              </Table>
-              <Button bsSize="small" bsStyle="success" onClick={this.openProductAddModal}><Glyphicon glyph="plus" /> Hinzufügen...</Button>
-            </div>
-          </FormGroup>
-        </form>
+    if(this.state.loadedInfo && this.state.loadedProducts) {
+      return (
+        <div className="container" data-page="ClubEditing">
+          <h1 className="page-header">
+            Verein bearbeiten <small>ID: {this.state.id}</small>
+            {((this.state.toUpdateProducts && this.state.toUpdateProducts.length > 0) || this.state.name !== this.oldName) &&
+              <div className="unsaved-changes">
+                <small>Sie haben ungesicherte Änderungen!</small>
+                <Button bsStyle="success" bsSize="small" onClick={this.save}
+                        disabled={!this.state.name || this.state.name.length < 1}>Speichern</Button>
+              </div>}
+          </h1>
+          <form>
+            <FormGroup controlId="inputName" validationState={!this.state.name || this.state.name.length < 1 ? 'error' : null}>
+              <ControlLabel bsClass="col-sm-1 control-label">Name</ControlLabel>
+              <div className="col-sm-11">
+                <FormControl type="text" value={this.state.name} placeholder="Geben Sie dem Verein einen Namen..." onChange={this.onNameChange} />
+              </div>
+            </FormGroup>
+            <FormGroup controlId="inputLogo">
+              <ControlLabel bsClass="col-sm-1 control-label">Logo</ControlLabel>
+              <div className="col-sm-11">
+                <input type="file" className="form-control" />
+                <img className="file-preview img-thumbnail" src={this.state.logopath} />
+              </div>
+            </FormGroup>
+            <FormGroup controlId="inputProducts">
+              <ControlLabel bsClass="col-sm-1 control-label">Produkte</ControlLabel>
+              <div className="col-sm-11">
+                <Table striped bordered hover>
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Name</th>
+                      <th>Preisgruppen</th>
+                      <th>Beflockung</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.products && Object.keys(this.state.products).length > 0
+                      ? this.state.products.map((row, i) =>
+                          <tr key={i} data-id={row.id} data-name={row.name}>
+                            <td>{row.id}</td>
+                            <td className="product-name">{row.name}</td>
+                            <td className="pricegroups">
+                              {JSON.parse(row.pricegroups).map((group, i) =>
+                                <div key={i}>
+                                  <p className="sizes">{group.sizes.join(", ")}:</p>
+                                  <p className="price">{group.price.toFixed(2).replace('.', ',')} €</p>
+                                </div>
+                              )}
+                            </td>
+                            <td>
+                              {row.flockingPrice && parseFloat(row.flockingPrice) >= 0
+                                    ? (parseFloat(row.flockingPrice) > 0
+                                      ? 'Aufpreis: ' + parseFloat(row.flockingPrice).toFixed(2).replace('.', ',') + ' €'
+                                      : 'kostenlos')
+                                    : 'keine Beflockung'}
+                            </td>
+                            <td className="buttons">
+                              <ButtonToolbar>
+                                <Button bsSize="small" onClick={this.openProductEditModal.bind(this, i)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
+                                <Button bsSize="small" bsStyle="danger" onClick={this.openProductRemoveModal.bind(this, i)}><Glyphicon glyph="trash" /> Löschen</Button>
+                              </ButtonToolbar>
+                            </td>
+                          </tr>
+                    ) : <tr className="no-data"><td colSpan="5">Keine Produkte vorhanden</td></tr>}
+                  </tbody>
+                </Table>
+                <Button bsSize="small" bsStyle="success" onClick={this.openProductAddModal}><Glyphicon glyph="plus" /> Hinzufügen...</Button>
+              </div>
+            </FormGroup>
+          </form>
 
-        <ProductEditModal show={this.state.showProductEditModal} scope={this.state.scopeProductEditModal} onClose={this.onCloseProductEditModal} />
-        <ProductRemovalModal show={this.state.showProductRemoveModal} scope={this.state.scopeProductRemoveModal} onClose={this.onCloseProductRemoveModal} />
-        <ProductAddModal show={this.state.showProductAddModal} onClose={this.onCloseProductAddModal} />
-      </div>
-    );
+          <ProductEditModal show={this.state.showProductEditModal} scope={this.state.scopeProductEditModal} onClose={this.onCloseProductEditModal} />
+          <ProductRemovalModal show={this.state.showProductRemoveModal} scope={this.state.scopeProductRemoveModal} onClose={this.onCloseProductRemoveModal} />
+          <ProductAddModal show={this.state.showProductAddModal} onClose={this.onCloseProductAddModal} />
+        </div>
+      );
+    } else {
+      return (
+        <div className="container" data-page="ClubEditing">
+          <h1 className="page-header">
+            Verein bearbeiten <small>ID: {this.state.id}</small>
+          </h1>
+          <p className="loading-error">Es ist ein Fehler aufgetreten. Bitte laden Sie die Seite neu!</p>
+        </div>
+      );
+    }
   }
 }
 

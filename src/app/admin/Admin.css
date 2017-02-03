@@ -140,6 +140,11 @@
   margin-left: 10px;
 }
 
+.admin .container p.loading-error {
+  text-align: center;
+  color: #777;
+}
+
 .admin .container label:not(.control-label) {
   font-weight: normal;
   cursor: auto;
