@@ -12,6 +12,7 @@ import {
 
 import ProductEditModal from './modals/ProductEditModal.js';
 import ProductRemovalModal from './modals/ProductRemovalModal';
+import ProductAddModal from './modals/ProductAddModal';
 
 class ClubEditing extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ class ClubEditing extends Component {
       scopeProductEditModal: -1,
       showProductRemoveModal: false,
       scopeProductRemoveModal: -1,
+      showProductAddModal: false,
       toUpdateProducts: []
     }
 
@@ -61,8 +63,10 @@ class ClubEditing extends Component {
     this.onNameChange = this.onNameChange.bind(this);
     this.openProductEditModal = this.openProductEditModal.bind(this);
     this.openProductRemoveModal = this.openProductRemoveModal.bind(this);
+    this.openProductAddModal = this.openProductAddModal.bind(this);
     this.onCloseProductEditModal = this.onCloseProductEditModal.bind(this);
     this.onCloseProductRemoveModal = this.onCloseProductRemoveModal.bind(this);
+    this.onCloseProductAddModal = this.onCloseProductAddModal.bind(this);
   }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, () => {
@@ -86,6 +90,9 @@ class ClubEditing extends Component {
       showProductRemoveModal: true,
       scopeProductRemoveModal: this.state.products[id]
     });
+  }
+  openProductAddModal(id) {
+    this.setState({showProductAddModal: true});
   }
   onCloseProductEditModal(e) {
     if(e) {
@@ -132,6 +139,13 @@ class ClubEditing extends Component {
         showProductRemoveModal: false,
         scopeProductRemoveModal: -1
       });
+    }
+  }
+  onCloseProductAddModal(e) {
+    if(e) {
+      // ..
+    } else {
+      this.setState({showProductAddModal: false});
     }
   }
   render() {
@@ -199,12 +213,14 @@ class ClubEditing extends Component {
                   ) : <tr className="no-data"><td colSpan="5">Keine Produkte vorhanden</td></tr>}
                 </tbody>
               </Table>
+              <Button bsSize="small" bsStyle="success" onClick={this.openProductAddModal}><Glyphicon glyph="plus" /> Hinzufügen...</Button>
             </div>
           </FormGroup>
         </form>
 
-        <ProductEditModal ref="productEditModal" show={this.state.showProductEditModal} scope={this.state.scopeProductEditModal} onClose={this.onCloseProductEditModal} />
-        <ProductRemovalModal ref="productRemovalModal" show={this.state.showProductRemoveModal} scope={this.state.scopeProductRemoveModal} onClose={this.onCloseProductRemoveModal} />
+        <ProductEditModal show={this.state.showProductEditModal} scope={this.state.scopeProductEditModal} onClose={this.onCloseProductEditModal} />
+        <ProductRemovalModal show={this.state.showProductRemoveModal} scope={this.state.scopeProductRemoveModal} onClose={this.onCloseProductRemoveModal} />
+        <ProductAddModal show={this.state.showProductAddModal} onClose={this.onCloseProductAddModal} />
       </div>
     );
   }
