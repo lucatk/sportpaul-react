@@ -64,7 +64,7 @@ class ProductPricegroupsControl extends Component {
         )}
         <div className="row">
           <div className="col-sm-8">
-            <FormControl type="text" placeholder="Gruppe hinzufügen..." onClick={this.onAddGroup}  />
+            <FormControl type="text" placeholder="Gruppe hinzufügen..." onFocus={this.onAddGroup} />
           </div>
         </div>
       </div>
