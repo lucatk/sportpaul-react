@@ -36,11 +36,13 @@ class ProductPricegroupsControl extends Component {
       data[i].sizes = newSizes;
     }
     this.setState({data:data});
+    this.props.onValueChange(data);
   }
   onPriceValueChange(i, newPrice) {
     var data = this.state.data;
     data[i].price = newPrice;
     this.setState({data:data});
+    this.props.onValueChange(data);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({

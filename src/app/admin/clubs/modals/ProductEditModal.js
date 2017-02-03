@@ -31,10 +31,10 @@ class ProductEditModal extends Component {
     this.editProduct = this.editProduct.bind(this);
   }
   onPricegroupsChange(newPricegroups) {
-    this.setState({pricegroups:newPricegroups});
+    this.setState({pricegroups: newPricegroups});
   }
   onNameChange(event) {
-    this.setState({name:event.target.value});
+    this.setState({name: event.target.value});
   }
   onFlockingEnabledChange(event) {
     this.setState({flockingEnabled:event.target.checked});
@@ -46,6 +46,8 @@ class ProductEditModal extends Component {
     this.props.onClose();
   }
   editProduct() {
+    if(!this.state.name || this.state.name.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1)
+      return;
     this.props.onClose({
       id: this.state.id,
       name: this.state.name,
@@ -55,10 +57,11 @@ class ProductEditModal extends Component {
   }
   componentWillReceiveProps(nextProps) {
     if(!nextProps.scope || nextProps.scope === -1) return;
+    var pricegroups = JSON.parse(nextProps.scope.pricegroups);
     this.setState({
       id: nextProps.scope.id,
       name: nextProps.scope.name,
-      pricegroups: JSON.parse(nextProps.scope.pricegroups),
+      pricegroups: pricegroups,
       flockingEnabled: parseFloat(nextProps.scope.flockingPrice) >= 0,
       flockingPrice: parseFloat(nextProps.scope.flockingPrice)
     });
@@ -71,13 +74,13 @@ class ProductEditModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <form>
-            <FormGroup controlId="inputProductName">
+            <FormGroup controlId="inputProductName" validationState={!this.state.name || this.state.name.length < 1 ? 'error' : null}>
               <ControlLabel bsClass="col-sm-3 control-label">Name</ControlLabel>
               <div className="col-sm-9">
                 <FormControl type="text" value={this.state.name} placeholder="Produkt-Name" onChange={this.onNameChange} />
               </div>
             </FormGroup>
-            <FormGroup controlId="inputProductPrice">
+            <FormGroup controlId="inputProductPricegroups" validationState={!this.state.pricegroups || this.state.pricegroups.length < 1 ? 'error' : null}>
               <ControlLabel bsClass="col-sm-3 control-label">Preisgruppen</ControlLabel>
               <div className="col-sm-9 pricegroups-edit">
                 <ProductPricegroupsControl value={this.state.pricegroups} onValueChange={this.onPricegroupsChange} />
@@ -94,7 +97,8 @@ class ProductEditModal extends Component {
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.closeModal}>Abbrechen</Button>
-          <Button bsStyle="success" onClick={this.editProduct}>Übernehmen</Button>
+          <Button bsStyle="success" onClick={this.editProduct}
+                  disabled={!this.state.name || this.state.name.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1}>Übernehmen</Button>
         </Modal.Footer>
       </Modal>
     );
