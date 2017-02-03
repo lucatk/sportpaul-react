@@ -22,7 +22,20 @@
 }
 
 .admin .container .page-header button {
+  display: block;
   float: right;
+  margin-bottom: -10px;
+}
+
+.admin .container .page-header .unsaved-changes {
+  float: right;
+  padding-bottom: 10px;
+}
+
+.admin .container .page-header .unsaved-changes small {
+  font-size: .5em;
+  margin-right: 10px;
+  vertical-align: middle;
 }
 
 .admin .container[data-page=OrderDisplay] .form-group:not(:first-of-type) label,
@@ -106,6 +119,27 @@
   width: 15%;
 }
 
+.admin tr.no-data td {
+  text-align: center;
+  padding: 20px;
+}
+
+.admin .container[data-page=ClubEditing] td.pricegroups p {
+  margin: 0;
+}
+
+.admin .container[data-page=ClubEditing] td.pricegroups div:not(:last-of-type) {
+  margin-bottom: 5px;
+}
+
+.admin .container[data-page=ClubEditing] td.pricegroups .sizes {
+  font-weight: bold;
+}
+
+.admin .container[data-page=ClubEditing] td.pricegroups .price {
+  margin-left: 10px;
+}
+
 .admin .container label:not(.control-label) {
   font-weight: normal;
   cursor: auto;
@@ -150,12 +184,23 @@
   font-size: 18px;
 }
 
-.modal-dialog .form-group .flocking-edit input,
-.modal-dialog .form-group .price-edit input {
-  max-width: 150px;
+.modal-dialog .form-group .flocking-edit input {
+  max-width: 175px;
 }
 
 .modal-dialog .form-group .flocking-edit label {
   font-weight: normal;
   margin: 0;
+}
+
+.modal-dialog .form-group .pricegroups-edit .row {
+  margin-left: -2px;
+}
+
+.modal-dialog .form-group .pricegroups-edit .row div {
+  padding: 2px;
+}
+
+.modal-dialog .form-group .pricegroups-edit .row input {
+  max-width: none;
 }

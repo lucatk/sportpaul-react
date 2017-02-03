@@ -7,7 +7,6 @@ class ProductPriceInput extends Component {
     super(props);
 
     this.state = {
-      editing: false,
       price: this.props.value || 0,
       priceTemp: this.props.value ? (this.props.value.toFixed(2).replace('.', ',') + ' €') : ''
     };
@@ -19,7 +18,6 @@ class ProductPriceInput extends Component {
     this.setState({priceTemp:event.target.value});
   }
   onPriceConfirm() {
-    this.setState({editing:false});
     if(/^\+?([0-9]+(\.[0-9]+)?|\.[0-9]+)(€| €)?$/.test(this.state.priceTemp.replace(',', '.'))) {
       var parsed = parseFloat(this.state.priceTemp.replace(',', '.'));
       this.setState({
@@ -41,9 +39,15 @@ class ProductPriceInput extends Component {
       }
     }
   }
+  componentWillReceiveProps(nextProps) {
+    this.setState({
+      price: nextProps.value,
+      priceTemp: nextProps.value ? (nextProps.value.toFixed(2).replace('.', ',') + ' €') : ''
+    });
+  }
   render() {
     return (
-      <FormControl type="text" disabled={!(this.props.enabled===undefined?true:this.props.enabled)} value={this.state.priceTemp} placeholder="10,00 €" onChange={this.onPriceChange} onBlur={this.onPriceConfirm} />
+      <FormControl type="text" disabled={!(this.props.enabled===undefined?true:this.props.enabled)} value={this.state.priceTemp} placeholder={this.props.enabled===false?"":"10,00 €"} onChange={this.onPriceChange} onBlur={this.onPriceConfirm} />
     );
   }
 }

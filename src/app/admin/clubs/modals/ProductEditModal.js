@@ -9,35 +9,32 @@ import {
 } from 'react-bootstrap';
 
 import ProductPriceInput from '../ProductPriceInput';
+import ProductPricegroupsControl from '../ProductPricegroupsControl';
 
 class ProductEditModal extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      show: false,
-      scope: {
-        name: '',
-        id: -1
-      },
-      price: 49.99,
+      id: -1,
+      name: '',
+      pricegroups: [],
       flockingEnabled: false,
-      flockingPrice: 2.49,
-      sizeAddInput: '',
-      sizeList: ['S', 'M', 'L', 'XL']
+      flockingPrice: 0
     };
 
-    this.onPriceChange = this.onPriceChange.bind(this);
+    this.onNameChange = this.onNameChange.bind(this);
+    this.onPricegroupsChange = this.onPricegroupsChange.bind(this);
     this.onFlockingPriceChange = this.onFlockingPriceChange.bind(this);
     this.onFlockingEnabledChange = this.onFlockingEnabledChange.bind(this);
-    this.onSizeAddInputChange = this.onSizeAddInputChange.bind(this);
-    this.addSize = this.addSize.bind(this);
     this.closeModal = this.closeModal.bind(this);
-    this.openModal = this.openModal.bind(this);
     this.editProduct = this.editProduct.bind(this);
   }
-  onPriceChange(newPrice) {
-    this.setState({price:newPrice});
+  onPricegroupsChange(newPricegroups) {
+    this.setState({pricegroups:newPricegroups});
+  }
+  onNameChange(event) {
+    this.setState({name:event.target.value});
   }
   onFlockingEnabledChange(event) {
     this.setState({flockingEnabled:event.target.checked});
@@ -45,86 +42,59 @@ class ProductEditModal extends Component {
   onFlockingPriceChange(newPrice) {
     this.setState({flockingPrice:newPrice});
   }
-  onSizeAddInputChange(event) {
-    this.setState({sizeAddInput: event.target.value});
-  }
-  addSize() {
-    if(this.refs.sizeInput.props.value.length > 0) {
-      var sizes = this.state.sizeList;
-      sizes[sizes.length] = this.refs.sizeInput.props.value;
-      this.setState({sizeList: sizes});
-    }
-  }
   closeModal() {
-    this.setState({
-      show: false,
-      scope: {
-        name: '',
-        id: -1
-      }
-    });
-  }
-  openModal(e) {
-    this.setState({
-      show: true,
-      scope: e.target.parentElement.parentElement.parentElement.dataset
-    });
+    this.props.onClose();
   }
   editProduct() {
-    this.props.onEdit(this.state.scope.id, {
-      name: this.state.scope.name,
-      sizes: this.state.sizeList,
-      price: this.state.price,
+    this.props.onClose({
+      id: this.state.id,
+      name: this.state.name,
+      pricegroups: this.state.pricegroups,
       flockingPrice: this.state.flockingEnabled?this.state.flockingPrice:null
     });
-    this.closeModal();
+  }
+  componentWillReceiveProps(nextProps) {
+    if(!nextProps.scope || nextProps.scope === -1) return;
+    this.setState({
+      id: nextProps.scope.id,
+      name: nextProps.scope.name,
+      pricegroups: JSON.parse(nextProps.scope.pricegroups),
+      flockingEnabled: parseFloat(nextProps.scope.flockingPrice) >= 0,
+      flockingPrice: parseFloat(nextProps.scope.flockingPrice)
+    });
   }
   render() {
     return (
-      <Modal show={this.state.show} onHide={this.closeModal} data-scope={this.state.scope.id}>
+      <Modal show={this.props.show} onHide={this.closeModal} data-scope={this.state.id}>
         <Modal.Header closeButton>
           <Modal.Title>Produkt bearbeiten...</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form>
             <FormGroup controlId="inputProductName">
-              <ControlLabel bsClass="col-sm-2 control-label">Name</ControlLabel>
-              <div className="col-sm-10">
-                <FormControl type="text" value="Testprodukt 1" placeholder="Produkt-Name" />
-              </div>
-            </FormGroup>
-            <FormGroup controlId="inputProductSizes">
-              <ControlLabel bsClass="col-sm-2 control-label">Größen</ControlLabel>
-              <div className="col-sm-10 sizes-edit">
-                <ul>
-                {this.state.sizeList && this.state.sizeList.length > 0
-                  ? this.state.sizeList.map((size, i) => <p key={i}>{size} <button type="button" className="close" aria-label="Entfernen..."><span aria-hidden="true">×</span></button></p>)
-                  : ''}
-                </ul>
-                <ButtonToolbar>
-                  <FormControl ref="sizeInput" type="text" value={this.state.sizeAddInput} placeholder="S" onChange={this.onSizeAddInputChange} />
-                  <Button bsSize="small" onClick={this.addSize}>Hinzufügen</Button>
-                </ButtonToolbar>
+              <ControlLabel bsClass="col-sm-3 control-label">Name</ControlLabel>
+              <div className="col-sm-9">
+                <FormControl type="text" value={this.state.name} placeholder="Produkt-Name" onChange={this.onNameChange} />
               </div>
             </FormGroup>
             <FormGroup controlId="inputProductPrice">
-              <ControlLabel bsClass="col-sm-2 control-label">Preis</ControlLabel>
-              <div className="col-sm-10 price-edit">
-                <ProductPriceInput onValueChange={this.onPriceChange} />
+              <ControlLabel bsClass="col-sm-3 control-label">Preisgruppen</ControlLabel>
+              <div className="col-sm-9 pricegroups-edit">
+                <ProductPricegroupsControl value={this.state.pricegroups} onValueChange={this.onPricegroupsChange} />
               </div>
             </FormGroup>
             <FormGroup controlId="inputFlocking">
-              <ControlLabel bsClass="col-sm-2 control-label">Beflockung</ControlLabel>
-              <div className="col-sm-10 flocking-edit">
+              <ControlLabel bsClass="col-sm-3 control-label">Beflockung</ControlLabel>
+              <div className="col-sm-9 flocking-edit">
                 <label><input type="checkbox" value="" checked={this.state.flockingEnabled} onChange={this.onFlockingEnabledChange} /> aktiv</label>
-                <ProductPriceInput enabled={this.state.flockingEnabled} onValueChange={this.onFlockingPriceChange} />
+                <ProductPriceInput enabled={this.state.flockingEnabled} value={this.state.flockingPrice} onValueChange={this.onFlockingPriceChange} />
               </div>
             </FormGroup>
           </form>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.closeModal}>Abbrechen</Button>
-          <Button bsStyle="success" onClick={this.editProduct}>Speichern</Button>
+          <Button bsStyle="success" onClick={this.editProduct}>Übernehmen</Button>
         </Modal.Footer>
       </Modal>
     );

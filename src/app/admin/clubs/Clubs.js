@@ -1,23 +1,33 @@
 import React, { Component } from 'react';
 
+import $ from 'jquery';
 import { Link } from 'react-router';
 import {
-  Table,
   ButtonToolbar, Button,
   Glyphicon,
   Modal
 } from 'react-bootstrap';
 
+import ClubsTable from './ClubsTable';
+
 class Clubs extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      clubs: [],
       showRemoveModal: false,
       removeModalScope: {
         name: '',
         id: -1
       }
     };
+
+    $.ajax({
+      url: 'php/load_clubs.php',
+      success: function(data) {
+        this.setState({clubs: JSON.parse(data)});
+      }.bind(this)
+    });
 
     this.closeRemoveModal = this.closeRemoveModal.bind(this);
     this.openRemoveModal = this.openRemoveModal.bind(this);
@@ -46,55 +56,7 @@ class Clubs extends Component {
       <div>
         {!this.props.children && <div className="container" data-page="Clubs">
           <h1 className="page-header">Vereine</h1>
-          <Table striped bordered hover>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Name</th>
-                <th>ausstehende Bestellungen</th>
-                <th>Produkte</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr data-id="0" data-name="FC Steinhofen">
-                <td>0</td>
-                <td>FC Steinhofen</td>
-                <td>1 ausstehende Bestellung</td>
-                <td>1 Produkt</td>
-                <td className="buttons">
-                  <ButtonToolbar>
-                    <Link to="/admin/clubs/edit/0"><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
-                    <Button bsStyle="danger" bsSize="small" onClick={this.openRemoveModal}><Glyphicon glyph="remove" /> Löschen</Button>
-                  </ButtonToolbar>
-                </td>
-              </tr>
-              <tr data-id="1" data-name="TSV Frommern">
-                <td>1</td>
-                <td>TSV Frommern</td>
-                <td>0 ausstehende Bestellungen</td>
-                <td>4 Produkte</td>
-                <td className="buttons">
-                  <ButtonToolbar>
-                    <Link to="/admin/clubs/edit/0"><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
-                    <Button bsStyle="danger" bsSize="small" onClick={this.openRemoveModal}><Glyphicon glyph="remove" /> Löschen</Button>
-                  </ButtonToolbar>
-                </td>
-              </tr>
-              <tr data-id="2" data-name="FV Rot-Weiß Ebingen">
-                <td>2</td>
-                <td>FV Rot-Weiß Ebingen</td>
-                <td>0 ausstehende Bestellungen</td>
-                <td>0 Produkte</td>
-                <td className="buttons">
-                  <ButtonToolbar>
-                    <Link to="/admin/clubs/edit/0"><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
-                    <Button bsStyle="danger" bsSize="small" onClick={this.openRemoveModal}><Glyphicon glyph="remove" /> Löschen</Button>
-                  </ButtonToolbar>
-                </td>
-              </tr>
-            </tbody>
-          </Table>
+          <ClubsTable data={this.state.clubs} onRemove={this.openRemoveModal} />
 
           <Modal show={this.state.showRemoveModal} onHide={this.closeRemoveModal} data-scope={this.state.removeModalScope.id}>
             <Modal.Header closeButton>
