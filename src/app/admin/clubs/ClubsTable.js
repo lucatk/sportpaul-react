@@ -31,7 +31,7 @@ class ClubsTable extends Component {
                   <td className="buttons">
                     <ButtonToolbar>
                       <Link to={"/admin/clubs/edit/" + row.id}><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
-                      <Button bsStyle="danger" bsSize="small" onClick={this.props.onRemove}><Glyphicon glyph="remove" /> Löschen</Button>
+                      <Button bsStyle="danger" bsSize="small" onClick={this.props.onRemove}><Glyphicon glyph="trash" /> Löschen</Button>
                     </ButtonToolbar>
                   </td>
                 </tr>

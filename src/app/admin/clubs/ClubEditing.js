@@ -18,8 +18,6 @@ class ClubEditing extends Component {
   constructor(props) {
     super(props);
 
-    this.loadedInfo = false;
-    this.loadedProducts = false;
     this.state = {
       id: -1,
       name: '',
@@ -31,6 +29,8 @@ class ClubEditing extends Component {
       scopeProductRemoveModal: -1,
       showProductAddModal: false,
       toUpdateProducts: [],
+      toRemoveProducts: [],
+      toAddProducts: [],
       loadedInfo: false,
       loadedProducts: false
     }
@@ -80,7 +80,11 @@ class ClubEditing extends Component {
   }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, () => {
-      if(this.state.name && this.state.name.length > 0 && ((this.state.toUpdateProducts && this.state.toUpdateProducts.length > 0) || this.state.name !== this.oldName))
+      if(this.state.name && this.state.name.length > 0
+          && ((this.state.toUpdateProducts && this.state.toUpdateProducts.length > 0)
+              || (this.state.toRemoveProducts && this.state.toRemoveProducts.length > 0)
+              || (this.state.toAddProducts && this.state.toAddProducts.length > 0)
+              || this.state.name !== this.oldName))
         return 'Sie haben ungesicherte Änderungen, sind Sie sicher, dass Sie diese Seite verlassen wollen?';
     })
   }
@@ -101,7 +105,7 @@ class ClubEditing extends Component {
       scopeProductRemoveModal: this.state.products[id]
     });
   }
-  openProductAddModal(id) {
+  openProductAddModal() {
     this.setState({showProductAddModal: true});
   }
   onCloseProductEditModal(e) {
@@ -109,54 +113,70 @@ class ClubEditing extends Component {
       var products = this.state.products;
 
       var product = products[e.id];
-      product.flockingPrice = e.flockingPrice;
       product.name = e.name;
-      product.pricegroups = JSON.stringify(e.pricegroups);
+      product.internalid = e.internalid;
+      product.pricegroups = e.pricegroups;
+      product.flockingPrice = e.flockingPrice;
       products[e.id] = product;
+      this.setState({products: products});
 
-      var toUpdate = this.state.toUpdateProducts;
-      toUpdate[e.id] = product;
-
-      this.setState({
-        showProductEditModal: false,
-        scopeProductEditModal: -1,
-        products: products,
-        toUpdateProducts: toUpdate
-      });
-    } else {
-      this.setState({
-        showProductEditModal: false,
-        scopeProductEditModal: -1
-      });
+      if(product.new) {
+        var toAdd = this.state.toAddProducts;
+        toAdd[e.id] = product;
+        this.setState({toAddProducts: toAdd});
+      } else {
+        var toUpdate = this.state.toUpdateProducts;
+        toUpdate[e.id] = product;
+        this.setState({toUpdateProducts: toUpdate});
+      }
     }
+
+    this.setState({
+      showProductEditModal: false,
+      scopeProductEditModal: -1
+    });
   }
   onCloseProductRemoveModal(e) {
     if(e) {
       var products = this.state.products;
+      if(products[e.id].new) {
+        var toAdd = this.state.toAddProducts;
+        toAdd.splice(e.id, 1);
+        this.setState({toAddProducts: toAdd});
+      } else {
+        var toRemove = this.state.toRemoveProducts;
+        toRemove[toRemove.length] = e.id;
+        this.setState({toRemoveProducts: toRemove});
+      }
+
       products.splice(e.id, 1);
-
-      var toUpdate = this.state.toUpdateProducts;
-      toUpdate[e.id] = {};
-
-      this.setState({
-        showProductRemoveModal: false,
-        scopeProductRemoveModal: -1,
-        products: products,
-        toUpdateProducts: toUpdate
-      });
-    } else {
-      this.setState({
-        showProductRemoveModal: false,
-        scopeProductRemoveModal: -1
-      });
+      this.setState({products: products});
     }
+
+    this.setState({
+      showProductRemoveModal: false,
+      scopeProductRemoveModal: -1
+    });
   }
   onCloseProductAddModal(e) {
     if(e) {
-      // ..
-    } else {
-      this.setState({showProductAddModal: false});
+      var products = this.state.products;
+      var newId = products.length;
+      products[newId] = {
+        new: true,
+        id: newId,
+        clubid: this.state.id,
+        ...e
+      };
+      var toAdd = this.state.toAddProducts;
+      toAdd[newId] = products[newId];
+      this.setState({
+        products: products,
+        toAddProducts: toAdd
+      })
     }
+
+    this.setState({showProductAddModal: false});
   }
   render() {
     if(this.state.loadedInfo && this.state.loadedProducts) {
@@ -164,12 +184,12 @@ class ClubEditing extends Component {
         <div className="container" data-page="ClubEditing">
           <h1 className="page-header">
             Verein bearbeiten <small>ID: {this.state.id}</small>
-            {((this.state.toUpdateProducts && this.state.toUpdateProducts.length > 0) || this.state.name !== this.oldName) &&
+            {(this.state.toUpdateProducts && this.state.toUpdateProducts.length > 0) || (this.state.toRemoveProducts && this.state.toRemoveProducts.length > 0) || (this.state.toAddProducts && this.state.toAddProducts.length > 0) || this.state.name !== this.oldName ?
               <div className="unsaved-changes">
                 <small>Sie haben ungesicherte Änderungen!</small>
                 <Button bsStyle="success" bsSize="small" onClick={this.save}
                         disabled={!this.state.name || this.state.name.length < 1}>Speichern</Button>
-              </div>}
+              </div> : ''}
           </h1>
           <form>
             <FormGroup controlId="inputName" validationState={!this.state.name || this.state.name.length < 1 ? 'error' : null}>
@@ -202,7 +222,7 @@ class ClubEditing extends Component {
                     {this.state.products && Object.keys(this.state.products).length > 0
                       ? this.state.products.map((row, i) =>
                           <tr key={i} data-id={row.id} data-name={row.name}>
-                            <td>{row.id}</td>
+                            <td>{row.new?'':row.id}</td>
                             <td className="product-name">{row.name}</td>
                             <td className="pricegroups">
                               {JSON.parse(row.pricegroups).map((group, i) =>
@@ -221,8 +241,8 @@ class ClubEditing extends Component {
                             </td>
                             <td className="buttons">
                               <ButtonToolbar>
-                                <Button bsSize="small" onClick={this.openProductEditModal.bind(this, i)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
-                                <Button bsSize="small" bsStyle="danger" onClick={this.openProductRemoveModal.bind(this, i)}><Glyphicon glyph="trash" /> Löschen</Button>
+                                <Button bsSize="small" onClick={this.openProductEditModal.bind(this, row.id)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
+                                <Button bsSize="small" bsStyle="danger" onClick={this.openProductRemoveModal.bind(this, row.id)}><Glyphicon glyph="trash" /> Löschen</Button>
                               </ButtonToolbar>
                             </td>
                           </tr>

@@ -23,6 +23,13 @@ class Clubs extends Component {
       loadedClubs: false
     };
 
+    this.loadClubs();
+
+    this.closeRemoveModal = this.closeRemoveModal.bind(this);
+    this.openRemoveModal = this.openRemoveModal.bind(this);
+    this.removeClub = this.removeClub.bind(this);
+  }
+  loadClubs() {
     $.ajax({
       url: 'php/load_clubs.php',
       success: function(data) {
@@ -32,12 +39,17 @@ class Clubs extends Component {
         });
       }.bind(this)
     });
-
-    this.closeRemoveModal = this.closeRemoveModal.bind(this);
-    this.openRemoveModal = this.openRemoveModal.bind(this);
-    this.removeClub = this.removeClub.bind(this);
   }
   removeClub(e) {
+    $.post({
+      url: 'php/remove_club.php',
+      data: {
+        id: this.state.removeModalScope.id
+      },
+      success: function(data) {
+        this.loadClubs();
+      }.bind(this)
+    });
     this.closeRemoveModal();
   }
   closeRemoveModal() {
@@ -54,6 +66,11 @@ class Clubs extends Component {
       showRemoveModal: true,
       removeModalScope: e.target.parentElement.parentElement.parentElement.dataset
     });
+  }
+  componentWillReceiveProps(nextProps) {
+    if(!nextProps.children) {
+      this.loadClubs();
+    }
   }
   render() {
     return (
