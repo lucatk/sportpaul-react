@@ -14,3 +14,5 @@ src/www/bundle.js*
 .DS_Store
 .env
 npm-debug.log
+
+src/www/clublogos
