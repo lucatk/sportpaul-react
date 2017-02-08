@@ -77,14 +77,14 @@
   position: relative;
 }
 
-.admin .container .form-group input[type=file] {
+/*.admin .container .form-group input[type=file] {
   color: transparent;
   border: none;
   box-shadow: none;
   margin-top: 10px;
   margin-left: -12px;
   width: initial;
-}
+}*/
 
 .admin .container .form-group img {
   position: absolute;
@@ -235,4 +235,13 @@
 
 .modal-dialog .form-group .pricegroups-edit .row input {
   max-width: none;
+}
+
+input[type=file] {
+  color: transparent;
+  border: none;
+  box-shadow: none;
+  margin-top: 10px;
+  margin-left: -12px;
+  width: initial;
 }

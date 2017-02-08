@@ -10,6 +10,7 @@ import {
 
 import ProductPriceInput from '../ProductPriceInput';
 import ProductPricegroupsControl from '../ProductPricegroupsControl';
+import ImageUploadControl from '../ImageUploadControl';
 
 class ProductEditModal extends Component {
   constructor(props) {
@@ -20,7 +21,8 @@ class ProductEditModal extends Component {
       name: '',
       pricegroups: [],
       flockingEnabled: false,
-      flockingPrice: 0
+      flockingPrice: 0,
+      picture: null
     };
 
     this.onNameChange = this.onNameChange.bind(this);
@@ -28,6 +30,7 @@ class ProductEditModal extends Component {
     this.onPricegroupsChange = this.onPricegroupsChange.bind(this);
     this.onFlockingPriceChange = this.onFlockingPriceChange.bind(this);
     this.onFlockingEnabledChange = this.onFlockingEnabledChange.bind(this);
+    this.onPictureChange = this.onPictureChange.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.editProduct = this.editProduct.bind(this);
   }
@@ -45,6 +48,9 @@ class ProductEditModal extends Component {
   }
   onFlockingPriceChange(newPrice) {
     this.setState({flockingPrice:newPrice});
+  }
+  onPictureChange(newPicture) {
+    this.setState({picture:newPicture});
   }
   closeModal() {
     this.props.onClose();
@@ -117,6 +123,12 @@ class ProductEditModal extends Component {
               <div className="col-sm-9 flocking-edit">
                 <label><input type="checkbox" value="" checked={this.state.flockingEnabled} onChange={this.onFlockingEnabledChange} /> aktiv</label>
                 <ProductPriceInput enabled={this.state.flockingEnabled} value={this.state.flockingPrice} onValueChange={this.onFlockingPriceChange} />
+              </div>
+            </FormGroup>
+            <FormGroup controlId="inputPicture">
+              <ControlLabel bsClass="col-sm-3 control-label">Vorschaubild</ControlLabel>
+              <div className="col-sm-9 flocking-edit">
+                <ImageUploadControl value={this.state.picture} searchPath="productpics/" onChange={this.onPictureChange} />
               </div>
             </FormGroup>
           </form>

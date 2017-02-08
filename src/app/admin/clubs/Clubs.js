@@ -8,7 +8,7 @@ import {
   Modal
 } from 'react-bootstrap';
 
-import LoadingOverlay from '../../utils/LoadingOverlay.js';
+import LoadingOverlay from '../../utils/LoadingOverlay';
 import ClubsTable from './ClubsTable';
 
 class Clubs extends Component {

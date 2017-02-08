@@ -10,25 +10,20 @@ import {
   Glyphicon
 } from 'react-bootstrap';
 
-import LoadingOverlay from '../../utils/LoadingOverlay.js';
-import ProductEditModal from './modals/ProductEditModal.js';
+import LoadingOverlay from '../../utils/LoadingOverlay';
+import ProductEditModal from './modals/ProductEditModal';
 import ProductRemovalModal from './modals/ProductRemovalModal';
 import ProductAddModal from './modals/ProductAddModal';
+import ImageUploadControl from './ImageUploadControl';
 
 class ClubEditing extends Component {
   constructor(props) {
     super(props);
 
-    this.fileReader = new FileReader();
-    this.fileReader.onload = ((e) => {
-      this.setState({logoPreview: e.target.result});
-    }).bind(this);
-
     this.state = {
       id: -1,
       name: '',
       logodata: '',
-      logoPreview: '',
       products: [],
       showProductEditModal: false,
       scopeProductEditModal: -1,
@@ -71,11 +66,10 @@ class ClubEditing extends Component {
       name: e.target.value
     });
   }
-  onLogodataChange(e) {
+  onLogodataChange(newLogodata) {
     this.setState({
-      logodata: e.target.files[0]
+      logodata: newLogodata
     });
-    this.fileReader.readAsDataURL(e.target.files[0]);
   }
   openProductEditModal(id, e) {
     this.setState({
@@ -356,8 +350,7 @@ class ClubEditing extends Component {
             <FormGroup controlId="inputLogo">
               <ControlLabel bsClass="col-sm-1 control-label">Logo</ControlLabel>
               <div className="col-sm-11">
-                <input type="file" className="form-control" onChange={this.onLogodataChange} />
-                <img className="file-preview img-thumbnail" src={typeof this.state.logodata === "string" ? "clublogos/" + this.state.logodata : this.state.logoPreview} />
+                <ImageUploadControl value={this.state.logodata} searchPath="clublogos/" onChange={this.onLogodataChange} />
               </div>
             </FormGroup>
             <FormGroup controlId="inputProducts">
