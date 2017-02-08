@@ -48,6 +48,13 @@ class ProductEditModal extends Component {
   }
   closeModal() {
     this.props.onClose();
+    this.state = {
+      id: -1,
+      name: '',
+      pricegroups: [],
+      flockingEnabled: false,
+      flockingPrice: 0
+    };
   }
   editProduct() {
     if(!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1)
@@ -59,6 +66,13 @@ class ProductEditModal extends Component {
       pricegroups: JSON.stringify(this.state.pricegroups),
       flockingPrice: this.state.flockingEnabled?this.state.flockingPrice:null
     });
+    this.state = {
+      id: -1,
+      name: '',
+      pricegroups: [],
+      flockingEnabled: false,
+      flockingPrice: 0
+    };
   }
   componentWillReceiveProps(nextProps) {
     if(!nextProps.scope || nextProps.scope === -1) return;

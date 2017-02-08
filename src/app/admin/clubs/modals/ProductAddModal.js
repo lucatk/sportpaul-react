@@ -48,6 +48,13 @@ class ProductAddModal extends Component {
   }
   closeModal() {
     this.props.onClose();
+    this.state = {
+      name: '',
+      internalid: '',
+      pricegroups: [],
+      flockingEnabled: false,
+      flockingPrice: 0
+    };
   }
   addProduct() {
     if(!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1)
@@ -58,6 +65,13 @@ class ProductAddModal extends Component {
       pricegroups: JSON.stringify(this.state.pricegroups),
       flockingPrice: this.state.flockingEnabled?this.state.flockingPrice:null
     });
+    this.state = {
+      name: '',
+      internalid: '',
+      pricegroups: [],
+      flockingEnabled: false,
+      flockingPrice: 0
+    };
   }
   render() {
     return (

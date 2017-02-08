@@ -3,8 +3,8 @@ import TeamDropdown from './TeamDropdown.js';
 import TeamProducts from './TeamProducts.js';
 import ProductCart from './ProductCart.js';
 
-import TeamSamples from '../teams.js';
-import '../NavLink.js';
+import TeamSamples from '../utils/teams.js';
+import '../utils/NavLink.js';
 import './App.css';
 
 class App extends Component {

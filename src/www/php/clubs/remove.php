@@ -1,5 +1,5 @@
 <?php
-include('database.php');
+include('../database.php');
 
 $db = new Database();
 $db->execute("DELETE FROM clubs WHERE id=:clubid", ["clubid" => $_POST["id"]]);

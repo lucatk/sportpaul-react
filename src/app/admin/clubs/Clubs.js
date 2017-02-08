@@ -8,6 +8,7 @@ import {
   Modal
 } from 'react-bootstrap';
 
+import LoadingOverlay from '../../utils/LoadingOverlay.js';
 import ClubsTable from './ClubsTable';
 
 class Clubs extends Component {
@@ -20,7 +21,8 @@ class Clubs extends Component {
         name: '',
         id: -1
       },
-      loadedClubs: false
+      loadedClubs: false,
+      loading: false
     };
 
     this.loadClubs();
@@ -30,19 +32,21 @@ class Clubs extends Component {
     this.removeClub = this.removeClub.bind(this);
   }
   loadClubs() {
+    this.setState({loading:true});
     $.ajax({
-      url: 'php/load_clubs.php',
+      url: 'php/clubs/load_all.php',
       success: function(data) {
         this.setState({
           clubs: JSON.parse(data),
-          loadedClubs: true
+          loadedClubs: true,
+          loading: false
         });
       }.bind(this)
     });
   }
   removeClub(e) {
     $.post({
-      url: 'php/remove_club.php',
+      url: 'php/clubs/remove.php',
       data: {
         id: this.state.removeModalScope.id
       },
@@ -76,6 +80,7 @@ class Clubs extends Component {
     return (
       <div>
         {!this.props.children && <div className="container" data-page="Clubs">
+          <LoadingOverlay show={this.state.loading} />
           <h1 className="page-header">Vereine</h1>
           {this.state.loadedClubs &&
             <div>
@@ -94,7 +99,7 @@ class Clubs extends Component {
                 </Modal.Footer>
               </Modal>
             </div>}
-          {!this.state.loadedClubs && <p className="loading-error">Es ist ein Fehler aufgetreten. Bitte laden Sie die Seite neu!</p>}
+          {(!this.state.loadedClubs && !this.state.loading) && <p className="loading-error">Es ist ein Fehler aufgetreten. Bitte laden Sie die Seite neu!</p>}
         </div>}
         {this.props.children}
       </div>

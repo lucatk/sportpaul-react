@@ -1,5 +1,5 @@
 <?php
-include('database.php');
+include('../database.php');
 
 $db = new Database();
 
@@ -13,6 +13,7 @@ foreach($results as $row) {
 
   $cstmt = $db->execute("SELECT id FROM products WHERE clubid=:clubid", ["clubid" => $row['id']]);
   $results[$i]["productCount"] = $cstmt->rowCount();
+  
   $i++;
 }
 

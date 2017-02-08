@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 
-import TeamSamples from '../teams.js';
 import CheckoutItem from './CheckoutItem.js';
 
 class CheckoutCart extends Component {
