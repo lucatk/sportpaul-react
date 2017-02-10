@@ -77,21 +77,14 @@
   position: relative;
 }
 
-/*.admin .container .form-group input[type=file] {
-  color: transparent;
-  border: none;
-  box-shadow: none;
+.admin .container .form-group input[type=file] {
   margin-top: 10px;
-  margin-left: -12px;
-  width: initial;
-}*/
+}
 
 .admin .container .form-group img {
   position: absolute;
-  top: 22px;
-  right: 60px;
-  width: 120px;
-  display: block;
+  top: 10px;
+  right: 0;
 }
 
 .admin .container[data-page=ClubEditing] .form-group label[for=inputProducts],
@@ -240,8 +233,13 @@
 input[type=file] {
   color: transparent;
   border: none;
-  box-shadow: none;
-  margin-top: 10px;
-  margin-left: -12px;
-  width: initial;
+  box-shadow: none !important;
+  padding-left: 0;
+  padding-right: 0;
+  width: 80px;
+}
+
+img.file-preview {
+  width: 120px;
+  display: block;
 }

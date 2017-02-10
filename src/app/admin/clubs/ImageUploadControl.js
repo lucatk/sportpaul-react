@@ -9,11 +9,19 @@ class ImageUploadControl extends Component {
       this.setState({imagePreview: e.target.result});
     }).bind(this);
 
-    this.state = {
-      image: this.props.value,
-      imagePreview: ''
-    };
-    this.updateImage(this.props.value);
+    if(this.props.value) {
+      this.state = {
+        image: this.props.value,
+        imagePreview: ''
+      };
+      if(this.props.value && typeof this.props.value === "object")
+        this.fileReader.readAsDataURL(this.props.value);
+    } else {
+      this.state = {
+        image: null,
+        imagePreview: ''
+      };
+    }
 
     this.onChange = this.onChange.bind(this);
   }
@@ -21,7 +29,6 @@ class ImageUploadControl extends Component {
     this.updateImage(nextProps.value);
   }
   onChange(e) {
-    this.updateImage(e.target.files[0]);
     this.props.onChange(e.target.files[0]);
   }
   updateImage(image) {
@@ -33,7 +40,7 @@ class ImageUploadControl extends Component {
     return (
       <div>
         <input type="file" className="form-control" onChange={this.onChange} />
-        <img className="file-preview img-thumbnail" src={typeof this.state.image === "string" ? (this.props.searchPath?this.props.searchPath:'') + this.state.image : this.state.logoPreview} />
+        <img className="file-preview img-thumbnail" src={typeof this.state.image === "string" ? (this.props.searchPath?this.props.searchPath:'') + this.state.image : this.state.imagePreview} />
       </div>
     );
   }

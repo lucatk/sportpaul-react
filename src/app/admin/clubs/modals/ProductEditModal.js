@@ -59,25 +59,28 @@ class ProductEditModal extends Component {
       name: '',
       pricegroups: [],
       flockingEnabled: false,
-      flockingPrice: 0
+      flockingPrice: 0,
+      picture: null
     };
   }
   editProduct() {
-    if(!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1)
+    if(!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1 || !this.state.picture)
       return;
     this.props.onClose({
       id: this.state.id,
       name: this.state.name,
       internalid: this.state.internalid,
       pricegroups: JSON.stringify(this.state.pricegroups),
-      flockingPrice: this.state.flockingEnabled?this.state.flockingPrice:null
+      flockingPrice: this.state.flockingEnabled?this.state.flockingPrice:null,
+      picture: this.state.picture
     });
     this.state = {
       id: -1,
       name: '',
       pricegroups: [],
       flockingEnabled: false,
-      flockingPrice: 0
+      flockingPrice: 0,
+      picture: null
     };
   }
   componentWillReceiveProps(nextProps) {
@@ -89,7 +92,8 @@ class ProductEditModal extends Component {
       internalid: nextProps.scope.internalid,
       pricegroups: pricegroups,
       flockingEnabled: parseFloat(nextProps.scope.flockingPrice) >= 0,
-      flockingPrice: parseFloat(nextProps.scope.flockingPrice)
+      flockingPrice: parseFloat(nextProps.scope.flockingPrice),
+      picture: nextProps.scope.picture
     });
   }
   render() {
@@ -125,7 +129,7 @@ class ProductEditModal extends Component {
                 <ProductPriceInput enabled={this.state.flockingEnabled} value={this.state.flockingPrice} onValueChange={this.onFlockingPriceChange} />
               </div>
             </FormGroup>
-            <FormGroup controlId="inputPicture">
+            <FormGroup controlId="inputPicture" validationState={!this.state.picture ? 'error' : null}>
               <ControlLabel bsClass="col-sm-3 control-label">Vorschaubild</ControlLabel>
               <div className="col-sm-9 flocking-edit">
                 <ImageUploadControl value={this.state.picture} searchPath="productpics/" onChange={this.onPictureChange} />
@@ -136,7 +140,7 @@ class ProductEditModal extends Component {
         <Modal.Footer>
           <Button onClick={this.closeModal}>Abbrechen</Button>
           <Button bsStyle="success" onClick={this.editProduct}
-                  disabled={!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1}>Übernehmen</Button>
+                  disabled={!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1 || !this.state.picture}>Übernehmen</Button>
         </Modal.Footer>
       </Modal>
     );
