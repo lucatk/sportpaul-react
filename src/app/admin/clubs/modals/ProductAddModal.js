@@ -10,6 +10,7 @@ import {
 
 import ProductPriceInput from '../ProductPriceInput';
 import ProductPricegroupsControl from '../ProductPricegroupsControl';
+import ImageUploadControl from '../ImageUploadControl';
 
 class ProductAddModal extends Component {
   constructor(props) {
@@ -20,7 +21,8 @@ class ProductAddModal extends Component {
       internalid: '',
       pricegroups: [],
       flockingEnabled: false,
-      flockingPrice: 0
+      flockingPrice: 0,
+      picture: null
     };
 
     this.onNameChange = this.onNameChange.bind(this);
@@ -28,6 +30,7 @@ class ProductAddModal extends Component {
     this.onPricegroupsChange = this.onPricegroupsChange.bind(this);
     this.onFlockingPriceChange = this.onFlockingPriceChange.bind(this);
     this.onFlockingEnabledChange = this.onFlockingEnabledChange.bind(this);
+    this.onPictureChange = this.onPictureChange.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.addProduct = this.addProduct.bind(this);
   }
@@ -46,6 +49,9 @@ class ProductAddModal extends Component {
   onFlockingPriceChange(newPrice) {
     this.setState({flockingPrice:newPrice});
   }
+  onPictureChange(newPicture) {
+    this.setState({picture:newPicture});
+  }
   closeModal() {
     this.props.onClose();
     this.state = {
@@ -53,24 +59,27 @@ class ProductAddModal extends Component {
       internalid: '',
       pricegroups: [],
       flockingEnabled: false,
-      flockingPrice: 0
+      flockingPrice: 0,
+      picture: null
     };
   }
   addProduct() {
-    if(!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1)
+    if(!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1 || !this.state.picture)
       return;
     this.props.onClose({
       name: this.state.name,
       internalid: this.state.internalid,
       pricegroups: JSON.stringify(this.state.pricegroups),
-      flockingPrice: this.state.flockingEnabled?this.state.flockingPrice:null
+      flockingPrice: this.state.flockingEnabled?this.state.flockingPrice:null,
+      picture: this.state.picture
     });
     this.state = {
       name: '',
       internalid: '',
       pricegroups: [],
       flockingEnabled: false,
-      flockingPrice: 0
+      flockingPrice: 0,
+      picture: null
     };
   }
   render() {
@@ -106,12 +115,18 @@ class ProductAddModal extends Component {
                 <ProductPriceInput enabled={this.state.flockingEnabled} value={this.state.flockingPrice} onValueChange={this.onFlockingPriceChange} />
               </div>
             </FormGroup>
+            <FormGroup controlId="inputPicture" validationState={!this.state.picture ? 'error' : null}>
+              <ControlLabel bsClass="col-sm-3 control-label">Vorschaubild</ControlLabel>
+              <div className="col-sm-9 flocking-edit">
+                <ImageUploadControl value={this.state.picture} searchPath="productpics/" onChange={this.onPictureChange} />
+              </div>
+            </FormGroup>
           </form>
         </Modal.Body>
         <Modal.Footer>
           <Button onClick={this.closeModal}>Abbrechen</Button>
           <Button bsStyle="success" onClick={this.addProduct}
-                  disabled={!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1}>Hinzufügen</Button>
+                  disabled={!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1 || !this.state.picture}>Hinzufügen</Button>
         </Modal.Footer>
       </Modal>
     );

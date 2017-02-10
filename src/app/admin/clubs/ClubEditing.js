@@ -95,6 +95,7 @@ class ClubEditing extends Component {
       product.internalid = e.internalid;
       product.pricegroups = e.pricegroups;
       product.flockingPrice = e.flockingPrice;
+      product.picture = e.picture;
       products[e.id] = product;
       this.setState({products: products});
 
@@ -215,10 +216,22 @@ class ClubEditing extends Component {
 
     this.state.toUpdateProducts.forEach((product, id) => {
       if(product == undefined || product == null) return;
+      var data = new FormData();
+      data.append("id", product.id);
+      data.append("clubid", product.clubid);
+      data.append("name", product.name);
+      data.append("internalid", product.internalid);
+      data.append("pricegroups", product.pricegroups);
+      data.append("flockingPrice", product.flockingPrice);
+      if(typeof product.picture === "object")
+        data.append("picture", product.picture);
       $.post({
         url: 'php/products/update.php',
-        data: product,
+        contentType: false,
+        processData: false,
+        data: data,
         success: function(data) {
+          console.log(data);
           var result = JSON.parse(data);
           if(result.error !== 0 && result.rowsAffected < 1)
             error = true;
@@ -230,15 +243,19 @@ class ClubEditing extends Component {
     });
     this.state.toAddProducts.forEach((product, id) => {
       if(product == undefined || product == null) return;
+      var data = new FormData();
+      data.append("clubid", product.clubid);
+      data.append("name", product.name);
+      data.append("internalid", product.internalid);
+      data.append("pricegroups", product.pricegroups);
+      data.append("flockingPrice", product.flockingPrice);
+      if(typeof product.picture === "object")
+        data.append("picture", product.picture);
       $.post({
         url: 'php/products/add.php',
-        data: {
-          clubid: product.clubid,
-          internalid: product.internalid,
-          name: product.name,
-          pricegroups: product.pricegroups,
-          flockingPrice: product.flockingPrice
-        },
+        contentType: false,
+        processData: false,
+        data: data,
         success: function(data) {
           var result = JSON.parse(data);
           if(result.error !== 0 && result.rowsAffected < 1)
@@ -383,7 +400,7 @@ class ClubEditing extends Component {
                               )}
                             </td>
                             <td>
-                              {row.flockingPrice && parseFloat(row.flockingPrice) >= 0
+                              {row.flockingPrice !== null && parseFloat(row.flockingPrice) >= 0
                                     ? (parseFloat(row.flockingPrice) > 0
                                       ? 'Aufpreis: ' + parseFloat(row.flockingPrice).toFixed(2).replace('.', ',') + ' €'
                                       : 'kostenlos')
