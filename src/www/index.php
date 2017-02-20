@@ -11,7 +11,7 @@
   </head>
   <body>
     <div id="root"></div>
-
+    
     <script type="text/javascript" src="bundle.js?q=<?php echo time(); ?>"></script>
   </body>
 </html>

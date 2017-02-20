@@ -2,8 +2,9 @@ TODO:
 
 Produkt:
   Zusatzinfo/Beschreibung
-  Artikelnr
-  versch. Größen mit Preis
+  x Artikelnr
+  x versch. Größen mit Preis
+  Vorschaubild Vergrößerung anzeigen
 
 Beflockung-Info bei Bestellung
 

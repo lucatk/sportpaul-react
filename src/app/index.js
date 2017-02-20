@@ -9,7 +9,7 @@ import Admin from './admin/Admin';
 import Clubs from './admin/clubs/Clubs';
 import ClubEditing from './admin/clubs/ClubEditing';
 import Orders from './admin/orders/Orders';
-import OrderDisplay from './admin/orders/OrderDisplay';
+import OrderView from './admin/orders/OrderView';
 import Settings from './admin/settings/Settings';
 
 import './index.css';
@@ -23,7 +23,7 @@ ReactDOM.render(
         <Route path="/admin/clubs/edit/:clubid" component={ClubEditing}></Route>
       </Route>
       <Route path="/admin/orders" component={Orders}>
-        <Route path="/admin/orders/show/:clubid/:orderid" component={OrderDisplay}></Route>
+        <Route path="/admin/orders/view/:clubid/:orderid" component={OrderView}></Route>
       </Route>
       <Route path="/admin/settings" component={Settings}></Route>
     </Route>

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import { FormControl } from 'react-bootstrap';
 
+import * as Statics from "../../utils/Statics";
+
 class ProductSizesInput extends Component {
   constructor(props) {
     super(props);
@@ -20,8 +22,8 @@ class ProductSizesInput extends Component {
   }
   onInputConfirm() {
     // this.setState({editing:false});
-    if(/(?: *\,* *((?: *[^\n\r\,\ ]+ *)+) *\,* *)/g.test(this.state.inputTemp)) {
-      var match, sizes = [], regex = /(?: *\,* *((?: *[^\n\r\,\ ]+ *)+) *\,* *)/g;
+    if(new Regex(Statics.SizeRegex).test(this.state.inputTemp)) {
+      var match, sizes = [], regex = new Regex(Statics.SizeRegex);
       while((match = regex.exec(this.state.inputTemp))) {
         sizes.push(match[1].trim());
       }

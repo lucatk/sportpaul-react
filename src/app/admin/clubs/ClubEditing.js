@@ -411,7 +411,7 @@ class ClubEditing extends Component {
                               <Button bsSize="small" bsStyle="danger" onClick={this.openProductRemoveModal.bind(this, row.id)}><Glyphicon glyph="trash" /> Löschen</Button>
                             </td>
                           </tr>
-                    ) : <tr className="no-data"><td colSpan="5">Keine Produkte vorhanden</td></tr>}
+                    ) : <tr className="no-data"><td colSpan="6">Keine Produkte vorhanden</td></tr>}
                   </tbody>
                 </Table>
                 <Button bsSize="small" bsStyle="success" onClick={this.openProductAddModal}><Glyphicon glyph="plus" /> Hinzufügen...</Button>

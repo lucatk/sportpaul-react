@@ -60,13 +60,29 @@
   vertical-align: middle;
 }
 
-.admin .container[data-page=OrderDisplay] .form-group:not(:first-of-type) label,
-.admin .container[data-page=OrderDisplay] .form-group table {
+.admin .container[data-page=OrderView] .form-group:not(:first-of-type) label,
+.admin .container[data-page=OrderView] .form-group table {
   margin: 10px 0;
+}
+
+.admin .container[data-page=OrderView] label[for=inputCustomerInfo]:last-child {
+  margin-bottom: 0;
+}
+
+.admin .container[data-page=OrderView] label[for=inputCustomerInfo] p {
+  margin: 0 0 5px;
 }
 
 .admin .container .form-group label {
   margin-top: 6px;
+}
+
+.admin .container .form-group label a:not(:hover) {
+  color: inherit;
+}
+
+.admin .container .form-group label a:hover {
+  text-decoration: none;
 }
 
 .admin .container .form-group label[for=inputLogo] {
@@ -110,6 +126,7 @@
 
 .admin .container[data-page=Orders] td.export-check {
   width: 4%;
+  min-width: 40px;
 }
 
 .admin .container[data-page=Orders] td.export-check input {
@@ -124,13 +141,29 @@
   width: 25%;
 }
 
+.admin .container[data-page=Orders] tr.filter-row td.club input {
+  width: 11em;
+}
+
+.admin .container[data-page=Orders] tr.filter-row td.id input {
+  width: 5em;
+}
+
+.admin .container[data-page=Orders] tr.filter-row td.status input {
+  width: 7em;
+}
+
 .admin .container[data-page=Orders] td.product-name,
 .admin .container[data-page=Orders] td.buttons {
   width: 20%;
 }
 
-.admin .container[data-page=OrderDisplay] td.product-name,
-.admin .container[data-page=OrderDisplay] td.buttons {
+.admin .container[data-page=Orders] td.buttons {
+  min-width: 220px;
+}
+
+.admin .container[data-page=OrderView] td.product-name,
+.admin .container[data-page=OrderView] td.buttons {
   width: 15%;
 }
 
