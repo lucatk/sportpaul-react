@@ -22,7 +22,7 @@ class Clubs extends Component {
         id: -1
       },
       loadedClubs: false,
-      loading: false
+      loading: true
     };
 
     this.loadClubs();
@@ -32,7 +32,7 @@ class Clubs extends Component {
     this.removeClub = this.removeClub.bind(this);
   }
   loadClubs() {
-    this.setState({loading:true});
+    this.setState({loading: true});
     $.ajax({
       url: 'php/clubs/load_all.php',
       success: function(data) {

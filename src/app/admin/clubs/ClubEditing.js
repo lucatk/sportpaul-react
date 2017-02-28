@@ -131,7 +131,7 @@ class ClubEditing extends Component {
         this.setState({toRemoveProducts: toRemove});
       }
 
-      products.splice(e.id, 1);
+      delete products[e.id];
       this.setState({products: products});
     }
 
@@ -325,19 +325,12 @@ class ClubEditing extends Component {
       },
       success: function(data) {
         var products = JSON.parse(data);
-        var productsArray = [];
-        for(var key in products) {
-          if(products.hasOwnProperty(key)) {
-            productsArray[key] = products[key];
-            productsArray[key].id = key;
-          }
-        }
 
         loadedProducts = true;
         doneProcess();
 
         this.setState({
-          products: productsArray,
+          products: products,
           loadedProducts: true
         });
       }.bind(this)
@@ -386,13 +379,13 @@ class ClubEditing extends Component {
                   </thead>
                   <tbody>
                     {this.state.products && Object.keys(this.state.products).length > 0
-                      ? this.state.products.map((row, i) =>
-                          <tr key={i} data-id={row.id} data-name={row.name}>
-                            <td>{row.new?'':row.id}</td>
-                            <td className="product-name">{row.name}</td>
-                            <td className="internalid">{row.internalid}</td>
+                      ? Object.keys(this.state.products).map((key, i) =>
+                          <tr key={i} data-id={key} data-name={this.state.products[key].name}>
+                            <td>{this.state.products[key].new?'':key}</td>
+                            <td className="product-name">{this.state.products[key].name}</td>
+                            <td className="internalid">{this.state.products[key].internalid}</td>
                             <td className="pricegroups">
-                              {JSON.parse(row.pricegroups).map((group, i) =>
+                              {JSON.parse(this.state.products[key].pricegroups).map((group, i) =>
                                 <div key={i}>
                                   <p className="sizes">{group.sizes.join(", ")}:</p>
                                   <p className="price">{group.price.toFixed(2).replace('.', ',')} €</p>
@@ -400,15 +393,15 @@ class ClubEditing extends Component {
                               )}
                             </td>
                             <td>
-                              {row.flockingPrice !== null && parseFloat(row.flockingPrice) >= 0
-                                    ? (parseFloat(row.flockingPrice) > 0
-                                      ? 'Aufpreis: ' + parseFloat(row.flockingPrice).toFixed(2).replace('.', ',') + ' €'
+                              {this.state.products[key].flockingPrice !== null && parseFloat(this.state.products[key].flockingPrice) >= 0
+                                    ? (parseFloat(this.state.products[key].flockingPrice) > 0
+                                      ? 'Aufpreis: ' + parseFloat(this.state.products[key].flockingPrice).toFixed(2).replace('.', ',') + ' €'
                                       : 'kostenlos')
                                     : 'keine Beflockung'}
                             </td>
                             <td className="buttons">
-                              <Button bsSize="small" onClick={this.openProductEditModal.bind(this, row.id)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
-                              <Button bsSize="small" bsStyle="danger" onClick={this.openProductRemoveModal.bind(this, row.id)}><Glyphicon glyph="trash" /> Löschen</Button>
+                              <Button bsSize="small" onClick={this.openProductEditModal.bind(this, key)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
+                              <Button bsSize="small" bsStyle="danger" onClick={this.openProductRemoveModal.bind(this, key)}><Glyphicon glyph="trash" /> Löschen</Button>
                             </td>
                           </tr>
                     ) : <tr className="no-data"><td colSpan="6">Keine Produkte vorhanden</td></tr>}

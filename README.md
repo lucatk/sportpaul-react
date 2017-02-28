@@ -20,3 +20,5 @@ mit Jahr
 Filialnummer
 
 17-2-...
+
+[Verein erst löschen wenn keine Bestellungen vorhanden, etc....]

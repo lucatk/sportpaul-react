@@ -9,3 +9,8 @@ export const OrderStatus = {
   received: "erhalten",
   done: "erledigt"
 };
+export const ItemStatus = {
+  pending: "ausstehend",
+  received: "erhalten",
+  done: ""
+}

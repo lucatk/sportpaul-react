@@ -14,6 +14,7 @@ foreach($results as $row) {
   $cstmt = $db->execute("SELECT id FROM products WHERE clubid=:clubid", ["clubid" => $row['id']]);
   $results[$i]["productCount"] = $cstmt->rowCount();
 
+  array_walk($results[$i], function(&$s, $key){$s = utf8_encode($s);});
   $i++;
 }
 

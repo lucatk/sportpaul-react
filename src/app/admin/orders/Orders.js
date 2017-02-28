@@ -21,13 +21,18 @@ class Orders extends Component {
       showRemoveModal: false,
       removeModalScope: {
         id: -1,
+        clubid: -1,
         club: ''
       },
       loadedOrders: false,
-      loading: false
+      loading: true
     };
 
     this.loadOrders();
+
+    this.openRemoveModal = this.openRemoveModal.bind(this);
+    this.closeRemoveModal = this.closeRemoveModal.bind(this);
+    this.removeOrder = this.removeOrder.bind(this);
   }
   loadOrders() {
     this.setState({loading:true});
@@ -46,7 +51,8 @@ class Orders extends Component {
     $.post({
       url: 'php/orders/remove.php',
       data: {
-        id: this.state.removeModalScope.id
+        id: this.state.removeModalScope.id,
+        clubid: this.state.removeModalScope.clubid
       },
       success: function(data) {
         this.loadOrders();
@@ -59,6 +65,7 @@ class Orders extends Component {
       showRemoveModal: false,
       removeModalScope: {
         id: -1,
+        clubid: -1,
         club: ''
       }
     });

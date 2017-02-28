@@ -11,6 +11,7 @@ import {
 } from 'react-bootstrap';
 
 import * as Statics from "../../utils/Statics";
+import LoadingOverlay from '../../utils/LoadingOverlay';
 
 // import ProductEditModal from './modals/ProductEditModal';
 // import ProductRemovalModal from './modals/ProductRemovalModal';
@@ -45,7 +46,7 @@ class OrderView extends Component {
       toAddItems: [],
       loadedInfo: false,
       loadedItems: false,
-      loading: false
+      loading: true
     }
 
     this.componentWillReceiveProps(this.props);
@@ -100,35 +101,29 @@ class OrderView extends Component {
         });
       }.bind(this)
     });
-    // $.post({
-    //   url: 'php/items/load.php',
-    //   data: {
-    //     orderid: nextProps.params.id,
-    //     clubid: nextProps.params.clubid
-    //   },
-    //   success: function(data) {
-    //     var products = JSON.parse(data);
-    //     var productsArray = [];
-    //     for(var key in products) {
-    //       if(products.hasOwnProperty(key)) {
-    //         productsArray[key] = products[key];
-    //         productsArray[key].id = key;
-    //       }
-    //     }
-    //
-    //     loadedProducts = true;
-    //     doneProcess();
-    //
-    //     this.setState({
-    //       products: productsArray,
-    //       loadedProducts: true
-    //     });
-    //   }.bind(this)
-    // });
+    $.post({
+      url: 'php/items/load.php',
+      data: {
+        orderid: nextProps.params.orderid,
+        clubid: nextProps.params.clubid
+      },
+      success: function(data) {
+        var items = JSON.parse(data);
+
+        loadedItems = true;
+        doneProcess();
+
+        this.setState({
+          items: items,
+          loadedItems: true
+        });
+      }.bind(this)
+    });
   }
   render() {
     return (
       <div className="container" data-page="OrderView">
+        <LoadingOverlay show={this.state.loading} />
         <h1 className="page-header">
           Bestellung: Details
           <small> ID: {this.state.clubid}/{this.state.id}</small>
@@ -173,21 +168,22 @@ class OrderView extends Component {
             <ControlLabel bsClass="col-sm-11">{Statics.OrderStatus[this.state.status]}</ControlLabel>
           </FormGroup>
           <FormGroup controlId="inputProducts">
-            <ControlLabel bsClass="col-sm-1 control-label">Produkte</ControlLabel>
+            <ControlLabel bsClass="col-sm-1 control-label">Positionen</ControlLabel>
             <div className="col-sm-11">
               <Table striped bordered hover>
                 <thead>
                   <tr>
+                    <th>#</th>
                     <th>Produkt #</th>
                     <th>Name</th>
                     <th>Größe</th>
                     <th>Beflockung</th>
-                    <th>Gesamtpreis</th>
-                    <th></th>
+                    <th>Preis</th>
+                    <th>Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr data-id="0" data-name="Testprodukt 1">
+                  {/*<tr data-id="0" data-name="Testprodukt 1">
                     <td>0</td>
                     <td className="product-name">Testprodukt 1</td>
                     <td>M</td>
@@ -195,14 +191,30 @@ class OrderView extends Component {
                     <td>52,48 €</td>
                     <td className="buttons">
                       <ButtonToolbar>
-                        <Button bsSize="small" onClick={this.openEditProductModal}><Glyphicon glyph="pencil" /></Button>
-                        <Button bsSize="small" bsStyle="danger" onClick={this.openRemoveProductModal}><Glyphicon glyph="remove" /></Button>
+                        <Button bsSize="small" onClick=*this.openEditProductModal*><Glyphicon glyph="pencil" /></Button>
+                        <Button bsSize="small" bsStyle="danger" onClick=*this.openRemoveProductModal*><Glyphicon glyph="remove" /></Button>
                       </ButtonToolbar>
                     </td>
-                  </tr>
+                  </tr>*/}
+                  {this.state.items && Object.keys(this.state.items).length > 0
+                    ? Object.keys(this.state.items).map((key) =>
+                        <tr key={key} data-id={key} data-name={this.state.items[key].name}>
+                          <td>{key}</td>
+                          <td>{this.state.items[key].productid}</td>
+                          <td>{this.state.items[key].name}</td>
+                          <td>{this.state.items[key].size}</td>
+                          <td>{this.state.items[key].flocking}</td>
+                          <td>{parseFloat(this.state.items[key].price).toFixed(2).replace(".", ",")} €</td>
+                          <td>{Statics.ItemStatus[this.state.items[key].status]}</td>
+                        </tr>
+                  ) : <tr className="no-data"><td colSpan="7">Keine Positionen vorhanden</td></tr>}
                 </tbody>
               </Table>
             </div>
+          </FormGroup>
+          <FormGroup controlId="inputTotal">
+            <ControlLabel bsClass="col-sm-1 control-label">Gesamtpreis</ControlLabel>
+            <ControlLabel bsClass="col-sm-11">{Object.keys(this.state.items).reduce((function(acc, val, i){return acc += parseFloat(this.state.items[val].price);}).bind(this), 0).toFixed(2).replace(".", ",")} €</ControlLabel>
           </FormGroup>
         </form>
       </div>

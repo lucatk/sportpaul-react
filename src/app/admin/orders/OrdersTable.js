@@ -52,6 +52,7 @@ class OrdersTable extends Component {
   }
   render() {
     var data = this.props.data;
+    console.log(data);
 
     var clubNames = [];
     data.forEach((row) => {
@@ -139,7 +140,7 @@ class OrdersTable extends Component {
                   <td>{row.id}</td>
                   <td>{row.firstname} {row.lastname}</td>
                   <td>{row.itemCount} Position{row.itemCount==1?'':'en'}</td>
-                  <td>{row.total.toFixed(2).replace(".", ",")} €</td>
+                  <td>{parseFloat(row.total).toFixed(2).replace(".", ",")} €</td>
                   <td>{Statics.OrderStatus[row.status]}</td>
                   <td className="buttons">
                     <ButtonToolbar>

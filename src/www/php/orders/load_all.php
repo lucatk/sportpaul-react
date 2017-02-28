@@ -22,6 +22,7 @@ foreach($results as $row) {
   $cresults = $db->fetchAssoc($cstmt, 1);
   $results[$i]["clubname"] = $cresults["name"];
 
+  array_walk($results[$i], function(&$s, $key){$s = utf8_encode($s);});
   $i++;
 }
 

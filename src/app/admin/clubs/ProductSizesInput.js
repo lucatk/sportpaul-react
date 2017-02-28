@@ -22,8 +22,8 @@ class ProductSizesInput extends Component {
   }
   onInputConfirm() {
     // this.setState({editing:false});
-    if(new Regex(Statics.SizeRegex).test(this.state.inputTemp)) {
-      var match, sizes = [], regex = new Regex(Statics.SizeRegex);
+    if(new RegExp(Statics.SizeRegex).test(this.state.inputTemp)) {
+      var match, sizes = [], regex = new RegExp(Statics.SizeRegex);
       while((match = regex.exec(this.state.inputTemp))) {
         sizes.push(match[1].trim());
       }
