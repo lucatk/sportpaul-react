@@ -40,7 +40,7 @@ class ImageUploadControl extends Component {
     return (
       <div>
         <input type="file" className="form-control" onChange={this.onChange} />
-        <img className="file-preview img-thumbnail" src={typeof this.state.image === "string" ? (this.props.searchPath?this.props.searchPath:'') + this.state.image : this.state.imagePreview} />
+        <img className="file-preview img-thumbnail" src={(typeof this.state.image === "string" && (this.state.image||"").length > 0) ? (this.props.searchPath?this.props.searchPath:'') + this.state.image : this.state.imagePreview} />
       </div>
     );
   }

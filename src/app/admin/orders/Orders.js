@@ -106,7 +106,7 @@ class Orders extends Component {
             </div>}
           {(!this.state.loadedOrders && !this.state.loading) && <p className="loading-error">Es ist ein Fehler aufgetreten. Bitte laden Sie die Seite neu!</p>}
 
-          <Button bsStyle="success"><Glyphicon glyph="save" /> Exportieren</Button>
+          <Button bsSize="small" bsStyle="success"><Glyphicon glyph="save" /> Exportieren</Button>
         </div>}
         {this.props.children}
       </div>

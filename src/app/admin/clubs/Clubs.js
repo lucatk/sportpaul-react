@@ -100,6 +100,8 @@ class Clubs extends Component {
               </Modal>
             </div>}
           {(!this.state.loadedClubs && !this.state.loading) && <p className="loading-error">Es ist ein Fehler aufgetreten. Bitte laden Sie die Seite neu!</p>}
+
+          <Link to="/admin/clubs/create"><Button bsSize="small" bsStyle="success"><Glyphicon glyph="plus" /> Hinzufügen...</Button></Link>
         </div>}
         {this.props.children}
       </div>

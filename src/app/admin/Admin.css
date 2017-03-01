@@ -104,7 +104,9 @@
 }
 
 .admin .container[data-page=ClubEditing] .form-group label[for=inputProducts],
-.admin .container[data-page=ClubEditing] .form-group table {
+.admin .container[data-page=ClubEditing] .form-group table,
+.admin .container[data-page=ClubCreation] .form-group label[for=inputProducts],
+.admin .container[data-page=ClubCreation] .form-group table {
   margin: 116px 0 10px;
 }
 
@@ -137,7 +139,9 @@
 .admin .container[data-page=Clubs] td.product-name,
 .admin .container[data-page=Clubs] td.buttons,
 .admin .container[data-page=ClubEditing] td.product-name,
-.admin .container[data-page=ClubEditing] td.pricegroups {
+.admin .container[data-page=ClubEditing] td.pricegroups
+.admin .container[data-page=ClubCreation] td.product-name,
+.admin .container[data-page=ClubCreation] td.pricegroups {
   width: 25%;
 }
 
@@ -172,23 +176,28 @@
   padding: 20px;
 }
 
-.admin .container[data-page=ClubEditing] td.pricegroups p {
+.admin .container[data-page=ClubEditing] td.pricegroups p,
+.admin .container[data-page=ClubCreation] td.pricegroups p {
   margin: 0;
 }
 
-.admin .container[data-page=ClubEditing] td.pricegroups div:not(:last-of-type) {
+.admin .container[data-page=ClubEditing] td.pricegroups div:not(:last-of-type),
+.admin .container[data-page=ClubCreation] td.pricegroups div:not(:last-of-type) {
   margin-bottom: 5px;
 }
 
-.admin .container[data-page=ClubEditing] td.pricegroups .sizes {
+.admin .container[data-page=ClubEditing] td.pricegroups .sizes,
+.admin .container[data-page=ClubCreation] td.pricegroups .sizes {
   font-weight: bold;
 }
 
-.admin .container[data-page=ClubEditing] td.pricegroups .price {
+.admin .container[data-page=ClubEditing] td.pricegroups .price,
+.admin .container[data-page=ClubCreation] td.pricegroups .price {
   margin-left: 10px;
 }
 
-.admin .container[data-page=ClubEditing] td.buttons button {
+.admin .container[data-page=ClubEditing] td.buttons button,
+.admin .container[data-page=ClubCreation] td.buttons button {
   display: block;
   margin: 3px auto;
 }
