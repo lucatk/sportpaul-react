@@ -64,7 +64,7 @@ class App extends Component {
 
   render() {
     this.cartTotal = 0;
-    cartContents.forEach((el) => this.cartTotal += el.price);
+    this.state.cartContents.forEach((el) => this.cartTotal += el.price);
     return (
       <div className="App">
         <TeamProducts productList={TeamSamples[this.state.selectedTeam] || []} onProductAddToCart={this.onProductAddToCart} />
