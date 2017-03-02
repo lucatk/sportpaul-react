@@ -11,15 +11,12 @@ class App extends Component {
   constructor(props) {
     super(props);
 
-    this.teams = ['FC Steinhofen', 'TSG Balingen'];
     var cartContents = [];
-    this.cartTotal = 0;
     if(localStorage && localStorage.getItem('lastUpdate') && Date.now() - localStorage.getItem('lastUpdate') < 86400000 && localStorage.cart && localStorage.cart.length > 0) {
       cartContents = JSON.parse(localStorage.getItem('cart'));
-      cartContents.forEach((el) => this.cartTotal += el.price);
     }
     this.state = {
-      selectedTeam: this.teams[0],
+      selectedTeam: "FC Steinhofen", // TODO: Vereins-Daten aus Datenbank
       cartContents: cartContents
     };
 
@@ -42,7 +39,6 @@ class App extends Component {
       size: input.selectedSize,
       // flocking: input.flocking
     };
-    this.cartTotal += product.price;
     newContents[this.state.cartContents.length] = cartProduct;
     this.setState({cartContents: newContents});
   }
@@ -67,14 +63,14 @@ class App extends Component {
   }
 
   render() {
+    this.cartTotal = 0;
+    cartContents.forEach((el) => this.cartTotal += el.price);
     return (
       <div className="App">
-        <p className="introduction-text">{/*Wähle dein Team aus: */}<TeamDropdown teams={this.teams} onChange={this.onTeamSelect} /></p>
-
         <TeamProducts productList={TeamSamples[this.state.selectedTeam] || []} onProductAddToCart={this.onProductAddToCart} />
-        <ProductCart contents={this.state.cartContents} total={this.cartTotal} onRemove={this.onProductRemoveFromCart} />
       </div>
     );
+    // <ProductCart contents={this.state.cartContents} total={this.cartTotal} onRemove={this.onProductRemoveFromCart} />
   }
 }
 
