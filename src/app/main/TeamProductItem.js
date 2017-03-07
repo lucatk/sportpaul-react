@@ -56,10 +56,14 @@ class TeamProductItem extends Component {
                   <div className="row">
                     <div className="col-xs-9 col-md-10">
                       <select className="product-item-size form-control input-sm">
-                        <option value="L">L</option>
-                        <option value="XL">XL</option>
-                        <option value="XXL">XXL</option>
-                        <option value="XXXL">XXXL</option>
+                        <option value="">Größe auswählen...</option>
+                        {this.props.product.pricegroups.map((pricegroup, i) =>
+                          <optgroup key={i} label="──────────">
+                            {pricegroup.sizes.map((size, ii) =>
+                              <option key={ii} value={size}>{size}</option>
+                            )}
+                          </optgroup>
+                        )}
                       </select>
                     </div>
                     <button className="btn btn-primary btn-sm cart-button col-xs-3 col-md-2" type="button"><span className="glyphicon glyphicon-shopping-cart"></span></button>
