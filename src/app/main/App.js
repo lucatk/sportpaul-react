@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
-import TeamDropdown from './TeamDropdown.js';
+import $ from 'jquery';
+
+import LoadingOverlay from '../utils/LoadingOverlay';
+import TeamList from './TeamList.js';
 import TeamProducts from './TeamProducts.js';
 import ProductCart from './ProductCart.js';
 
@@ -16,17 +19,53 @@ class App extends Component {
       cartContents = JSON.parse(localStorage.getItem('cart'));
     }
     this.state = {
-      selectedTeam: "FC Steinhofen", // TODO: Vereins-Daten aus Datenbank
-      cartContents: cartContents
+      teams: [],
+      selectedTeam: -1,
+      cartContents: cartContents,
+      loadedClubs: false,
+      loading: true,
     };
 
-    this.onTeamSelect = this.onTeamSelect.bind(this);
+    this.loadClubs();
+
+    this.onTeamChange = this.onTeamChange.bind(this);
     this.onProductAddToCart = this.onProductAddToCart.bind(this);
     this.onProductRemoveFromCart = this.onProductRemoveFromCart.bind(this);
   }
 
-  onTeamSelect(teamName) {
-    this.setState({selectedTeam: teamName});
+  loadClubs() {
+    this.setState({loading: true});
+    $.get({
+      url: 'php/clubs/load_all.php',
+      data: {
+        load_products: true
+      },
+      success: function(data) {
+        var teams = JSON.parse(data);
+        var parsedTeams = [];
+        teams.forEach((team) => {
+          var parsedTeam = team;
+          var parsedProducts = [];
+          team.products.forEach((product) => {
+            var parsedProduct = product;
+            parsedProduct.pricegroups = JSON.parse(product.pricegroups);
+            parsedProducts.push(parsedProduct);
+          });
+          parsedTeam.products = parsedProducts;
+          parsedTeams.push(parsedTeam);
+        });
+
+        this.setState({
+          teams: parsedTeams,
+          loadedClubs: true,
+          loading: false
+        });
+      }.bind(this)
+    });
+  }
+
+  onTeamChange(newTeam) {
+    this.setState({selectedTeam: newTeam});
   }
 
   onProductAddToCart(product, input) {
@@ -62,15 +101,42 @@ class App extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps) {
+    this.loadClubs();
+  }
+
   render() {
     this.cartTotal = 0;
     this.state.cartContents.forEach((el) => this.cartTotal += el.price);
     return (
       <div className="App">
-        <TeamProducts productList={TeamSamples[this.state.selectedTeam] || []} onProductAddToCart={this.onProductAddToCart} />
+        <LoadingOverlay show={this.state.loading} />
+
+        {this.state.loadedClubs &&
+          <div>
+            <div className="col-xs-12 col-sm-3 col-md-2 col-xl-3">
+              <TeamList teams={this.state.teams} selectedTeam={this.state.selectedTeam} onChange={this.onTeamChange} />
+            </div>
+            <div className="col-xs-12 col-sm-9 col-md-10 col-xl-9">
+              <TeamProducts productList={this.getTeamWithId(this.state.selectedTeam).products || []} onProductAddToCart={this.onProductAddToCart} />
+            </div>
+          </div>
+        }
+        {(!this.state.loadedClubs && !this.state.loading) && <p className="loading-error">Es ist ein Fehler aufgetreten. Bitte laden Sie die Seite neu!</p>}
       </div>
     );
     // <ProductCart contents={this.state.cartContents} total={this.cartTotal} onRemove={this.onProductRemoveFromCart} />
+  }
+
+  getTeamWithId(id) {
+    var found = [];
+    this.state.teams.forEach((team) => {
+      if(team.id == id) {
+        found = team;
+      }
+    });
+    console.log(found);
+    return found;
   }
 }
 

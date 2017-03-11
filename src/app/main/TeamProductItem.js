@@ -54,8 +54,8 @@ class TeamProductItem extends Component {
                 </li>
                 <li className="product-item-action list-group-item">
                   <div className="row">
-                    <div className="col-xs-9 col-md-10">
-                      <select className="product-item-size form-control input-sm">
+                    <div className={this.state.selectedSize.length < 1 ? "col-xs-9 col-md-10" : "col-xs-7"}>
+                      <select className="product-item-size form-control input-sm" value={this.state.selectedSize} onChange={this.handleSizeChange}>
                         <option value="">Größe auswählen...</option>
                         {this.props.product.pricegroups.map((pricegroup, i) =>
                           <optgroup key={i} label="──────────">
@@ -66,7 +66,7 @@ class TeamProductItem extends Component {
                         )}
                       </select>
                     </div>
-                    <button className="btn btn-primary btn-sm cart-button col-xs-3 col-md-2" type="button"><span className="glyphicon glyphicon-shopping-cart"></span></button>
+                    <button className={"btn btn-primary btn-sm cart-button " + (this.state.selectedSize.length < 1 ? "col-xs-3 col-md-2" : "col-xs-5")} type="button"><span className="glyphicon glyphicon-shopping-cart"></span></button>
                   </div>
                 </li>
               </ul>
