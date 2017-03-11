@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 
 import LoadingOverlay from '../utils/LoadingOverlay';
-import TeamList from './TeamList.js';
-import TeamProducts from './TeamProducts.js';
+import ClubList from './ClubList.js';
+import ClubProducts from './ClubProducts.js';
 import ProductCart from './ProductCart.js';
 
-import TeamSamples from '../utils/teams.js';
 import '../utils/NavLink.js';
 import './App.css';
 
@@ -19,8 +18,8 @@ class App extends Component {
       cartContents = JSON.parse(localStorage.getItem('cart'));
     }
     this.state = {
-      teams: [],
-      selectedTeam: -1,
+      clubs: [],
+      selectedClub: -1,
       cartContents: cartContents,
       loadedClubs: false,
       loading: true,
@@ -28,7 +27,7 @@ class App extends Component {
 
     this.loadClubs();
 
-    this.onTeamChange = this.onTeamChange.bind(this);
+    this.onClubChange = this.onClubChange.bind(this);
     this.onProductAddToCart = this.onProductAddToCart.bind(this);
     this.onProductRemoveFromCart = this.onProductRemoveFromCart.bind(this);
   }
@@ -41,22 +40,22 @@ class App extends Component {
         load_products: true
       },
       success: function(data) {
-        var teams = JSON.parse(data);
-        var parsedTeams = [];
-        teams.forEach((team) => {
-          var parsedTeam = team;
+        var clubs = JSON.parse(data);
+        var parsedClubs = [];
+        clubs.forEach((club) => {
+          var parsedClub = club;
           var parsedProducts = [];
-          team.products.forEach((product) => {
+          club.products.forEach((product) => {
             var parsedProduct = product;
             parsedProduct.pricegroups = JSON.parse(product.pricegroups);
             parsedProducts.push(parsedProduct);
           });
-          parsedTeam.products = parsedProducts;
-          parsedTeams.push(parsedTeam);
+          parsedClub.products = parsedProducts;
+          parsedClubs.push(parsedClub);
         });
 
         this.setState({
-          teams: parsedTeams,
+          clubs: parsedClubs,
           loadedClubs: true,
           loading: false
         });
@@ -64,8 +63,8 @@ class App extends Component {
     });
   }
 
-  onTeamChange(newTeam) {
-    this.setState({selectedTeam: newTeam});
+  onClubChange(newClub) {
+    this.setState({selectedClub: newClub});
   }
 
   onProductAddToCart(product, input) {
@@ -91,11 +90,11 @@ class App extends Component {
   componentWillUpdate(nextProps, nextState) {
     if(!localStorage || !nextState) return;
     if(nextState.cartContents && nextState.cartContents.length > 0) {
-      localStorage.setItem('selectedTeam', nextState.selectedTeam);
+      localStorage.setItem('selectedClub', nextState.selectedClub);
       localStorage.setItem('cart', JSON.stringify(nextState.cartContents));
       localStorage.setItem('lastUpdate', Date.now());
-    } else if(nextState.selectedTeam !== localStorage.getItem('selectedTeam')) {
-      localStorage.setItem('selectedTeam', nextState.selectedTeam);
+    } else if(nextState.selectedClub !== localStorage.getItem('selectedClub')) {
+      localStorage.setItem('selectedClub', nextState.selectedClub);
       localStorage.setItem('cart', JSON.stringify([]));
       localStorage.setItem('lastUpdate', Date.now());
     }
@@ -115,10 +114,10 @@ class App extends Component {
         {this.state.loadedClubs &&
           <div>
             <div className="col-xs-12 col-sm-3 col-md-2 col-xl-3">
-              <TeamList teams={this.state.teams} selectedTeam={this.state.selectedTeam} onChange={this.onTeamChange} />
+              <ClubList clubs={this.state.clubs} selectedClub={this.state.selectedClub} onChange={this.onClubChange} />
             </div>
             <div className="col-xs-12 col-sm-9 col-md-10 col-xl-9">
-              <TeamProducts productList={this.getTeamWithId(this.state.selectedTeam).products || []} onProductAddToCart={this.onProductAddToCart} />
+              <ClubProducts productList={this.getClubWithId(this.state.selectedClub).products || []} onProductAddToCart={this.onProductAddToCart} />
             </div>
           </div>
         }
@@ -128,14 +127,13 @@ class App extends Component {
     // <ProductCart contents={this.state.cartContents} total={this.cartTotal} onRemove={this.onProductRemoveFromCart} />
   }
 
-  getTeamWithId(id) {
+  getClubWithId(id) {
     var found = [];
-    this.state.teams.forEach((team) => {
-      if(team.id == id) {
-        found = team;
+    this.state.clubs.forEach((club) => {
+      if(club.id == id) {
+        found = club;
       }
     });
-    console.log(found);
     return found;
   }
 }

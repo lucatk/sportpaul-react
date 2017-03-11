@@ -4,7 +4,7 @@ import {
   Nav, NavItem
 } from 'react-bootstrap';
 
-class TeamList extends Component {
+class ClubList extends Component {
   constructor(props) {
     super(props);
 
@@ -17,11 +17,11 @@ class TeamList extends Component {
 
   render() {
     return (
-      <div className="team-list">
-        <Nav bsStyle="pills" stacked activeKey={this.props.selectedTeam || -1} onSelect={this.handleChange}>
+      <div className="club-list">
+        <Nav bsStyle="pills" stacked activeKey={this.props.selectedClub || -1} onSelect={this.handleChange}>
           <NavItem eventKey={-1}>Home</NavItem>
-          {this.props.teams.map((team, i) =>
-            <NavItem key={i} eventKey={parseInt(team.id)}>{team.name}</NavItem>
+          {this.props.clubs.map((club, i) =>
+            <NavItem key={i} eventKey={parseInt(club.id)}>{club.name}</NavItem>
           )}
         </Nav>
       </div>
@@ -29,10 +29,10 @@ class TeamList extends Component {
   }
 }
 
-TeamList.propTypes = {
-  selectedTeam: React.PropTypes.number,
-  teams: React.PropTypes.array.isRequired,
+ClubList.propTypes = {
+  selectedClub: React.PropTypes.number,
+  clubs: React.PropTypes.array.isRequired,
   onChange: React.PropTypes.func.isRequired
 };
 
-export default TeamList;
+export default ClubList;

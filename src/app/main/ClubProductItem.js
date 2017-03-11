@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-class TeamProductItem extends Component {
+class ClubProductItem extends Component {
   constructor(props) {
     super(props);
 
@@ -78,7 +78,7 @@ class TeamProductItem extends Component {
   }
 }
 
-TeamProductItem.propTypes = {
+ClubProductItem.propTypes = {
   product: React.PropTypes.shape({
     id: React.PropTypes.string,
     name: React.PropTypes.string.isRequired,
@@ -93,4 +93,4 @@ TeamProductItem.propTypes = {
   onAdd: React.PropTypes.func
 };
 
-export default TeamProductItem;
+export default ClubProductItem;

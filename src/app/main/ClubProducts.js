@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-import TeamProductItem from './TeamProductItem.js';
+import ClubProductItem from './ClubProductItem.js';
 
-class TeamProducts extends Component {
+class ClubProducts extends Component {
   render() {
     return (
       <div className="product-list">
         {this.props.productList && this.props.productList.length > 0
           ? this.props.productList.map((product) =>
-              <TeamProductItem
+              <ClubProductItem
                 key={product.id}
                 product={product}
                 onAdd={this.props.onProductAddToCart} />
@@ -18,4 +18,4 @@ class TeamProducts extends Component {
   }
 }
 
-export default TeamProducts;
+export default ClubProducts;
