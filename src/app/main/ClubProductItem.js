@@ -12,6 +12,7 @@ class ClubProductItem extends Component {
     this.handleSizeChange = this.handleSizeChange.bind(this);
     this.handleFlockingChange = this.handleFlockingChange.bind(this);
     this.handleAddClick = this.handleAddClick.bind(this);
+    this.handlePreviewClick = this.handlePreviewClick.bind(this);
   }
 
   handleSizeChange(event) {
@@ -27,6 +28,10 @@ class ClubProductItem extends Component {
     this.setState({flocking: ''});
   }
 
+  handlePreviewClick(event) {
+    this.props.onPreview(this.props.product);
+  }
+
   render() {
     return (
       <div className="product-item">
@@ -34,7 +39,7 @@ class ClubProductItem extends Component {
           <div className="panel-body">
             <div className="left-column col-xs-4">
               <div className="img-container">
-                <img className="product-item-image" src="http://placehold.it/200x300" role="presentation" />
+                <img className="product-item-image" src={"productpics/" + this.props.product.picture} role="presentation" onClick={this.handlePreviewClick} />
               </div>
             </div>
             <div className="right-column col-xs-8">

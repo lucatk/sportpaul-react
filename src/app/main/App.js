@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import $ from 'jquery';
 
 import LoadingOverlay from '../utils/LoadingOverlay';
+import ImageLightbox from '../utils/ImageLightbox';
 import ClubList from './ClubList.js';
 import ClubProducts from './ClubProducts.js';
 import ProductCart from './ProductCart.js';
@@ -21,8 +22,9 @@ class App extends Component {
       clubs: [],
       selectedClub: -1,
       cartContents: cartContents,
+      previewProduct: null,
       loadedClubs: false,
-      loading: true,
+      loading: true
     };
 
     this.loadClubs();
@@ -30,6 +32,8 @@ class App extends Component {
     this.onClubChange = this.onClubChange.bind(this);
     this.onProductAddToCart = this.onProductAddToCart.bind(this);
     this.onProductRemoveFromCart = this.onProductRemoveFromCart.bind(this);
+    this.onProductPreviewRequest = this.onProductPreviewRequest.bind(this);
+    this.onCloseProductPreview = this.onCloseProductPreview.bind(this);
   }
 
   loadClubs() {
@@ -87,6 +91,14 @@ class App extends Component {
     this.setState({cartContents: newContents});
   }
 
+  onProductPreviewRequest(product) {
+    this.setState({previewProduct: product});
+  }
+
+  onCloseProductPreview() {
+    this.setState({previewProduct: null});
+  }
+
   componentWillUpdate(nextProps, nextState) {
     if(!localStorage || !nextState) return;
     if(nextState.cartContents && nextState.cartContents.length > 0) {
@@ -110,14 +122,15 @@ class App extends Component {
     return (
       <div className="App">
         <LoadingOverlay show={this.state.loading} />
+        {this.state.previewProduct && <ImageLightbox image={"productpics/" + this.state.previewProduct.picture} onClose={this.onCloseProductPreview} />}
 
         {this.state.loadedClubs &&
           <div>
-            <div className="col-xs-12 col-sm-3 col-md-2 col-xl-3">
+            <div className="col-xs-12 col-sm-3 col-md-2 col-xxl-3">
               <ClubList clubs={this.state.clubs} selectedClub={this.state.selectedClub} onChange={this.onClubChange} />
             </div>
-            <div className="col-xs-12 col-sm-9 col-md-10 col-xl-9">
-              <ClubProducts productList={this.getClubWithId(this.state.selectedClub).products || []} onProductAddToCart={this.onProductAddToCart} />
+            <div className="col-xs-12 col-sm-9 col-md-10 col-xxl-9">
+              <ClubProducts productList={this.getClubWithId(this.state.selectedClub).products || []} onProductAddToCart={this.onProductAddToCart} onProductPreviewRequest={this.onProductPreviewRequest} />
             </div>
           </div>
         }

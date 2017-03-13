@@ -8,27 +8,6 @@
   position: relative;
 }
 
-.admin .container .loading-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 99;
-  background-color: rgba(255,255,255,0.9);
-}
-
-.admin .container .loading-overlay span {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%,-50%);
-  font-size: 5em;
-  margin-left: -0.5em;
-  margin-top: -0.5em;
-  color: #555;
-}
-
 .admin .container td {
   vertical-align: middle;
 }

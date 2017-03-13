@@ -62,6 +62,7 @@
   margin: 5px auto;
   max-width: 100%;
   max-height: 100%;
+  cursor: zoom-in;
 }
 
 .product-list .product-item .right-column {

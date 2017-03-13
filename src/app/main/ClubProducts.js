@@ -10,7 +10,8 @@ class ClubProducts extends Component {
               <ClubProductItem
                 key={product.id}
                 product={product}
-                onAdd={this.props.onProductAddToCart} />
+                onAdd={this.props.onProductAddToCart}
+                onPreview={this.props.onProductPreviewRequest} />
             )
           : <p>Keine Produkte verfügbar</p>}
       </div>
