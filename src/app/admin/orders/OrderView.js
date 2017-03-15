@@ -121,6 +121,7 @@ class OrderView extends Component {
     });
   }
   render() {
+    document.title = "ID: " + this.state.clubid + "/" + this.state.id + " | Bestellung-Details | Sport-Paul Vereinsbekleidung";
     return (
       <div className="container" data-page="OrderView">
         <LoadingOverlay show={this.state.loading} />

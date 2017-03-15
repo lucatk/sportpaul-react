@@ -14,6 +14,8 @@ class App extends Component {
   constructor(props) {
     super(props);
 
+    document.title = "Home | Sport-Paul Vereinsbekleidung";
+
     var cartContents = [];
     if(localStorage && localStorage.getItem('lastUpdate') && Date.now() - localStorage.getItem('lastUpdate') < 86400000 && localStorage.cart && localStorage.cart.length > 0) {
       cartContents = JSON.parse(localStorage.getItem('cart'));
@@ -117,6 +119,12 @@ class App extends Component {
   }
 
   render() {
+    if(this.state.selectedClub > -1) {
+      document.title = this.getClubWithId(this.state.selectedClub).name + " | Sport-Paul Vereinsbekleidung";
+    } else {
+      document.title = "Home | Sport-Paul Vereinsbekleidung";
+    }
+
     this.cartTotal = 0;
     this.state.cartContents.forEach((el) => this.cartTotal += el.price);
     return (
@@ -127,7 +135,7 @@ class App extends Component {
         {this.state.loadedClubs &&
           <div>
             <div className="col-xs-12 col-sm-3 col-md-2 col-xxl-3">
-              <ClubList clubs={this.state.clubs} selectedClub={this.state.selectedClub} onChange={this.onClubChange} />
+              <ClubList clubs={this.state.clubs} selectedClub={this.state.selectedClub} showCart={this.state.cartContents.length > 0} onChange={this.onClubChange} />
             </div>
             <div className="col-xs-12 col-sm-9 col-md-10 col-xxl-9">
               <ClubProducts productList={this.getClubWithId(this.state.selectedClub).products || []} onProductAddToCart={this.onProductAddToCart} onProductPreviewRequest={this.onProductPreviewRequest} />

@@ -4,7 +4,7 @@
   * Zusatzinfo/Beschreibung
   * ✓ Artikelnr
   * ✓ versch. Größen mit Preis
-  * Vorschaubild Vergrößerung anzeigen
+  * ✓ Vorschaubild Vergrößerung anzeigen
 * Beflockung-Info bei Bestellung
 * Kundeninfo:
   * Name

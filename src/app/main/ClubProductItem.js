@@ -10,7 +10,6 @@ class ClubProductItem extends Component {
     };
 
     this.handleSizeChange = this.handleSizeChange.bind(this);
-    this.handleFlockingChange = this.handleFlockingChange.bind(this);
     this.handleAddClick = this.handleAddClick.bind(this);
     this.handlePreviewClick = this.handlePreviewClick.bind(this);
   }
@@ -19,13 +18,9 @@ class ClubProductItem extends Component {
     this.setState({selectedSize: event.target.value});
   }
 
-  handleFlockingChange(event) {
-    this.setState({flocking: event.target.value});
-  }
-
   handleAddClick(event) {
     this.props.onAdd(this.props.product, this.state);
-    this.setState({flocking: ''});
+    this.setState({selectedSize: ''});
   }
 
   handlePreviewClick(event) {
@@ -59,9 +54,9 @@ class ClubProductItem extends Component {
                 </li>
                 <li className="product-item-action list-group-item">
                   <div className="row">
-                    <div className={this.state.selectedSize.length < 1 ? "col-xs-9 col-md-10" : "col-xs-7"}>
+                    <div className="col-xs-8">
                       <select className="product-item-size form-control input-sm" value={this.state.selectedSize} onChange={this.handleSizeChange}>
-                        <option value="">Größe auswählen...</option>
+                        <option value="">Größe...</option>
                         {this.props.product.pricegroups.map((pricegroup, i) =>
                           <optgroup key={i} label="──────────">
                             {pricegroup.sizes.map((size, ii) =>
@@ -71,7 +66,7 @@ class ClubProductItem extends Component {
                         )}
                       </select>
                     </div>
-                    <button className={"btn btn-primary btn-sm cart-button " + (this.state.selectedSize.length < 1 ? "col-xs-3 col-md-2" : "col-xs-5")} type="button"><span className="glyphicon glyphicon-shopping-cart"></span></button>
+                    <button disabled={this.state.selectedSize.length < 1} className="btn btn-primary btn-sm cart-button col-xs-4" type="button" onClick={this.handleAddClick}><span className="glyphicon glyphicon-shopping-cart"></span></button>
                   </div>
                 </li>
               </ul>

@@ -14,6 +14,7 @@ import ClubsTable from './ClubsTable';
 class Clubs extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       clubs: [],
       showRemoveModal: false,
@@ -77,6 +78,7 @@ class Clubs extends Component {
     }
   }
   render() {
+    document.title = "Vereine | Sport-Paul Vereinsbekleidung";
     return (
       <div>
         {!this.props.children && <div className="container" data-page="Clubs">

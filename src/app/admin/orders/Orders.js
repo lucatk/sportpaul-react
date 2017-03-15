@@ -82,6 +82,7 @@ class Orders extends Component {
     }
   }
   render() {
+    document.title = "Bestellungen | Sport-Paul Vereinsbekleidung";
     return (
       <div>
         {!this.props.children && <div className="container" data-page="Orders">
