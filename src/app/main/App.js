@@ -119,8 +119,10 @@ class App extends Component {
   }
 
   render() {
-    if(this.state.selectedClub > -1) {
+    if(this.state.selectedClub >= 0) {
       document.title = this.getClubWithId(this.state.selectedClub).name + " | Sport-Paul Vereinsbekleidung";
+    } else if(this.state.selectedClub === -2) {
+      document.title = "Warenkorb | Sport-Paul Vereinsbekleidung";
     } else {
       document.title = "Home | Sport-Paul Vereinsbekleidung";
     }
@@ -138,7 +140,13 @@ class App extends Component {
               <ClubList clubs={this.state.clubs} selectedClub={this.state.selectedClub} showCart={this.state.cartContents.length > 0} onChange={this.onClubChange} />
             </div>
             <div className="col-xs-12 col-sm-9 col-md-10 col-xxl-9">
-              <ClubProducts productList={this.getClubWithId(this.state.selectedClub).products || []} onProductAddToCart={this.onProductAddToCart} onProductPreviewRequest={this.onProductPreviewRequest} />
+              {this.state.selectedClub >= 0 ? (
+                <ClubProducts productList={this.getClubWithId(this.state.selectedClub).products || []} onProductAddToCart={this.onProductAddToCart} onProductPreviewRequest={this.onProductPreviewRequest} />
+              ) : this.state.selectedClub === -2 ? (
+                <p>Warenkorb</p>
+              ) : (
+                <p>Home</p>
+              )}
             </div>
           </div>
         }
