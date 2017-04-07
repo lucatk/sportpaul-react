@@ -1,51 +1,25 @@
 import React, { Component } from 'react';
-import ProductCartItem from './ProductCartItem.js';
 import { Link } from 'react-router';
+import {
+  Button,
+  Glyphicon
+} from 'react-bootstrap';
+
+import ProductCartTable from './ProductCartTable';
 
 class ProductCart extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      windowScrollPosition: 0
-    };
-  }
-
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll.bind(this));
-  }
-
-  componentWillUnmount() {
-    window.addEventListener('scroll', this.handleScroll.bind(this));
-  }
-
-  handleScroll() {
-    this.setState({windowScrollPosition: window.scrollY});
   }
 
   render() {
     return (
-      <div className={"product-cart" + (this.state.windowScrollPosition >= 45 ? " scrolled" : "")}>
-        <p className="product-cart-heading">Ihr Warenkorb</p>
+      <div className="product-cart">
+        <h1 className="page-header">Ihr Warenkorb <small>/ Persönliche Details / Bestellung abschließen</small></h1>
         <div className="cart-contents">
-          {this.props.contents && this.props.contents.length > 0
-            ? this.props.contents.map((product, index) =>
-                <ProductCartItem
-                  key={index}
-                  reactKey={index}
-                  id={product.id}
-                  name={product.name}
-                  size={product.size}
-                  price={product.price}
-                  flockingPrice={product.flockingPrice}
-                  onRemove={this.props.onRemove} />
-              ) /*flocking=product.flocking*/
-            : <p>Ihr Warenkorb ist leer!</p>}
+          <ProductCartTable data={this.props.contents} onRemove={this.props.onProductRemoveFromCart} onPreview={this.props.onProductPreviewRequest} />
         </div>
-        {this.props.contents && this.props.contents.length > 0 &&
-        <div>
-          <p className="product-cart-total">Gesamt: {this.props.total.toFixed(2)} €</p>
-          <Link to="/checkout"><button className="cart-continue-button" type="button" onClick={this.handleCartClick}>Weiter</button></Link>
-        </div>}
+        <Button className="checkout-button" bsStyle="primary" onClick={this.props.onContinue}>Weiter <Glyphicon glyph="menu-right" /></Button>
       </div>
     );
   }

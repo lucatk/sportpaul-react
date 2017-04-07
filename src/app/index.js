@@ -2,6 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, hashHistory } from 'react-router';
 
+import '../www/css/bootstrap.min.css';
+import '../www/css/bootstrap-theme.min.css';
+import './index.css';
+
 import App from './main/App';
 
 import Checkout from './checkout/Checkout';
@@ -16,8 +20,6 @@ import Orders from './admin/orders/Orders';
 import OrderView from './admin/orders/OrderView';
 
 import Settings from './admin/settings/Settings';
-
-import './index.css';
 
 ReactDOM.render(
   <Router history={hashHistory}>

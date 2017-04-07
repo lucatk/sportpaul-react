@@ -6,8 +6,6 @@
     <link rel="shortcut icon" href="favicon.ico">
     <title>Sport-Paul Vereinsbekleidung</title>
     <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/bootstrap-theme.min.css">
   </head>
   <body>
     <div id="root"></div>

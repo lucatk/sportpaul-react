@@ -6,11 +6,11 @@
   * ✓ versch. Größen mit Preis
   * ✓ Vorschaubild Vergrößerung anzeigen
 * Beflockung-Info bei Bestellung
-* Kundeninfo:
-  * Name
-  * Adresse
-  * Email
-  * Telefonnr
+* ✓ Kundeninfo:
+  * ✓ Name
+  * ✓ Adresse
+  * ✓ Email
+  * ✓ Telefonnr
 * Rechnungsnummer
   * mit Jahr
   * Filialnummer

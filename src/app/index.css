@@ -10,6 +10,20 @@ body {
   font-family: 'Open Sans', sans-serif;
 }
 
+td {
+  vertical-align: middle !important;
+}
+
+td button span.glyphicon {
+  top: 1.3px !important;
+}
+
+.page-header {
+  font-size: 26px;
+  margin: 0 0 25px;
+  position: relative;
+}
+
 .loading-overlay {
   position: absolute;
   top: 0;

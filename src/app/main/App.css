@@ -3,6 +3,10 @@
   padding: 25px 40px;
 }
 
+.modal-body label[for='flocking'] {
+  font-weight: normal;
+}
+
 .club-list li a {
   padding: 0 0 0 12px;
 }
@@ -26,6 +30,11 @@
 
 .club-list li a .glyphicon {
   margin-left: 3px;
+}
+
+.club-list li a .badge {
+  background: #337ab7;
+  margin: 11px;
 }
 
 .club-list li a p {
@@ -200,141 +209,93 @@
   padding-top: 18px;
 }*/
 
-.product-cart {
-  width: 22%;
-  float: right;
-  background: #ddd;
-  border-top: 2px solid #83a1ec;
-  position: fixed;
-  top: 95px;
-  right: 40px;
-  max-height: calc(100vh - 125px);
-  transition: all .5s cubic-bezier(0.68, -0.65, 0.265, 1.65);
+.product-cart,
+.order-process {
+  width: 100%;
 }
 
-.product-cart.scrolled {
-  top: 50px;
-  max-height: calc(100vh - 45px);
+.product-cart .cart-contents,
+.order-process form,
+.order-summary .row {
+  margin: 25px auto;
+  width: 95%;
 }
 
-.product-cart.scrolled .cart-contents {
-  max-height: calc(100vh - 190px);
+.product-cart .cart-contents .product-thumbnail {
+  display: inline-block;
+  max-height: 48px;
+  /*image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+  -ms-interpolation-mode: nearest-neighbor;*/
+  margin-right: 10px;
+  cursor: zoom-in;
 }
 
-.product-cart:hover .cart-contents .product-cart-item .product-item-remove {
-  opacity: 1;
+.product-cart .cart-contents td.flocking {
+  color: #76bd23;
 }
 
-.product-cart-heading {
-  margin: 2px 8px;
-  font-weight: 600;
-  font-size: .93em;
-  text-transform: uppercase;
+.product-cart .cart-contents p {
+  margin: 0;
 }
 
-.product-cart-total {
-  font-size: .88em;
+.product-cart .cart-contents p.flocking-price {
+  color: #76bd23;
+}
+
+.product-cart .cart-contents tfoot {
   font-weight: bold;
-  margin: 0;
-  position: absolute;
-  right: 10px;
-  bottom: 45px;
 }
 
-.product-cart a {
-  text-decoration: none;
+.product-cart .checkout-button,
+.order-process button {
+  margin: 0 25px;
 }
 
-.product-cart .cart-continue-button {
-  display: block;
-  text-transform: uppercase;
+.order-process form {
+  padding: 0 8px;
+  margin-bottom: 15px;
+}
+
+.order-process form .row div .row div {
+  padding: 0 4px;
+}
+
+.order-process form .form-group {
+  margin-bottom: 10px;
+}
+
+.product-cart button span,
+.order-process button span {
+  font-size: 0.9em;
+}
+
+.order-summary .row > div {
+  padding: 0;
+}
+
+.order-summary h2 {
+  font-size: 14px;
+  font-weight: bold;
   margin-top: 5px;
-  color: #fff;
-  background-color: #4F79E3;
-  border-color: #4F79E3;
-  line-height: 1.25;
-  text-align: center;
-  white-space: nowrap;
-  vertical-align: middle;
-  cursor: pointer;
-  user-select: none;
-  border: 1px solid transparent;
-  padding: 5px 10px;
-  font-size: 13px;
-  font-weight: 400;
-  border-radius: 3px;
-  width: calc(100% - 20px);
-  margin: 10px;
-  text-decoration: none;
 }
 
-.product-cart .cart-contents {
-  margin: 0 0 25px;
-  max-height: calc(100vh - 270px);
-  overflow-y: scroll;
-  transition: all .5s cubic-bezier(0.68, -0.65, 0.265, 1.65);
+.order-summary .customer-data p {
+  margin: 3px 0;
 }
 
-.cart-contents .product-cart-item {
-  margin: 15px;
-  font-size: .98em;
-  overflow: hidden;
+.order-summary button {
+  margin: 0 25px;
 }
 
-.cart-contents .product-cart-item:not(:last-child) {
-  margin-bottom: 0;
+.order-summary table {
+  margin: 3px 0 5px;
 }
 
-.cart-contents .product-cart-item .product-item-image {
-  display: inline-block;
-  width: 15%;
-}
-
-.cart-contents .product-cart-item .info {
-  display: inline-block;
-  width: calc(85% - 8px);
-  float: right;
-  position: relative;
-}
-
-.cart-contents .product-cart-item .product-item-name {
-  margin: 0;
-}
-
-.cart-contents .product-cart-item .product-item-price {
-  position: absolute;
-  right: 0;
-  top: 0;
-  margin: 0;
-  font-size: .88em;
-}
-
-.cart-contents .product-cart-item .product-item-size,
-.cart-contents .product-cart-item .product-item-flocking {
-  margin: 2px 0 0;
-  font-size: .86em;
-}
-
-.cart-contents .product-cart-item .product-item-remove {
-  position: absolute;
-  right: 0;
-  top: 19px;
-  margin: 0;
-  font-size: .88em;
-  color: #4F79E3;
-  text-decoration: none;
-  opacity: 0;
-  transition: opacity .25s ease-in;
-}
-
-.cart-contents .product-cart-item .product-item-remove:hover {
-  color: #83a1ec;
-}
-
-.cart-contents > p {
-  font-size: .88em;
-  text-align: center;
-  margin: 20px 0 0;
+.order-summary table tfoot td {
+  font-weight: bold;
 }
 
 /*@media(min-width: 970px) {
