@@ -337,6 +337,7 @@ class ClubEditing extends Component {
     });
   }
   render() {
+    document.title = "ID: " + this.state.id + " | Verein bearbeiten | Sport-Paul Vereinsbekleidung";
     if((this.state.loadedInfo && this.state.loadedProducts) || this.state.loading) {
       return (
         <div className="container" data-page="ClubEditing">

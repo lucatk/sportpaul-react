@@ -8,9 +8,10 @@ import './Admin.css';
 class Admin extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props.children);
   }
+
   render() {
+    document.title = "Admin-Home | Sport-Paul Vereinsbekleidung";
     return (
       <div className="admin">
         <Navbar>

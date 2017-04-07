@@ -23,11 +23,16 @@ var config = {
       {
         test: /\.css$/,
         loader: 'style-loader!css-loader'
+      },
+      {
+          test: /\.(eot|svg|ttf|woff|woff2)$/,
+          loader: 'file?name=fonts/[name].[ext]'
       }
     ]
   },
   resolve: {
     extensions: ['', '.js', '.jsx'],
+    unsafeCache: true
   },
 };
 

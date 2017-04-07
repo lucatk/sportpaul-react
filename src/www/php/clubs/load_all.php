@@ -14,7 +14,12 @@ foreach($results as $row) {
   $cstmt = $db->execute("SELECT id FROM products WHERE clubid=:clubid", ["clubid" => $row['id']]);
   $results[$i]["productCount"] = $cstmt->rowCount();
 
-  array_walk($results[$i], function(&$s, $key){$s = utf8_encode($s);});
+  if(isset($_GET["load_products"]) && $_GET["load_products"] === "true") {
+    $cstmt = $db->execute("SELECT * FROM products WHERE clubid=:clubid", ["clubid" => $row['id']]);
+    $results[$i]["products"] = $db->fetchAll($cstmt);
+  }
+
+  array_walk($results[$i], function(&$s, $key){if(gettype($s) === "string") {$s = utf8_encode($s);}});
   $i++;
 }
 

@@ -5,6 +5,7 @@ class Settings extends Component {
     super(props);
   }
   render() {
+    document.title = "Admin-Einstellungen | Sport-Paul Vereinsbekleidung";
     return (
       <div></div>
     );

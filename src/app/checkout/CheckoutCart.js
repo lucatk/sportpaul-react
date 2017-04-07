@@ -14,7 +14,7 @@ class CheckoutCart extends Component {
       });
 
       this.state = {
-        team: localStorage.getItem('selectedTeam'),
+        club: localStorage.getItem('selectedClub'),
         cartContents: cart,
         cartValues: cartValues
       };

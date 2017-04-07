@@ -70,6 +70,7 @@ class ClubCreation extends Component {
     });
   }
   render() {
+    document.title = "Verein hinzufügen | Sport-Paul Vereinsbekleidung";
     return (
       <div className="container" data-page="ClubCreation">
         <LoadingOverlay show={this.state.loading} />

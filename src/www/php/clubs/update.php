@@ -6,11 +6,12 @@ $db = new Database();
 if(isset($_FILES["logodata"])) {
   $stmt = $db->execute("SELECT logodata FROM clubs WHERE id=:clubid", ["clubid" => $_POST["id"]]);
   $results = $db->fetchAssoc($stmt, 1);
+
   if($results["logodata"] !== null && strlen($results["logodata"]) > 0) {
-    unlink("../../clublogos/" . $results["logodata"]);
+    @unlink("../../clublogos/" . $results["logodata"]);
   }
 
-  $fileName = time() . "-" . $_FILES["logodata"]["name"];
+  $fileName = iconv("utf-8", "ascii//TRANSLIT", time() . "-" . $_FILES["logodata"]["name"]);
   if(move_uploaded_file($_FILES["logodata"]["tmp_name"], "../../clublogos/" . $fileName)) {
     $image = new Imagick();
     $image->readImage("../../clublogos/" . $fileName);
