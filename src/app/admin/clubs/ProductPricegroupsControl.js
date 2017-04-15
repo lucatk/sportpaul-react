@@ -54,16 +54,16 @@ class ProductPricegroupsControl extends Component {
       <div>
         {this.state.data.map((group, i) =>
           <div key={i} className="row">
-            <div className="col-sm-5">
+            <div className="col-sm-8">
               <ProductSizesInput value={group.sizes} onValueChange={this.onSizesValueChange.bind(this, i)} ref={(input) => { this.sizesInputs[i] = input }} />
             </div>
-            <div className="col-sm-3">
+            <div className="col-sm-4">
               <ProductPriceInput value={group.price} onValueChange={this.onPriceValueChange.bind(this, i)} />
             </div>
           </div>
         )}
         <div className="row">
-          <div className="col-sm-8">
+          <div className="col-sm-12">
             <FormControl type="text" placeholder="Gruppe hinzufügen..." onFocus={this.onAddGroup} />
           </div>
         </div>

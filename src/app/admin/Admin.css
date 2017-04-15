@@ -68,6 +68,10 @@
   right: 0;
 }
 
+.admin td p {
+  margin: 0;
+}
+
 .admin .container[data-page=ClubEditing] .form-group label[for=inputProducts],
 .admin .container[data-page=ClubEditing] .form-group table,
 .admin .container[data-page=ClubCreation] .form-group label[for=inputProducts],
@@ -139,11 +143,6 @@
 .admin tr.no-data td {
   text-align: center;
   padding: 20px;
-}
-
-.admin .container[data-page=ClubEditing] td.pricegroups p,
-.admin .container[data-page=ClubCreation] td.pricegroups p {
-  margin: 0;
 }
 
 .admin .container[data-page=ClubEditing] td.pricegroups div:not(:last-of-type),
@@ -220,13 +219,15 @@
   max-width: 175px;
 }
 
-.modal-dialog .form-group .flocking-edit label {
+.modal-dialog .form-group .flocking-edit label,
+.modal-dialog .form-group .default-flocking-edit label {
   font-weight: normal;
   margin: 0;
 }
 
 .modal-dialog .form-group .pricegroups-edit .row {
   margin-left: -2px;
+  margin-right: 0;
 }
 
 .modal-dialog .form-group .pricegroups-edit .row div {

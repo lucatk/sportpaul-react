@@ -96,6 +96,8 @@ class ClubEditing extends Component {
       product.pricegroups = e.pricegroups;
       product.flockingPrice = e.flockingPrice;
       product.picture = e.picture;
+      product.defaultFlocking = e.defaultFlocking;
+      product.defaultFlockingInfo = e.defaultFlockingInfo;
       products[e.id] = product;
       this.setState({products: products});
 
@@ -226,6 +228,8 @@ class ClubEditing extends Component {
       data.append("internalid", product.internalid);
       data.append("pricegroups", product.pricegroups);
       data.append("flockingPrice", product.flockingPrice);
+      data.append("defaultFlocking", product.defaultFlocking?1:0);
+      data.append("defaultFlockingInfo", product.defaultFlockingInfo);
       if(typeof product.picture === "object")
         data.append("picture", product.picture);
       $.post({
@@ -252,6 +256,8 @@ class ClubEditing extends Component {
       data.append("internalid", product.internalid);
       data.append("pricegroups", product.pricegroups);
       data.append("flockingPrice", product.flockingPrice);
+      data.append("defaultFlocking", product.defaultFlocking?1:0);
+      data.append("defaultFlockingInfo", product.defaultFlockingInfo);
       if(typeof product.picture === "object")
         data.append("picture", product.picture);
       $.post({
@@ -331,6 +337,7 @@ class ClubEditing extends Component {
         var parsedProducts = [];
         for(var i in products) {
           parsedProducts[i] = products[i];
+          parsedProducts[i].defaultFlocking = parsedProducts[i].defaultFlocking == 1;
         }
 
         loadedProducts = true;
@@ -401,11 +408,14 @@ class ClubEditing extends Component {
                               )}
                             </td>
                             <td>
+                              {this.state.products[key].defaultFlocking ? <p>mit Standardbeflockung,</p> : ''}
+                              <p>
                               {this.state.products[key].flockingPrice !== null && parseFloat(this.state.products[key].flockingPrice) >= 0
                                     ? (parseFloat(this.state.products[key].flockingPrice) > 0
-                                      ? 'Aufpreis: ' + parseFloat(this.state.products[key].flockingPrice).toFixed(2).replace('.', ',') + ' €'
-                                      : 'kostenlos')
-                                    : 'keine Beflockung'}
+                                      ? 'Zusatz Aufpreis: ' + parseFloat(this.state.products[key].flockingPrice).toFixed(2).replace('.', ',') + ' €'
+                                      : 'Zusatz kostenlos')
+                                    : 'kein Zusatz'}
+                              </p>
                             </td>
                             <td className="buttons">
                               <Button bsSize="small" onClick={this.openProductEditModal.bind(this, key)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
