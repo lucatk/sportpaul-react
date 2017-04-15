@@ -3,7 +3,7 @@ include('../database.php');
 
 $db = new Database();
 
-$stmt = $db->execute("SELECT id, clubid, firstname, lastname, status, updated FROM orders", NULL);
+$stmt = $db->execute("SELECT id, clubid, firstname, lastname, status, created, updated FROM orders", NULL);
 $results = $db->fetchAll($stmt);
 
 $i = 0;

@@ -16,14 +16,14 @@ class OrdersTable extends Component {
 
     this.state = {
       filterClub: '',
-      filterID: '',
+      filterDate: '',
       filterCustomer: '',
       filterStatus: ''
     };
 
     this.onExportCheckCellClick = this.onExportCheckCellClick.bind(this);
     this.onFilterClubChange = this.onFilterClubChange.bind(this);
-    this.onFilterIDChange = this.onFilterIDChange.bind(this);
+    this.onFilterDateChange = this.onFilterDateChange.bind(this);
     this.onFilterCustomerChange = this.onFilterCustomerChange.bind(this);
     this.onFilterStatusChange = this.onFilterStatusChange.bind(this);
   }
@@ -39,9 +39,9 @@ class OrdersTable extends Component {
       this.setState({filterClub: e.target.value});
     }
   }
-  onFilterIDChange(e) {
-    this.props.onFilterIDChange(e.target.value);
-    this.setState({filterID: e.target.value});
+  onFilterDateChange(e) {
+    this.props.onFilterDateChange(e.target.value);
+    this.setState({filterDate: e.target.value});
   }
   onFilterCustomerChange(e) {
     this.props.onFilterCustomerChange(e.target.value);
@@ -75,16 +75,16 @@ class OrdersTable extends Component {
       });
     }
 
-    if(this.state.filterClub.length > 0 || this.state.filterID.length > 0 || this.state.filterCustomer.length > 0 || this.state.filterStatus.length > 0) {
+    if(this.state.filterClub.length > 0 || this.state.filterDate.length > 0 || this.state.filterCustomer.length > 0 || this.state.filterStatus.length > 0) {
       data = data.filter(function(value) {
         var matcher;
         if(this.state.filterClub.length > 0) {
           matcher = new RegExp(".*" + this.state.filterClub.replace("*", ".*") + ".*", "i");
           if(!matcher.test(value.clubname)) return false;
         }
-        if(this.state.filterID.length > 0) {
-          matcher = new RegExp(".*" + this.state.filterID.replace("*", ".*") + ".*", "i");
-          if(!matcher.test(value.id)) return false;
+        if(this.state.filterDate.length > 0) {
+          matcher = new RegExp(".*" + this.state.filterDate.replace("*", ".*") + ".*", "i");
+          if(!matcher.test(value.created)) return false;
         }
         if(this.state.filterCustomer.length > 0) {
           matcher = new RegExp(".*" + this.state.filterCustomer.replace("*", ".*") + ".*", "i");
@@ -105,7 +105,7 @@ class OrdersTable extends Component {
           <tr>
             <th></th>
             <th>Verein</th>
-            <th>#</th>
+            <th>Bestelldatum</th>
             <th>Kunde</th>
             <th>Positionen</th>
             <th>Gesamt</th>
@@ -124,7 +124,7 @@ class OrdersTable extends Component {
                 <option key={i} value={name}>{name}</option>)}
               </FormControl>
             </td>
-            <td className="id"><FormControl type="text" value={this.state.filterID} placeholder="Filter..." onChange={this.onFilterIDChange} /></td>
+            <td className="date"><FormControl type="text" value={this.state.filterDate} placeholder="Filter..." onChange={this.onFilterDateChange} /></td>
             <td className="customer"><FormControl type="text" value={this.state.filterCustomer} placeholder="Filter..." onChange={this.onFilterCustomerChange} /></td>
             <td></td>
             <td></td>
@@ -143,7 +143,15 @@ class OrdersTable extends Component {
                 <tr key={row.clubid + "/" + row.id} data-id={row.id} data-clubid={row.clubid} data-club={row.clubname}>
                   <td className="export-check" onClick={this.onExportCheckCellClick.bind(this, row.clubid, row.id, !row.export)}><input type="checkbox" checked={row.export} /></td>
                   <td>{row.clubname}</td>
-                  <td>{row.id}</td>
+                  <td>
+                    {(new Date(row.created)).toLocaleString("de-DE", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit"
+                    })} Uhr
+                  </td>
                   <td>{row.firstname} {row.lastname}</td>
                   <td>{row.itemCount} Position{row.itemCount==1?'':'en'}</td>
                   <td>{parseFloat(row.total).toFixed(2).replace(".", ",")} €</td>
