@@ -26,7 +26,12 @@ class Orders extends Component {
         club: ''
       },
       loadedOrders: false,
-      loading: true
+      loading: true,
+      filterClub: '',
+      filterDateModifier: '',
+      filterDate: '',
+      filterCustomer: '',
+      filterStatus: ''
     };
 
     this.loadOrders();
@@ -35,7 +40,7 @@ class Orders extends Component {
     this.closeRemoveModal = this.closeRemoveModal.bind(this);
     this.removeOrder = this.removeOrder.bind(this);
     this.onFilterClubChange = this.onFilterClubChange.bind(this);
-    this.onFilterIDChange = this.onFilterIDChange.bind(this);
+    this.onFilterDateChange = this.onFilterDateChange.bind(this);
     this.onFilterCustomerChange = this.onFilterCustomerChange.bind(this);
     this.onFilterStatusChange = this.onFilterStatusChange.bind(this);
     this.onOrderExportCheckChange = this.onOrderExportCheckChange.bind(this);
@@ -98,8 +103,8 @@ class Orders extends Component {
   onFilterClubChange(e) {
     this.setState({filterClub: e});
   }
-  onFilterIDChange(e) {
-    this.setState({filterID: e});
+  onFilterDateChange(mod, e) {
+    this.setState({filterDateModifier: mod, filterDate: e});
   }
   onFilterCustomerChange(e) {
     this.setState({filterCustomer: e});
@@ -164,7 +169,7 @@ class Orders extends Component {
           <h1 className="page-header">Bestellungen</h1>
           {this.state.loadedOrders &&
             <div>
-              <OrdersTable data={this.state.orders} onRemove={this.openRemoveModal} onFilterClubChange={this.onFilterClubChange} onFilterIDChange={this.onFilterIDChange} onFilterCustomerChange={this.onFilterCustomerChange} onFilterStatusChange={this.onFilterStatusChange} onOrderExportCheckChange={this.onOrderExportCheckChange} />
+              <OrdersTable data={this.state.orders} onRemove={this.openRemoveModal} onFilterClubChange={this.onFilterClubChange} onFilterDateChange={this.onFilterDateChange} onFilterCustomerChange={this.onFilterCustomerChange} onFilterStatusChange={this.onFilterStatusChange} onOrderExportCheckChange={this.onOrderExportCheckChange} />
 
               <Modal show={this.state.showRemoveModal} onHide={this.closeRemoveModal} data-scope={this.state.removeModalScope.id}>
                 <Modal.Header closeButton>

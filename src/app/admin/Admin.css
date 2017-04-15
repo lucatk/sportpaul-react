@@ -118,8 +118,12 @@
   width: 11em;
 }
 
-.admin .container[data-page=Orders] tr.filter-row td.id input {
-  width: 5em;
+.admin .container[data-page=Orders] tr.filter-row td.date .row {
+  margin: 0 -5px 0;
+}
+
+.admin .container[data-page=Orders] tr.filter-row td.date .row div {
+  padding: 0 5px;
 }
 
 .admin .container[data-page=Orders] tr.filter-row td.status input {

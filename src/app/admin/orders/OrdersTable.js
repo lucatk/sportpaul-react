@@ -5,7 +5,8 @@ import {
   Table,
   FormControl,
   ButtonToolbar, Button,
-  Glyphicon
+  Glyphicon,
+  Row, Col
 } from 'react-bootstrap';
 
 import * as Statics from "../../utils/Statics";
@@ -16,6 +17,7 @@ class OrdersTable extends Component {
 
     this.state = {
       filterClub: '',
+      filterDateModifier: '',
       filterDate: '',
       filterCustomer: '',
       filterStatus: ''
@@ -23,6 +25,7 @@ class OrdersTable extends Component {
 
     this.onExportCheckCellClick = this.onExportCheckCellClick.bind(this);
     this.onFilterClubChange = this.onFilterClubChange.bind(this);
+    this.onFilterDateModifierChange = this.onFilterDateModifierChange.bind(this);
     this.onFilterDateChange = this.onFilterDateChange.bind(this);
     this.onFilterCustomerChange = this.onFilterCustomerChange.bind(this);
     this.onFilterStatusChange = this.onFilterStatusChange.bind(this);
@@ -40,8 +43,12 @@ class OrdersTable extends Component {
     }
   }
   onFilterDateChange(e) {
-    this.props.onFilterDateChange(e.target.value);
+    this.props.onFilterDateChange(this.state.filterDateModifier, e.target.value);
     this.setState({filterDate: e.target.value});
+  }
+  onFilterDateModifierChange(e) {
+    this.props.onFilterDateChange(e.target.value, this.state.filterDate);
+    this.setState({filterDateModifier: e.target.value});
   }
   onFilterCustomerChange(e) {
     this.props.onFilterCustomerChange(e.target.value);
@@ -58,7 +65,7 @@ class OrdersTable extends Component {
   }
   render() {
     var data = this.props.data;
-    console.log(data);
+    // console.log(data);
 
     var clubNames = [];
     data.forEach((row) => {
@@ -83,8 +90,24 @@ class OrdersTable extends Component {
           if(!matcher.test(value.clubname)) return false;
         }
         if(this.state.filterDate.length > 0) {
-          matcher = new RegExp(".*" + this.state.filterDate.replace("*", ".*") + ".*", "i");
-          if(!matcher.test(value.created)) return false;
+          var dateMatcher = this.state.filterDate.match(/(\d+)/g);
+          var parsedDate = new Date(dateMatcher[2] || new Date().getFullYear(), (dateMatcher[1] || new Date().getMonth()+1) - 1, dateMatcher[0] || 1);
+          var createdDate = new Date(value.created);
+          console.log(parsedDate, createdDate);
+          switch(this.state.filterDateModifier) {
+            case "before":
+              if(createdDate.valueOf() >= parsedDate.valueOf()) return false;
+              break;
+            case "after":
+              if(createdDate.valueOf() < parsedDate.valueOf()) return false;
+              break;
+            case "exact":
+              if(new Date(createdDate.getFullYear(), createdDate.getMonth(), createdDate.getDate()).valueOf() !== parsedDate.valueOf()) return false;
+              break;
+            default:
+              matcher = new RegExp(".*" + this.state.filterDate.replace("*", ".*") + ".*", "i");
+              if(!matcher.test(value.created)) return false;
+          }
         }
         if(this.state.filterCustomer.length > 0) {
           matcher = new RegExp(".*" + this.state.filterCustomer.replace("*", ".*") + ".*", "i");
@@ -124,7 +147,20 @@ class OrdersTable extends Component {
                 <option key={i} value={name}>{name}</option>)}
               </FormControl>
             </td>
-            <td className="date"><FormControl type="text" value={this.state.filterDate} placeholder="Filter..." onChange={this.onFilterDateChange} /></td>
+            <td className="date">
+              <Row>
+                <Col xs="4">
+                  <FormControl componentClass="select" value={this.state.filterDateModifier} placeholder="Filter..." onChange={this.onFilterDateModifierChange}>
+                    <option value="">Filter...</option>
+                    <option value="separator" disabled></option>
+                    <option value="before">vor</option>
+                    <option value="exact">exakt</option>
+                    <option value="after">nach</option>
+                  </FormControl>
+                </Col>
+                <Col xs="8"><FormControl type="text" value={this.state.filterDate} placeholder="Datum..." onChange={this.onFilterDateChange} /></Col>
+              </Row>
+            </td>
             <td className="customer"><FormControl type="text" value={this.state.filterCustomer} placeholder="Filter..." onChange={this.onFilterCustomerChange} /></td>
             <td></td>
             <td></td>
