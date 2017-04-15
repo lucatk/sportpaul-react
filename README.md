@@ -5,7 +5,7 @@
   * ✓ Artikelnr
   * ✓ versch. Größen mit Preis
   * ✓ Vorschaubild Vergrößerung anzeigen
-* Beflockung-Info bei Bestellung
+* ✓ Beflockung-Info bei Bestellung
 * ✓ Kundeninfo:
   * ✓ Name
   * ✓ Adresse
@@ -17,7 +17,7 @@
   * 17-2-...
 * [Verein erst löschen wenn keine Bestellungen vorhanden, etc....]
 
-* Logobeflockung vermerken
+* (✓) Logobeflockung vermerken
 
 * Bestellungsstatus
   * offen

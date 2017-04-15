@@ -74,6 +74,7 @@ class App extends Component {
             var parsedProduct = product;
             parsedProduct.pricegroups = JSON.parse(product.pricegroups);
             parsedProduct.flockingPrice = parseFloat(product.flockingPrice);
+            parsedProduct.defaultFlocking = parsedProduct.defaultFlocking == 1;
             parsedProducts.push(parsedProduct);
           });
           parsedClub.products = parsedProducts;

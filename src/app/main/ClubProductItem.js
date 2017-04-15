@@ -53,6 +53,7 @@ class ClubProductItem extends Component {
                   )}
                 </li>
                 <li className="product-item-action list-group-item">
+                  {this.props.product.defaultFlocking && <p className="flocking-info">{this.props.product.defaultFlockingInfo}</p>}
                   <div className="row">
                     <div className="col-xs-8">
                       <select className="product-item-size form-control input-sm" value={this.state.selectedSize} onChange={this.handleSizeChange}>

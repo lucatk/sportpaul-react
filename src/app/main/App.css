@@ -160,6 +160,10 @@
   display: block;
 }
 
+.product-list .product-item .right-column .list-group-item p.flocking-info {
+  font-size: 12px;
+}
+
 .product-list .product-item .right-column .list-group-item.product-item-action .row {
   margin: 0;
 }
