@@ -25,6 +25,10 @@ class Database {
     return $stmt;
   }
 
+  public function lastInsertId() {
+    return $this->conn->lastInsertId();
+  }
+
   public function fetch($method, $stmt, $length) {
     if($length == 1) {
       return $stmt->fetch($method);

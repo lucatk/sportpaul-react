@@ -27,26 +27,32 @@ class OrdersTable extends Component {
     this.onFilterCustomerChange = this.onFilterCustomerChange.bind(this);
     this.onFilterStatusChange = this.onFilterStatusChange.bind(this);
   }
-  onExportCheckCellClick(e) {
-    e.target.querySelector("input").checked = !e.target.querySelector("input").checked;
+  onExportCheckCellClick(clubid, id, checked) {
+    this.props.onOrderExportCheckChange(clubid, id, checked);
   }
   onFilterClubChange(e) {
     if(e.target.value == "Filter...") {
+      this.props.onFilterClubChange("");
       this.setState({filterClub: ""});
     } else {
+      this.props.onFilterClubChange(e.target.value);
       this.setState({filterClub: e.target.value});
     }
   }
   onFilterIDChange(e) {
+    this.props.onFilterIDChange(e.target.value);
     this.setState({filterID: e.target.value});
   }
   onFilterCustomerChange(e) {
+    this.props.onFilterCustomerChange(e.target.value);
     this.setState({filterCustomer: e.target.value});
   }
   onFilterStatusChange(e) {
     if(e.target.value == "Filter...") {
+      this.props.onFilterStatusChange("");
       this.setState({filterStatus: ""});
     } else {
+      this.props.onFilterStatusChange(e.target.value);
       this.setState({filterStatus: e.target.value});
     }
   }
@@ -135,7 +141,7 @@ class OrdersTable extends Component {
           {data && data.length > 0
             ? data.map((row) =>
                 <tr key={row.clubid + "/" + row.id} data-id={row.id} data-clubid={row.clubid} data-club={row.clubname}>
-                  <td className="export-check" onClick={this.onExportCheckCellClick}><input type="checkbox" value="" /></td>
+                  <td className="export-check" onClick={this.onExportCheckCellClick.bind(this, row.clubid, row.id, !row.export)}><input type="checkbox" checked={row.export} /></td>
                   <td>{row.clubname}</td>
                   <td>{row.id}</td>
                   <td>{row.firstname} {row.lastname}</td>

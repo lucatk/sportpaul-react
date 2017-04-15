@@ -143,7 +143,9 @@ class ClubEditing extends Component {
   onCloseProductAddModal(e) {
     if(e) {
       var products = this.state.products;
+      console.log(products);
       var newId = products.length;
+      console.log(products.length, newId);
       products[newId] = {
         new: true,
         id: newId,
@@ -152,6 +154,7 @@ class ClubEditing extends Component {
       };
       var toAdd = this.state.toAddProducts;
       toAdd[newId] = products[newId];
+      console.log(toAdd);
       this.setState({
         products: products,
         toAddProducts: toAdd
@@ -325,12 +328,16 @@ class ClubEditing extends Component {
       },
       success: function(data) {
         var products = JSON.parse(data);
+        var parsedProducts = [];
+        for(var i in products) {
+          parsedProducts[i] = products[i];
+        }
 
         loadedProducts = true;
         doneProcess();
 
         this.setState({
-          products: products,
+          products: parsedProducts,
           loadedProducts: true
         });
       }.bind(this)

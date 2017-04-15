@@ -24,12 +24,15 @@ class App extends Component {
     document.title = "Home | Sport-Paul Vereinsbekleidung";
 
     var cartContents = [];
+    var clubInUse = -1;
     if(localStorage && localStorage.getItem('lastUpdate') && Date.now() - localStorage.getItem('lastUpdate') < 86400000 && localStorage.cart && localStorage.cart.length > 0) {
       cartContents = JSON.parse(localStorage.getItem('cart'));
+      clubInUse = localStorage.getItem('clubInUse');
     }
     this.state = {
       clubs: [],
       selectedClub: -1,
+      clubInUse: clubInUse,
       cartContents: cartContents,
       previewProduct: null,
       loadedClubs: false,
@@ -51,6 +54,7 @@ class App extends Component {
     this.onFlockingModalInput = this.onFlockingModalInput.bind(this);
     this.onShowOrderProcess = this.onShowOrderProcess.bind(this);
     this.onShowOrderSummary = this.onShowOrderSummary.bind(this);
+    this.onOrder = this.onOrder.bind(this);
   }
 
   loadClubs() {
@@ -90,6 +94,11 @@ class App extends Component {
   }
 
   onProductAddToCart(product, input) {
+    if(this.state.clubInUse != -1 && this.state.clubInUse != this.state.selectedClub) {
+      // TODO
+      return;
+    }
+
     var newContents = this.state.cartContents.slice();
     var cartProduct = {
       id: product.id,
@@ -102,7 +111,7 @@ class App extends Component {
       picture: product.picture
     };
     newContents[this.state.cartContents.length] = cartProduct;
-    this.setState({cartContents: newContents});
+    this.setState({cartContents: newContents, clubInUse: this.state.selectedClub});
     if(product.flockingPrice && product.flockingPrice >= 0) {
       this.setState({
         flockingModal: {
@@ -117,6 +126,10 @@ class App extends Component {
     var newContents = this.state.cartContents.slice();
     newContents.splice(key, 1);
     this.setState({cartContents: newContents});
+
+    if(newContents.length < 1) {
+      this.setState({clubInUse: -1});
+    }
   }
 
   onProductPreviewRequest(product) {
@@ -151,14 +164,24 @@ class App extends Component {
     this.setState({flockingModal:{target:-1,input:''}});
   }
 
+  onOrder(success) {
+    if(success) {
+      this.setState({
+        clubInUse: -1,
+        cartContents: [],
+        customerData: null
+      });
+    }
+  }
+
   componentWillUpdate(nextProps, nextState) {
     if(!localStorage || !nextState) return;
     if(nextState.cartContents && nextState.cartContents.length > 0) {
-      localStorage.setItem('selectedClub', nextState.selectedClub);
+      localStorage.setItem('clubInUse', nextState.clubInUse);
       localStorage.setItem('cart', JSON.stringify(nextState.cartContents));
       localStorage.setItem('lastUpdate', Date.now());
-    } else if(nextState.selectedClub !== localStorage.getItem('selectedClub')) {
-      localStorage.setItem('selectedClub', nextState.selectedClub);
+    } else if(nextState.clubInUse !== localStorage.getItem('clubInUse')) {
+      localStorage.setItem('clubInUse', nextState.clubInUse);
       localStorage.setItem('cart', JSON.stringify([]));
       localStorage.setItem('lastUpdate', Date.now());
     }
@@ -217,7 +240,7 @@ class App extends Component {
               ) : this.state.selectedClub === -3 ? (
                 <OrderProcess productCart={this.state.cartContents} onContinue={this.onShowOrderSummary} />
               ) : this.state.selectedClub === -4 ? (
-                <OrderSummary productCart={this.state.cartContents} customerData={this.state.customerData} />
+                <OrderSummary productCart={this.state.cartContents} customerData={this.state.customerData} clubid={this.state.clubInUse} onOrder={this.onOrder} />
               ) : (
                 <p>Home</p>
               )}

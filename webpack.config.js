@@ -34,6 +34,9 @@ var config = {
     extensions: ['', '.js', '.jsx'],
     unsafeCache: true
   },
+  node: {
+    fs: "empty"
+  }
 };
 
 module.exports = config;

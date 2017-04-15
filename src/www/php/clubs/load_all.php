@@ -16,7 +16,8 @@ foreach($results as $row) {
 
   if(isset($_GET["load_products"]) && $_GET["load_products"] === "true") {
     $cstmt = $db->execute("SELECT * FROM products WHERE clubid=:clubid", ["clubid" => $row['id']]);
-    $results[$i]["products"] = $db->fetchAll($cstmt);
+    $cresults = $db->fetchAll($cstmt);
+    $results[$i]["products"] = $cresults;
   }
 
   array_walk($results[$i], function(&$s, $key){if(gettype($s) === "string") {$s = utf8_encode($s);}});
