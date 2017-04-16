@@ -27,7 +27,7 @@ class Orders extends Component {
       },
       loadedOrders: false,
       loading: true,
-      filterClub: '',
+      filterClub: -1,
       filterDateModifier: '',
       filterDate: '',
       filterCustomer: '',
@@ -51,13 +51,33 @@ class Orders extends Component {
       url: 'php/orders/load_all.php',
       success: function(data) {
         var orders = JSON.parse(data);
+        var toLoad = 0;
         for(var i in orders) {
+          toLoad++;
           orders[i].export = false;
         }
-        this.setState({
-          orders: orders,
-          loadedOrders: true,
-          loading: false
+        orders.forEach((order, key) => {
+          console.log(key, orders[key].id);
+          $.post({
+            url: 'php/items/load.php',
+            data: {
+              orderid: orders[key].id,
+              clubid: orders[key].clubid
+            },
+            success: function(data) {
+              orders[key].items = JSON.parse(data);
+              console.log(key, orders[key].id, orders[key].items);
+              toLoad--;
+
+              if(toLoad < 1) {
+                this.setState({
+                  orders: orders,
+                  loadedOrders: true,
+                  loading: false
+                });
+              }
+            }.bind(this)
+          });
         });
       }.bind(this)
     });

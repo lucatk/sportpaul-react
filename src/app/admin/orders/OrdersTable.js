@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import $ from 'jquery';
 
 import { Link } from 'react-router';
 import {
@@ -16,13 +17,15 @@ class OrdersTable extends Component {
     super(props);
 
     this.state = {
-      filterClub: '',
+      filterClub: -1,
       filterDateModifier: '',
       filterDate: '',
       filterCustomer: '',
       filterStatus: '',
+      filterProduct: -1,
       sorting: '',
-      sortingMode: ''
+      sortingMode: '',
+      selectedClubProducts: null
     };
 
     this.onExportCheckCellClick = this.onExportCheckCellClick.bind(this);
@@ -31,6 +34,7 @@ class OrdersTable extends Component {
     this.onFilterDateChange = this.onFilterDateChange.bind(this);
     this.onFilterCustomerChange = this.onFilterCustomerChange.bind(this);
     this.onFilterStatusChange = this.onFilterStatusChange.bind(this);
+    this.onFilterProductChange = this.onFilterProductChange.bind(this);
     this.onSortingClubClicked = this.onSortingClubClicked.bind(this);
     this.onSortingDateClicked = this.onSortingDateClicked.bind(this);
     this.onSortingCustomerClicked = this.onSortingCustomerClicked.bind(this);
@@ -38,16 +42,39 @@ class OrdersTable extends Component {
     this.onSortingTotalClicked = this.onSortingTotalClicked.bind(this);
     this.onSortingStatusClicked = this.onSortingStatusClicked.bind(this);
   }
+  loadClubProducts(clubid) {
+    $.post({
+      url: 'php/products/load.php',
+      data: {
+        id: clubid
+      },
+      success: function(data) {
+        var products = JSON.parse(data);
+        var parsedProducts = [];
+        for(var i in products) {
+          parsedProducts[i] = products[i];
+          parsedProducts[i].defaultFlocking = parsedProducts[i].defaultFlocking == 1;
+        }
+
+        this.setState({
+          selectedClubProducts: parsedProducts
+        });
+      }.bind(this)
+    });
+  }
   onExportCheckCellClick(clubid, id, checked) {
     this.props.onOrderExportCheckChange(clubid, id, checked);
   }
   onFilterClubChange(e) {
-    if(e.target.value == "Filter...") {
-      this.props.onFilterClubChange("");
-      this.setState({filterClub: ""});
+    if(e.target.value.length < 1) {
+      this.props.onFilterClubChange(-1);
+      this.setState({filterClub: -1, selectedClubProducts: null, filterProduct: -1});
     } else {
-      this.props.onFilterClubChange(e.target.value);
-      this.setState({filterClub: e.target.value});
+      var clubid = parseInt(e.target.value);
+      this.props.onFilterClubChange(clubid);
+      this.setState({filterClub: clubid, selectedClubProducts: null, filterProduct: -1});
+
+      this.loadClubProducts(clubid);
     }
   }
   onFilterDateChange(e) {
@@ -63,12 +90,22 @@ class OrdersTable extends Component {
     this.setState({filterCustomer: e.target.value});
   }
   onFilterStatusChange(e) {
-    if(e.target.value == "Filter...") {
+    if(e.target.value.length < 1) {
       this.props.onFilterStatusChange("");
       this.setState({filterStatus: ""});
     } else {
       this.props.onFilterStatusChange(e.target.value);
       this.setState({filterStatus: e.target.value});
+    }
+  }
+  onFilterProductChange(e) {
+    if(e.target.value.length < 1) {
+      // this.props.onFilterProductChange(-1);
+      this.setState({filterProduct: -1});
+    } else {
+      var productid = parseInt(e.target.value);
+      // this.props.onFilterProductChange(productid);
+      this.setState({filterProduct: productid});
     }
   }
   onSortingClubClicked(e) {
@@ -141,10 +178,10 @@ class OrdersTable extends Component {
     var data = this.props.data.slice();
     // console.log(data);
 
-    var clubNames = [];
+    var clubs = [];
     data.forEach((row) => {
-      if(row.clubname && !clubNames.includes(row.clubname)) {
-        clubNames.push(row.clubname);
+      if(row.clubid && row.clubname && !clubs[row.clubid]) {
+        clubs[row.clubid] = row.clubname;
       }
     });
 
@@ -156,12 +193,11 @@ class OrdersTable extends Component {
       });
     }
 
-    if(this.state.filterClub.length > 0 || this.state.filterDate.length > 0 || this.state.filterCustomer.length > 0 || this.state.filterStatus.length > 0) {
+    if(this.state.filterClub !== -1 || this.state.filterDate.length > 0 || this.state.filterCustomer.length > 0 || this.state.filterStatus.length > 0 || this.state.filterProduct !== -1) {
       data = data.filter(function(value) {
         var matcher;
-        if(this.state.filterClub.length > 0) {
-          matcher = new RegExp(".*" + this.state.filterClub.replace("*", ".*") + ".*", "i");
-          if(!matcher.test(value.clubname)) return false;
+        if(this.state.filterClub !== -1) {
+          if(this.state.filterClub != value.clubid) return false;
         }
         if(this.state.filterDate.length > 0) {
           var dateMatcher = this.state.filterDate.match(/(\d+)/g);
@@ -191,6 +227,16 @@ class OrdersTable extends Component {
           matcher = new RegExp(this.state.filterStatus, "i");
           if(!matcher.test(value.status)) return false;
         }
+        if(this.state.filterProduct !== -1) {
+          var found = false;
+          for(var o in value.items) {
+            if(value.items[o].id == this.state.filterProduct) {
+              found = true;
+              break;
+            }
+          }
+          if(!found) return false;
+        }
 
         return true;
       }.bind(this));
@@ -203,11 +249,11 @@ class OrdersTable extends Component {
         switch(this.state.sorting) {
           case "club":
             if(this.state.sortingMode === "desc") {
-              critA = b.club.toUpperCase();
-              critB = a.club.toUpperCase();
+              critA = b.clubname.toUpperCase();
+              critB = a.clubname.toUpperCase();
             } else {
-              critA = a.club.toUpperCase();
-              critB = b.club.toUpperCase();
+              critA = a.clubname.toUpperCase();
+              critB = b.clubname.toUpperCase();
             }
             break;
           case "date":
@@ -282,17 +328,17 @@ class OrdersTable extends Component {
           <tr className="filter-row">
             <td className="export-check"></td>
             <td className="club">
-              <FormControl componentClass="select" value={this.state.filterClub} placeholder="Filter..." onChange={this.onFilterClubChange}>
+              <FormControl componentClass="select" value={this.state.filterClub} onChange={this.onFilterClubChange}>
                 <option value="">Filter...</option>
                 <option value="separator" disabled></option>
-                {clubNames.map((name, i) =>
-                <option key={i} value={name}>{name}</option>)}
+                {clubs.map((name, id) =>
+                <option key={id} value={id}>{name}</option>)}
               </FormControl>
             </td>
             <td className="date">
               <Row>
                 <Col xs="4">
-                  <FormControl componentClass="select" value={this.state.filterDateModifier} placeholder="Filter..." onChange={this.onFilterDateModifierChange}>
+                  <FormControl componentClass="select" value={this.state.filterDateModifier} onChange={this.onFilterDateModifierChange}>
                     <option value="">Filter...</option>
                     <option value="separator" disabled></option>
                     <option value="before">vor</option>
@@ -307,14 +353,28 @@ class OrdersTable extends Component {
             <td></td>
             <td></td>
             <td className="status">
-              <FormControl componentClass="select" value={this.state.filterStatus} placeholder="Filter..." onChange={this.onFilterStatusChange}>
+              <FormControl componentClass="select" value={this.state.filterStatus} onChange={this.onFilterStatusChange}>
                 <option value="">Filter...</option>
                 <option value="separator" disabled></option>
                 {orderStatuses.map((value, i) =>
                 <option key={i} value={value.key}>{value.status}</option>)}
               </FormControl>
             </td>
-            <td className="buttons"></td>
+            <td className="buttons product">
+              <FormControl componentClass="select" value={this.state.filterProduct} onChange={this.onFilterProductChange} disabled={this.state.filterClub == -1}>
+                {this.state.filterClub != -1 ? [
+                  <option value="">Produktsuche...</option>,
+                  <option value="separator" disabled></option>,
+                  (this.state.selectedClubProducts == null
+                  ? <option disabled>Lade Produkte...</option>
+                  : this.state.selectedClubProducts.map((product, i) => (
+                    <option value={product.id}>{product.name}</option>
+                  )))
+                ] : [
+                  <option value="">Verein auswählen!</option>
+                ]}
+              </FormControl>
+            </td>
           </tr>
           {data && data.length > 0
             ? data.map((row) =>
