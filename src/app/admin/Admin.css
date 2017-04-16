@@ -114,6 +114,14 @@
   width: 25%;
 }
 
+.admin .container[data-page=Orders] thead tr th {
+  cursor: pointer;
+}
+
+.admin .container[data-page=Orders] thead tr th span.glyphicon {
+  font-size: 12px;
+}
+
 .admin .container[data-page=Orders] tr.filter-row td.club input {
   width: 11em;
 }

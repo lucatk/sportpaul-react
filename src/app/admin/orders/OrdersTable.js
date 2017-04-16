@@ -20,7 +20,9 @@ class OrdersTable extends Component {
       filterDateModifier: '',
       filterDate: '',
       filterCustomer: '',
-      filterStatus: ''
+      filterStatus: '',
+      sorting: '',
+      sortingMode: ''
     };
 
     this.onExportCheckCellClick = this.onExportCheckCellClick.bind(this);
@@ -29,6 +31,12 @@ class OrdersTable extends Component {
     this.onFilterDateChange = this.onFilterDateChange.bind(this);
     this.onFilterCustomerChange = this.onFilterCustomerChange.bind(this);
     this.onFilterStatusChange = this.onFilterStatusChange.bind(this);
+    this.onSortingClubClicked = this.onSortingClubClicked.bind(this);
+    this.onSortingDateClicked = this.onSortingDateClicked.bind(this);
+    this.onSortingCustomerClicked = this.onSortingCustomerClicked.bind(this);
+    this.onSortingAmountItemsClicked = this.onSortingAmountItemsClicked.bind(this);
+    this.onSortingTotalClicked = this.onSortingTotalClicked.bind(this);
+    this.onSortingStatusClicked = this.onSortingStatusClicked.bind(this);
   }
   onExportCheckCellClick(clubid, id, checked) {
     this.props.onOrderExportCheckChange(clubid, id, checked);
@@ -63,8 +71,74 @@ class OrdersTable extends Component {
       this.setState({filterStatus: e.target.value});
     }
   }
+  onSortingClubClicked(e) {
+    if(this.state.sorting === 'club') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'club', sortingMode: 'asc'});
+    }
+  }
+  onSortingDateClicked(e) {
+    if(this.state.sorting === 'date') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'date', sortingMode: 'asc'});
+    }
+  }
+  onSortingCustomerClicked(e) {
+    if(this.state.sorting === 'customer') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'customer', sortingMode: 'asc'});
+    }
+  }
+  onSortingAmountItemsClicked(e) {
+    if(this.state.sorting === 'amitems') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'amitems', sortingMode: 'asc'});
+    }
+  }
+  onSortingTotalClicked(e) {
+    if(this.state.sorting === 'total') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'total', sortingMode: 'asc'});
+    }
+  }
+  onSortingStatusClicked(e) {
+    if(this.state.sorting === 'status') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'status', sortingMode: 'asc'});
+    }
+  }
   render() {
-    var data = this.props.data;
+    var data = this.props.data.slice();
     // console.log(data);
 
     var clubNames = [];
@@ -122,17 +196,85 @@ class OrdersTable extends Component {
       }.bind(this));
     }
 
+    if(this.state.sorting.length > 0) {
+      data = data.sort((a, b) => {
+        var critA = null;
+        var critB = null;
+        switch(this.state.sorting) {
+          case "club":
+            if(this.state.sortingMode === "desc") {
+              critA = b.club.toUpperCase();
+              critB = a.club.toUpperCase();
+            } else {
+              critA = a.club.toUpperCase();
+              critB = b.club.toUpperCase();
+            }
+            break;
+          case "date":
+            if(this.state.sortingMode === "desc") {
+              critA = new Date(b.created).valueOf();
+              critB = new Date(a.created).valueOf();
+            } else {
+              critA = new Date(a.created).valueOf();
+              critB = new Date(b.created).valueOf();
+            }
+            break;
+          case "customer":
+            if(this.state.sortingMode === "desc") {
+              critA = (b.firstname + b.lastname).toUpperCase();
+              critB = (a.firstname + a.lastname).toUpperCase();
+            } else {
+              critA = (a.firstname + a.lastname).toUpperCase();
+              critB = (b.firstname + b.lastname).toUpperCase();
+            }
+            break;
+          case "amitems":
+            if(this.state.sortingMode === "desc") {
+              critA = b.itemCount;
+              critB = a.itemCount;
+            } else {
+              critA = a.itemCount;
+              critB = b.itemCount;
+            }
+            break;
+          case "total":
+            if(this.state.sortingMode === "desc") {
+              critA = parseFloat(b.total);
+              critB = parseFloat(a.total);
+            } else {
+              critA = parseFloat(a.total);
+              critB = parseFloat(b.total);
+            }
+            break;
+          case "status":
+
+            break;
+          default:
+            critA = a.id;
+            critB = b.id;
+        }
+
+        if(critA < critB) {
+          return -1;
+        } else if(critA > critB) {
+          return 1;
+        } else {
+          return 0;
+        }
+      });
+    }
+
     return (
       <Table striped bordered hover>
         <thead>
           <tr>
             <th></th>
-            <th>Verein</th>
-            <th>Bestelldatum</th>
-            <th>Kunde</th>
-            <th>Positionen</th>
-            <th>Gesamt</th>
-            <th>Status</th>
+            <th onClick={this.onSortingClubClicked}>Verein{this.state.sorting === 'club' && [' ', <Glyphicon glyph={this.state.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.onSortingDateClicked}>Bestelldatum{this.state.sorting === 'date' && [' ', <Glyphicon glyph={this.state.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.onSortingCustomerClicked}>Kunde{this.state.sorting === 'customer' && [' ', <Glyphicon glyph={this.state.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.onSortingAmountItemsClicked}>Positionen{this.state.sorting === 'amitems' && [' ', <Glyphicon glyph={this.state.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.onSortingTotalClicked}>Gesamt{this.state.sorting === 'total' && [' ', <Glyphicon glyph={this.state.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.onSortingStatusClicked}>Status{this.state.sorting === 'status' && [' ', <Glyphicon glyph={this.state.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
             <th></th>
           </tr>
         </thead>

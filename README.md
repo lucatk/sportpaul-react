@@ -31,7 +31,7 @@
 
 * Bestellung abschließen Druckfunktion
 
-* Admin Bestellungen sortieren (Datum)
+* ✓ Admin Bestellungen sortieren (Datum)
 
 * Export Optionen (nur Beflockung, ohne Beflockung, ...)
 
