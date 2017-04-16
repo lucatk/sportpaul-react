@@ -82,7 +82,8 @@ class OrderProcess extends Component {
     }
   }
 
-  validateInput(input, regex) {
+  validateInput(input, regex, optional) {
+    if(optional === true && input !== undefined && input.length < 1) return null;
     if(input !== undefined && !regex.test(input)) return 'error';
     return null;
   }
@@ -95,7 +96,7 @@ class OrderProcess extends Component {
     if(this.state.postcode === undefined || this.validateInput(this.state.postcode, this.regexPostcode)) return false;
     if(this.state.town === undefined || this.validateInput(this.state.town, this.regexTown)) return false;
     if(this.state.phone === undefined || this.validateInput(this.state.phone, this.regexPhone)) return false;
-    if(this.state.email === undefined || this.validateInput(this.state.email, this.regexEmail)) return false;
+    if(this.validateInput(this.state.email, this.regexEmail, true)) return false;
     return true;
   }
 
@@ -166,7 +167,7 @@ class OrderProcess extends Component {
                   </FormGroup>
                 </Col>
                 <Col sm={8}>
-                  <FormGroup controlId="pd_email" validationState={this.validateInput(this.state.email, this.regexEmail)}>
+                  <FormGroup controlId="pd_email" validationState={this.validateInput(this.state.email, this.regexEmail, true)}>
                     <ControlLabel>E-Mail</ControlLabel>
                     <FormControl type="email" value={this.state.email} onChange={this.onEmailChange} onFocus={this.onEmailChange} />
                   </FormGroup>

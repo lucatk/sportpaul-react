@@ -44,6 +44,7 @@ class OrderSummary extends Component {
       }
     }
     this.customerData = this.props.customerData;
+    if(!this.customerData.email) this.customerData.email = '';
 
     this.onClickOrder = this.onClickOrder.bind(this);
   }

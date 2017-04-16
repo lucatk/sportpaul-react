@@ -148,10 +148,10 @@ class OrderView extends Component {
             <ControlLabel bsClass="col-sm-1 control-label">Telefon</ControlLabel>
             <ControlLabel bsClass="col-sm-11">{this.state.telephone}</ControlLabel>
           </FormGroup>
-          <FormGroup controlId="inputEmail">
+          {this.state.email.length > 0 && <FormGroup controlId="inputEmail">
             <ControlLabel bsClass="col-sm-1 control-label">E-Mail</ControlLabel>
             <ControlLabel bsClass="col-sm-11">{this.state.email}</ControlLabel>
-          </FormGroup>
+          </FormGroup>}
           <FormGroup controlId="inputDate">
             <ControlLabel bsClass="col-sm-1 control-label">Bestelldatum</ControlLabel>
             <ControlLabel bsClass="col-sm-11">

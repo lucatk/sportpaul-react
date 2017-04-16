@@ -9,7 +9,7 @@
 * ✓ Kundeninfo:
   * ✓ Name
   * ✓ Adresse
-  * Email optional
+  * ✓ Email (optional)
   * ✓ Telefonnr
 * Rechnungsnummer
   * mit Jahr
