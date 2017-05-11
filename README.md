@@ -36,3 +36,5 @@
 * Export Optionen (nur Beflockung, ohne Beflockung, ...)
 
 * ✓ Bestellung Suche nach Artikel
+
+* Bestellung überprüfen

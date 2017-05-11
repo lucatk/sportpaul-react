@@ -3,14 +3,16 @@ export const SizeRegex = /(?: *\,* *((?: *[^\n\r\,\ ]+ *)+) *\,* *)/g;
 
 /*  ENUMS  */
 export const OrderStatus = {
-  pending: "ausstehend",
-  accepted: "bestätigt",
-  recorded: "exportiert",
-  received: "erhalten",
-  done: "erledigt"
+  "-1": "storniert",
+  "0": "unbestätigt",
+  "1": "offen",
+  "2": "bestellt",
+  "3": "erledigt"
 };
 export const ItemStatus = {
-  pending: "ausstehend",
-  received: "erhalten",
-  done: ""
-}
+  "-1": "",
+  "0": "bestellt",
+  "1": "verspätet",
+  "2": "erhalten",
+  "3": "erledigt"
+};

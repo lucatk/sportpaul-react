@@ -50,6 +50,7 @@ class Orders extends Component {
     $.ajax({
       url: 'php/orders/load_all.php',
       success: function(data) {
+        console.log(data);
         var orders = JSON.parse(data);
         var toLoad = 0;
         for(var i in orders) {
@@ -57,7 +58,6 @@ class Orders extends Component {
           orders[i].export = false;
         }
         orders.forEach((order, key) => {
-          console.log(key, orders[key].id);
           $.post({
             url: 'php/items/load.php',
             data: {
@@ -66,7 +66,6 @@ class Orders extends Component {
             },
             success: function(data) {
               orders[key].items = JSON.parse(data);
-              console.log(key, orders[key].id, orders[key].items);
               toLoad--;
 
               if(toLoad < 1) {

@@ -16,7 +16,7 @@ import LoadingOverlay from '../../utils/LoadingOverlay';
 // import ProductEditModal from './modals/ProductEditModal';
 // import ProductRemovalModal from './modals/ProductRemovalModal';
 
-class OrderView extends Component {
+class OrderEditing extends Component {
   constructor(props) {
     super(props);
 
@@ -36,12 +36,37 @@ class OrderView extends Component {
       updated: null,
       status: '',
       items: [],
+      showItemEditModal: false,
+      scopeItemEditModal: -1,
+      showItemRemoveModal: false,
+      scopeItemRemoveModal: -1,
+      showItemAddModal: false,
+      toUpdateItems: [],
+      toRemoveItems: [],
+      toAddItems: [],
       loadedInfo: false,
       loadedItems: false,
       loading: true
     }
 
     this.componentWillReceiveProps(this.props);
+
+    this.openEditItemModal = this.openEditItemModal.bind(this);
+    this.openRemoveItemModal = this.openRemoveItemModal.bind(this);
+    this.editItem = this.editItem.bind(this);
+    this.removeItem = this.removeItem.bind(this);
+  }
+  openEditItemModal(e) {
+    this.refs.productEditModal.openModal(e);
+  }
+  openRemoveItemModal(e) {
+    this.refs.productRemovalModal.openModal(e);
+  }
+  editItem(e) {
+    this.closeEditProductModal();
+  }
+  removeItem(e) {
+    this.closeRemoveProductModal();
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -96,13 +121,24 @@ class OrderView extends Component {
     });
   }
   render() {
-    document.title = "ID: " + this.state.clubid + "/" + this.state.id + " | Bestellung-Details | Sport-Paul Vereinsbekleidung";
+    document.title = "ID: " + this.state.clubid + "/" + this.state.id + " | Bestellung bearbeiten | Sport-Paul Vereinsbekleidung";
     return (
       <div className="container" data-page="OrderView">
         <LoadingOverlay show={this.state.loading} />
         <h1 className="page-header">
-          Bestellung: Details
+          Bestellung bearbeiten
           <small> ID: {this.state.clubid}/{this.state.id}</small>
+          <div className="unsaved-changes">
+            {((this.state.toUpdateItems && this.state.toUpdateItems.length > 0)
+              || (this.state.toRemoveItems && this.state.toRemoveItems.length > 0)
+              || (this.state.toAddItems && this.state.toAddItems.length > 0)
+              /*|| this.state.name !== this.oldName
+              || this.state.logodata !== this.oldLogodata*/)
+              && <small>Sie haben ungesicherte Änderungen!</small>}
+            <Button bsStyle="success" bsSize="small" onClick={this.save}>Speichern</Button>
+          </div>
+
+
           <Button bsStyle="danger" bsSize="small"><Glyphicon glyph="remove" /> Löschen</Button>
         </h1>
         <form>

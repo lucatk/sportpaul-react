@@ -220,7 +220,7 @@ class OrdersTable extends Component {
           }
         }
         if(this.state.filterCustomer.length > 0) {
-          matcher = new RegExp(".*" + this.state.filterCustomer.replace("*", ".*") + ".*", "i");
+          matcher = new RegExp(".*" + this.state.filterCustomer.split("*").join(".*") + ".*", "i");
           if(!matcher.test(value.firstname + " " + value.lastname)) return false;
         }
         if(this.state.filterStatus.length > 0) {
