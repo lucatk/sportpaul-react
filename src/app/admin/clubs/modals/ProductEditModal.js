@@ -8,7 +8,7 @@ import {
   Glyphicon
 } from 'react-bootstrap';
 
-import ProductPriceInput from '../ProductPriceInput';
+import FormPriceInput from '../../../utils/FormPriceInput';
 import ProductPricegroupsControl from '../ProductPricegroupsControl';
 import ImageUploadControl from '../ImageUploadControl';
 
@@ -151,7 +151,7 @@ class ProductEditModal extends Component {
               <ControlLabel bsClass="col-sm-4 control-label">Zusatzbeflockung</ControlLabel>
               <div className="col-sm-8 flocking-edit">
                 <label><input type="checkbox" value="" checked={this.state.flockingEnabled} onChange={this.onFlockingEnabledChange} /> aktiv</label>
-                <ProductPriceInput enabled={this.state.flockingEnabled} value={this.state.flockingPrice} onValueChange={this.onFlockingPriceChange} />
+                <FormPriceInput enabled={this.state.flockingEnabled} value={this.state.flockingPrice} onValueChange={this.onFlockingPriceChange} />
               </div>
             </FormGroup>
             <FormGroup controlId="inputPicture" validationState={!this.state.picture ? 'error' : null}>

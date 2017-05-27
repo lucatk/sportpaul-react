@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 
 import { FormControl } from 'react-bootstrap';
 
-class ProductPriceInput extends Component {
+class FormPriceInput extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       price: this.props.value || 0,
-      priceTemp: this.props.value ? (this.props.value.toFixed(2).replace('.', ',') + ' €') : ''
+      priceTemp: this.props.value ? (this.props.value.toFixed(2).replace('.', ',') + ' €') : '',
+      placeholder: '10,00 €'
     };
 
     this.onPriceChange = this.onPriceChange.bind(this);
@@ -44,12 +45,15 @@ class ProductPriceInput extends Component {
       price: nextProps.value,
       priceTemp: nextProps.value ? (nextProps.value.toFixed(2).replace('.', ',') + ' €') : ''
     });
+    if(nextProps.placeholder) {
+      this.setState({placeholder:nextProps.placeholder});
+    }
   }
   render() {
     return (
-      <FormControl type="text" disabled={!(this.props.enabled===undefined?true:this.props.enabled)} value={this.state.priceTemp} placeholder={this.props.enabled===false?"":"10,00 €"} onChange={this.onPriceChange} onBlur={this.onPriceConfirm} />
+      <FormControl type="text" disabled={!(this.props.enabled===undefined?true:this.props.enabled)} value={this.state.priceTemp} placeholder={this.props.enabled===false?"":this.state.placeholder} onChange={this.onPriceChange} onBlur={this.onPriceConfirm} />
     );
   }
 }
 
-export default ProductPriceInput;
+export default FormPriceInput;

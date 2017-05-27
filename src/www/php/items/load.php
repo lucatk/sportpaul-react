@@ -10,16 +10,17 @@ $results = $db->fetchAll($stmt);
 $assoc = array();
 $i = 0;
 foreach($results as $row) {
-  $cstmt = $db->execute("SELECT name FROM products WHERE clubid=:clubid AND id=:productid", ["clubid" => $row['clubid'],
+  $cstmt = $db->execute("SELECT internalid, name, pricegroups FROM products WHERE clubid=:clubid AND id=:productid", ["clubid" => $row['clubid'],
                                                                                               "productid" => $row['id']]);
   $cresults = $db->fetchAssoc($cstmt, 1);
+  $results[$i]["internalid"] = $cresults["internalid"];
   $results[$i]["name"] = $cresults["name"];
+  $results[$i]["pricegroups"] = $cresults["pricegroups"];
 
-  array_walk($results[$i], function(&$s, $key){$s = utf8_encode($s);});
   $assoc[$row["id"]] = $results[$i];
   $i++;
 }
-
+array_walk_recursive($assoc, function(&$s){$s = utf8_decode($s);});
 die(json_encode($assoc));
 
 ?>

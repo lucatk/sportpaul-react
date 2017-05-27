@@ -337,7 +337,7 @@ class OrdersTable extends Component {
             </td>
             <td className="date">
               <Row>
-                <Col xs="4">
+                <Col xs={4}>
                   <FormControl componentClass="select" value={this.state.filterDateModifier} onChange={this.onFilterDateModifierChange}>
                     <option value="">Filter...</option>
                     <option value="separator" disabled></option>
@@ -346,7 +346,7 @@ class OrdersTable extends Component {
                     <option value="after">nach</option>
                   </FormControl>
                 </Col>
-                <Col xs="8"><FormControl type="text" value={this.state.filterDate} placeholder="Datum..." onChange={this.onFilterDateChange} /></Col>
+                <Col xs={8}><FormControl type="text" value={this.state.filterDate} placeholder="Datum..." onChange={this.onFilterDateChange} /></Col>
               </Row>
             </td>
             <td className="customer"><FormControl type="text" value={this.state.filterCustomer} placeholder="Filter..." onChange={this.onFilterCustomerChange} /></td>
@@ -396,7 +396,9 @@ class OrdersTable extends Component {
                   <td>{Statics.OrderStatus[row.status]}</td>
                   <td className="buttons">
                     <ButtonToolbar>
-                      <Link to={"/admin/orders/view/" + row.clubid + "/" + row.id}><Button bsSize="small"><Glyphicon glyph="search" /> Details</Button></Link>
+                      {this.props.processingMode
+                        ? <Link to={"/admin/orders/edit/" + row.clubid + "/" + row.id}><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
+                        : <Link to={"/admin/orders/view/" + row.clubid + "/" + row.id}><Button bsSize="small"><Glyphicon glyph="search" /> Details</Button></Link>}
                       <Button bsStyle="danger" bsSize="small" onClick={this.props.onRemove}><Glyphicon glyph="remove" /> Löschen</Button>
                     </ButtonToolbar>
                   </td>

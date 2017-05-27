@@ -31,7 +31,8 @@ class Orders extends Component {
       filterDateModifier: '',
       filterDate: '',
       filterCustomer: '',
-      filterStatus: ''
+      filterStatus: '',
+      processingMode: false
     };
 
     this.loadOrders();
@@ -44,6 +45,7 @@ class Orders extends Component {
     this.onFilterCustomerChange = this.onFilterCustomerChange.bind(this);
     this.onFilterStatusChange = this.onFilterStatusChange.bind(this);
     this.onOrderExportCheckChange = this.onOrderExportCheckChange.bind(this);
+    this.onClickSwitchMode = this.onClickSwitchMode.bind(this);
   }
   loadOrders() {
     this.setState({loading:true});
@@ -174,6 +176,9 @@ class Orders extends Component {
 
     // var xls = json2xls(json);
   }
+  onClickSwitchMode() {
+    this.setState({processingMode:!this.state.processingMode});
+  }
   componentWillReceiveProps(nextProps) {
     if(!nextProps.children) {
       this.loadOrders();
@@ -185,10 +190,15 @@ class Orders extends Component {
       <div>
         {!this.props.children && <div className="container" data-page="Orders">
           <LoadingOverlay show={this.state.loading} />
-          <h1 className="page-header">Bestellungen</h1>
+          <h1 className="page-header">
+            Bestellungen
+            {this.state.processingMode
+              ? <Button bsSize="small" onClick={this.onClickSwitchMode}><Glyphicon glyph="search" /> Normaler Modus</Button>
+              : <Button bsSize="small" onClick={this.onClickSwitchMode}><Glyphicon glyph="pencil" /> Bearbeitungsmodus</Button>}
+          </h1>
           {this.state.loadedOrders &&
             <div>
-              <OrdersTable data={this.state.orders} onRemove={this.openRemoveModal} onFilterClubChange={this.onFilterClubChange} onFilterDateChange={this.onFilterDateChange} onFilterCustomerChange={this.onFilterCustomerChange} onFilterStatusChange={this.onFilterStatusChange} onOrderExportCheckChange={this.onOrderExportCheckChange} />
+              <OrdersTable data={this.state.orders} processingMode={this.state.processingMode} onRemove={this.openRemoveModal} onFilterClubChange={this.onFilterClubChange} onFilterDateChange={this.onFilterDateChange} onFilterCustomerChange={this.onFilterCustomerChange} onFilterStatusChange={this.onFilterStatusChange} onOrderExportCheckChange={this.onOrderExportCheckChange} />
 
               <Modal show={this.state.showRemoveModal} onHide={this.closeRemoveModal} data-scope={this.state.removeModalScope.id}>
                 <Modal.Header closeButton>

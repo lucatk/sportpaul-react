@@ -24,7 +24,7 @@ foreach($cresults as $crow) {
 }
 if($results["status"] >= 1 && $orderDone) $results["status"] = 3;
 
-array_walk($results, function(&$s, $key){$s = utf8_encode($s);});
+array_walk_recursive($results, function(&$s){$s = utf8_decode($s);});
 die(json_encode($results));
 
 ?>

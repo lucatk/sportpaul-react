@@ -14,6 +14,10 @@
   margin-bottom: -10px;
 }
 
+.admin .container .page-header button {
+  margin-left: 5px;
+}
+
 .admin .container .page-header .unsaved-changes {
   float: right;
   padding-bottom: 10px;
@@ -68,6 +72,11 @@
   right: 0;
 }
 
+.admin .container .btn-toolbar .btn {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
 .admin td p {
   margin: 0;
 }
@@ -77,6 +86,24 @@
 .admin .container[data-page=ClubCreation] .form-group label[for=inputProducts],
 .admin .container[data-page=ClubCreation] .form-group table {
   margin: 116px 0 10px;
+}
+
+.admin .container[data-page=OrderEditing] .form-group .editing-container {
+  max-width: 60%;
+}
+
+.admin .container[data-page=OrderEditing] .form-group .row {
+  margin-left: -3px;
+  margin-right: -3px;
+}
+
+.admin .container[data-page=OrderEditing] .form-group .row > div {
+  padding-left: 3px;
+  padding-right: 3px;
+}
+
+.admin .container[data-page=OrderEditing] .form-group .row .form-group {
+  margin-bottom: 5px;
 }
 
 .admin .container .form-group .col-sm-11 {
@@ -176,6 +203,10 @@
 .admin .container[data-page=ClubCreation] td.buttons button {
   display: block;
   margin: 3px auto;
+}
+
+.admin .container[data-page=OrderEditing] td.status {
+  min-width: 120px;
 }
 
 .admin .container p.loading-error {
