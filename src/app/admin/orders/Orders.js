@@ -32,7 +32,11 @@ class Orders extends Component {
       filterDate: '',
       filterCustomer: '',
       filterStatus: '',
-      processingMode: false
+      filterProduct: -1,
+      sorting: '',
+      sortingMode: '',
+      processingMode: false,
+      selectedClubProducts: null
     };
 
     this.loadOrders();
@@ -41,9 +45,17 @@ class Orders extends Component {
     this.closeRemoveModal = this.closeRemoveModal.bind(this);
     this.removeOrder = this.removeOrder.bind(this);
     this.onFilterClubChange = this.onFilterClubChange.bind(this);
+    this.onFilterDateModifierChange = this.onFilterDateModifierChange.bind(this);
     this.onFilterDateChange = this.onFilterDateChange.bind(this);
     this.onFilterCustomerChange = this.onFilterCustomerChange.bind(this);
     this.onFilterStatusChange = this.onFilterStatusChange.bind(this);
+    this.onFilterProductChange = this.onFilterProductChange.bind(this);
+    this.onSortingClubClicked = this.onSortingClubClicked.bind(this);
+    this.onSortingDateClicked = this.onSortingDateClicked.bind(this);
+    this.onSortingCustomerClicked = this.onSortingCustomerClicked.bind(this);
+    this.onSortingAmountItemsClicked = this.onSortingAmountItemsClicked.bind(this);
+    this.onSortingTotalClicked = this.onSortingTotalClicked.bind(this);
+    this.onSortingStatusClicked = this.onSortingStatusClicked.bind(this);
     this.onOrderExportCheckChange = this.onOrderExportCheckChange.bind(this);
     this.onClickSwitchMode = this.onClickSwitchMode.bind(this);
   }
@@ -122,16 +134,124 @@ class Orders extends Component {
     this.setState({orders:newOrders});
   }
   onFilterClubChange(e) {
-    this.setState({filterClub: e});
+    if(e.target.value.length < 1) {
+      this.setState({filterClub: -1, selectedClubProducts: null, filterProduct: -1});
+    } else {
+      var clubid = parseInt(e.target.value);
+      this.setState({filterClub: clubid, selectedClubProducts: null, filterProduct: -1});
+
+      this.loadClubProducts(clubid);
+    }
   }
-  onFilterDateChange(mod, e) {
-    this.setState({filterDateModifier: mod, filterDate: e});
+  onFilterDateChange(e) {
+    this.setState({filterDate: e.target.value});
+  }
+  onFilterDateModifierChange(e) {
+    this.setState({filterDateModifier: e.target.value});
   }
   onFilterCustomerChange(e) {
-    this.setState({filterCustomer: e});
+    this.setState({filterCustomer: e.target.value});
   }
   onFilterStatusChange(e) {
-    this.setState({filterStatus: e});
+    if(e.target.value.length < 1) {
+      this.setState({filterStatus: ""});
+    } else {
+      this.setState({filterStatus: e.target.value});
+    }
+  }
+  onFilterProductChange(e) {
+    if(e.target.value.length < 1) {
+      this.setState({filterProduct: -1});
+    } else {
+      var productid = parseInt(e.target.value);
+      this.setState({filterProduct: productid});
+    }
+  }
+  onSortingClubClicked(e) {
+    if(this.state.sorting === 'club') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'club', sortingMode: 'asc'});
+    }
+  }
+  onSortingDateClicked(e) {
+    if(this.state.sorting === 'date') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'date', sortingMode: 'asc'});
+    }
+  }
+  onSortingCustomerClicked(e) {
+    if(this.state.sorting === 'customer') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'customer', sortingMode: 'asc'});
+    }
+  }
+  onSortingAmountItemsClicked(e) {
+    if(this.state.sorting === 'amitems') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'amitems', sortingMode: 'asc'});
+    }
+  }
+  onSortingTotalClicked(e) {
+    if(this.state.sorting === 'total') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'total', sortingMode: 'asc'});
+    }
+  }
+  onSortingStatusClicked(e) {
+    if(this.state.sorting === 'status') {
+      if(this.state.sortingMode === 'asc') {
+        this.setState({sortingMode: 'desc'});
+      } else {
+        this.setState({sorting: '', sortingMode: ''});
+      }
+    } else {
+      this.setState({sorting: 'status', sortingMode: 'asc'});
+    }
+  }
+  loadClubProducts(clubid) {
+    $.post({
+      url: 'php/products/load.php',
+      data: {
+        id: clubid
+      },
+      success: function(data) {
+        var products = JSON.parse(data);
+        var parsedProducts = [];
+        for(var i in products) {
+          parsedProducts[i] = products[i];
+          parsedProducts[i].defaultFlocking = parsedProducts[i].defaultFlocking == 1;
+        }
+
+        this.setState({
+          selectedClubProducts: parsedProducts
+        });
+      }.bind(this)
+    });
   }
   onClickExport() {
 
@@ -198,7 +318,31 @@ class Orders extends Component {
           </h1>
           {this.state.loadedOrders &&
             <div>
-              <OrdersTable data={this.state.orders} processingMode={this.state.processingMode} onRemove={this.openRemoveModal} onFilterClubChange={this.onFilterClubChange} onFilterDateChange={this.onFilterDateChange} onFilterCustomerChange={this.onFilterCustomerChange} onFilterStatusChange={this.onFilterStatusChange} onOrderExportCheckChange={this.onOrderExportCheckChange} />
+              <OrdersTable data={this.state.orders}
+                processingMode={this.state.processingMode}
+                filterClub={this.state.filterClub}
+                filterDateModifier={this.state.filterDateModifier}
+                filterDate={this.state.filterDate}
+                filterCustomer={this.state.filterCustomer}
+                filterStatus={this.state.filterStatus}
+                filterProduct={this.state.filterProduct}
+                selectedClubProducts={this.state.selectedClubProducts}
+                sorting={this.state.sorting}
+                sortingMode={this.state.sortingMode}
+                onFilterClubChange={this.onFilterClubChange}
+                onFilterDateModifierChange={this.onFilterDateModifierChange}
+                onFilterDateChange={this.onFilterDateChange}
+                onFilterCustomerChange={this.onFilterCustomerChange}
+                onFilterStatusChange={this.onFilterStatusChange}
+                onFilterProductChange={this.onFilterProductChange}
+                onSortingClubClicked={this.onSortingClubClicked}
+                onSortingDateClicked={this.onSortingDateClicked}
+                onSortingCustomerClicked={this.onSortingCustomerClicked}
+                onSortingAmountItemsClicked={this.onSortingAmountItemsClicked}
+                onSortingTotalClicked={this.onSortingTotalClicked}
+                onSortingStatusClicked={this.onSortingStatusClicked}
+                onExportCheckChange={this.onOrderExportCheckChange}
+                onRemove={this.openRemoveModal} />
 
               <Modal show={this.state.showRemoveModal} onHide={this.closeRemoveModal} data-scope={this.state.removeModalScope.id}>
                 <Modal.Header closeButton>
