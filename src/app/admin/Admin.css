@@ -25,7 +25,8 @@
 
 .admin .container .page-header .unsaved-changes small {
   font-size: .5em;
-  margin-right: 10px;
+  margin-left: 10px;
+  margin-right: 5px;
   vertical-align: middle;
 }
 

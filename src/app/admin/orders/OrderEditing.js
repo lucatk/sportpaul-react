@@ -345,11 +345,11 @@ class OrderEditing extends Component {
         <h1 className="page-header">
           Bestellung bearbeiten
           <small> ID: {this.state.clubid}/{this.state.id}</small>
-          <Button bsStyle="danger" bsSize="small" onClick={this.delete}><Glyphicon glyph="remove" /> Löschen</Button>
           <div className="unsaved-changes">
             {this.state.hasChanges && <small>Sie haben ungesicherte Änderungen!</small>}
             <Button bsStyle="success" bsSize="small" onClick={this.save}>Speichern</Button>
           </div>
+          <Link to="/admin/orders"><Button bsSize="small"><Glyphicon bsClass="flipped glyphicon" glyph="share-alt" /> Zurück</Button></Link>
         </h1>
         <form>
           <FormGroup controlId="inputClub">

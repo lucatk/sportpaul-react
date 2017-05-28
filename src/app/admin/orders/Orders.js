@@ -35,7 +35,6 @@ class Orders extends Component {
       filterProduct: -1,
       sorting: '',
       sortingMode: '',
-      processingMode: false,
       selectedClubProducts: null
     };
 
@@ -57,7 +56,6 @@ class Orders extends Component {
     this.onSortingTotalClicked = this.onSortingTotalClicked.bind(this);
     this.onSortingStatusClicked = this.onSortingStatusClicked.bind(this);
     this.onOrderExportCheckChange = this.onOrderExportCheckChange.bind(this);
-    this.onClickSwitchMode = this.onClickSwitchMode.bind(this);
   }
   loadOrders() {
     this.setState({loading:true});
@@ -296,9 +294,6 @@ class Orders extends Component {
 
     // var xls = json2xls(json);
   }
-  onClickSwitchMode() {
-    this.setState({processingMode:!this.state.processingMode});
-  }
   componentWillReceiveProps(nextProps) {
     if(!nextProps.children) {
       this.loadOrders();
@@ -310,16 +305,10 @@ class Orders extends Component {
       <div>
         {!this.props.children && <div className="container" data-page="Orders">
           <LoadingOverlay show={this.state.loading} />
-          <h1 className="page-header">
-            Bestellungen
-            {this.state.processingMode
-              ? <Button bsSize="small" onClick={this.onClickSwitchMode}><Glyphicon glyph="search" /> Normaler Modus</Button>
-              : <Button bsSize="small" onClick={this.onClickSwitchMode}><Glyphicon glyph="pencil" /> Bearbeitungsmodus</Button>}
-          </h1>
+          <h1 className="page-header">Bestellungen</h1>
           {this.state.loadedOrders &&
             <div>
               <OrdersTable data={this.state.orders}
-                processingMode={this.state.processingMode}
                 filterClub={this.state.filterClub}
                 filterDateModifier={this.state.filterDateModifier}
                 filterDate={this.state.filterDate}

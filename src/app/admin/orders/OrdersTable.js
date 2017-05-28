@@ -235,10 +235,8 @@ class OrdersTable extends Component {
                   <td>{Statics.OrderStatus[row.status]}</td>
                   <td className="buttons">
                     <ButtonToolbar>
-                      {this.props.processingMode
-                        ? <Link to={"/admin/orders/edit/" + row.clubid + "/" + row.id}><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
-                        : <Link to={"/admin/orders/view/" + row.clubid + "/" + row.id}><Button bsSize="small"><Glyphicon glyph="search" /> Details</Button></Link>}
-                      <Button bsStyle="danger" bsSize="small" onClick={this.props.onRemove}><Glyphicon glyph="remove" /> Löschen</Button>
+                      <Link to={"/admin/orders/view/" + row.clubid + "/" + row.id}><Button bsSize="small"><Glyphicon glyph="search" /> Details</Button></Link>
+                      <Link to={"/admin/orders/edit/" + row.clubid + "/" + row.id}><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
                     </ButtonToolbar>
                   </td>
                 </tr>

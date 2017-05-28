@@ -107,7 +107,8 @@ class OrderView extends Component {
         <h1 className="page-header">
           Bestellung: Details
           <small> ID: {this.state.clubid}/{this.state.id}</small>
-          <Button bsStyle="danger" bsSize="small"><Glyphicon glyph="remove" /> Löschen</Button>
+          <Link to={"/admin/orders/edit/" + this.state.clubid + "/" + this.state.id}><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
+          <Link to="/admin/orders"><Button bsSize="small"><Glyphicon bsClass="flipped glyphicon" glyph="share-alt" /> Zurück</Button></Link>
         </h1>
         <form>
           <FormGroup controlId="inputClub">
