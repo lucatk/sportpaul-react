@@ -81,6 +81,15 @@
 
 .product-list .product-item .panel {
   margin: 0;
+  border: 1px solid rgba(51,122,183, .25);
+  box-shadow: 0 0 10px rgba(51,122,183, .5);
+  transition: all .3s;
+}
+
+.product-list .product-item .panel:hover {
+  border: 1px solid rgba(51,122,183, 1);
+  box-shadow: 0 0 10px rgba(51,122,183, 1);
+  color: rgb(51,122,183);
 }
 
 .product-list .product-item .panel-body {
