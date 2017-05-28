@@ -19,15 +19,15 @@
 
 * (✓) Logobeflockung vermerken
 
-* Bestellungsstatus
-  * offen
-  * bestellt
-  * Weiterverarbeitung
-  * abholbereit
-  * abgeschlossen
+* √ Bestellungsstatus
+  * √ offen
+  * √  bestellt
+  * (√) Weiterverarbeitung
+  * √ abholbereit
+  * √ abgeschlossen
 
-* Einzelstatus ("variiert")
-* individueller Position-Status (verspätet)
+* √ Einzelstatus ("variiert")
+* √ individueller Position-Status (verspätet)
 
 * Bestellung abschließen Druckfunktion
 
@@ -38,3 +38,9 @@
 * ✓ Bestellung Suche nach Artikel
 
 * Bestellung überprüfen
+
+* Titel-Bug
+
+* Konsolenausgabe
+
+* Encoding-Bug
