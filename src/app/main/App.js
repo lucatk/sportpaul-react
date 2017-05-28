@@ -107,6 +107,7 @@ class App extends Component {
       internalid: product.internalid,
       flocking: '',
       flockingPrice: product.flockingPrice,
+      defaultFlocking: product.defaultFlocking,
       size: input.selectedSize,
       pricegroups: product.pricegroups,
       picture: product.picture

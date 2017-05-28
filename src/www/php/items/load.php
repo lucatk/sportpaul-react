@@ -10,12 +10,14 @@ $results = $db->fetchAll($stmt);
 $assoc = array();
 $i = 0;
 foreach($results as $row) {
-  $cstmt = $db->execute("SELECT internalid, name, pricegroups FROM products WHERE clubid=:clubid AND id=:productid", ["clubid" => $row['clubid'],
-                                                                                              "productid" => $row['id']]);
+  $cstmt = $db->execute("SELECT pricegroups FROM products WHERE clubid=:clubid AND id=:productid", ["clubid" => $row['clubid'],
+                                                                                                    "productid" => $row['id']]);
   $cresults = $db->fetchAssoc($cstmt, 1);
-  $results[$i]["internalid"] = $cresults["internalid"];
-  $results[$i]["name"] = $cresults["name"];
-  $results[$i]["pricegroups"] = $cresults["pricegroups"];
+  if(!$cresults) {
+    $results[$i]["pricegroups"] = "";
+  } else {
+    $results[$i]["pricegroups"] = $cresults["pricegroups"];
+  }
 
   $assoc[$row["id"]] = $results[$i];
   $i++;

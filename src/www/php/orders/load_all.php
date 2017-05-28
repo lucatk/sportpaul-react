@@ -3,7 +3,7 @@ include('../database.php');
 
 $db = new Database();
 
-$stmt = $db->execute("SELECT id, clubid, firstname, lastname, status, created, updated FROM orders", NULL);
+$stmt = $db->execute("SELECT id, clubid, clubname, firstname, lastname, status, created FROM orders", NULL);
 $results = $db->fetchAll($stmt);
 
 $i = 0;
@@ -28,10 +28,6 @@ foreach($results as $row) {
   if($row["status"] >= 1 && $orderDone) $results[$i]["status"] = 3;
   $results[$i]["total"] = $total;
   $results[$i]["itemCount"] = $cstmt->rowCount();
-
-  $cstmt = $db->execute("SELECT name FROM clubs WHERE id=:clubid", ["clubid" => $row['clubid']]);
-  $cresults = $db->fetchAssoc($cstmt, 1);
-  $results[$i]["clubname"] = $cresults["name"];
 
   array_walk($results[$i], function(&$s, $key){$s = utf8_encode($s);});
   $i++;

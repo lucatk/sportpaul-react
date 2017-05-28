@@ -63,7 +63,7 @@ class ClubList extends Component {
           )}
           {this.state.showAll && <NavItem eventKey={this.props.selectedClub} role="button show-all" onClick={this.resetShowAll}><Glyphicon glyph="chevron-up" /></NavItem>}
 
-          {(this.props.showCart || this.props.selectedClub <= -2) && <NavItem eventKey={-2} role="button highlight"><Glyphicon glyph="shopping-cart" /><p>Warenkorb</p><Badge pullRight>{this.props.cartContent}</Badge></NavItem>}
+          {(this.props.showCart || this.props.selectedClub <= -2) && <NavItem eventKey={-2} role="button highlight"><Glyphicon glyph="shopping-cart" /><p>Warenkorb</p>{this.props.cartContent > 0 && <Badge pullRight>{this.props.cartContent}</Badge>}</NavItem>}
         </Nav>
       </div>
     );

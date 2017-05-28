@@ -31,7 +31,8 @@ class OrderSummary extends Component {
         price: -1,
         displayPrice: -1,
         flocking: product.flocking,
-        flockingPrice: product.flockingPrice
+        flockingPrice: product.flockingPrice,
+        defaultFlocking: product.defaultFlocking
       };
       for(var z in product.pricegroups) {
         if(product.pricegroups[z].sizes.includes(product.size)) {
@@ -60,10 +61,18 @@ class OrderSummary extends Component {
       },
       success: function(data) {
         this.setState({loading:false, done:true});
-        var parsed = JSON.parse(data);
+        var parsed = null;
+        try {
+          parsed = JSON.parse(data);
+        } catch(e) {
+          console.log(data);
+          throw e;
+        }
+
         var success = false;
         if(parsed.error !== "00000" || parsed.rowsAffected < 1) {
           console.log("Error: ", parsed);
+
           this.setState({success:false});
         } else {
           success = true;

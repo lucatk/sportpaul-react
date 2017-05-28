@@ -112,7 +112,9 @@ class OrderEditing extends Component {
 
         Object.values(items).forEach((item) => {
           var parsedItem = item;
-          parsedItem.pricegroups = JSON.parse(item.pricegroups);
+          if(item.pricegroups.length > 0) {
+            parsedItem.pricegroups = JSON.parse(item.pricegroups);
+          }
           parsedItems.push(parsedItem);
         });
 
@@ -434,6 +436,18 @@ class OrderEditing extends Component {
               }).replace(",", "")} Uhr
             </ControlLabel>
           </FormGroup>
+          <FormGroup controlId="inputDateUpdated">
+            <ControlLabel bsClass="col-sm-1 control-label">Änderungsdatum</ControlLabel>
+            <ControlLabel bsClass="col-sm-11">
+              {(new Date(this.state.updated)).toLocaleString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+              }).replace(",", "")} Uhr
+            </ControlLabel>
+          </FormGroup>
           <FormGroup controlId="inputStatus">
             <ControlLabel bsClass="col-sm-1 control-label">Status</ControlLabel>
             <Col sm={11}>
@@ -474,13 +488,15 @@ class OrderEditing extends Component {
                           <td>{this.state.items[key].name}</td>
                           <td>{this.state.items[key].internalid}</td>
                           <td>
-                            <FormControl componentClass="select" value={this.state.items[key].size} onChange={this.onItemSizeChange.bind(this, key)}>
+                          {this.state.items[key].pricegroups.length > 0
+                          ? <FormControl componentClass="select" value={this.state.items[key].size} onChange={this.onItemSizeChange.bind(this, key)}>
                               {this.state.items[key].pricegroups.map((pricegroup, i) =>
                                 pricegroup.sizes.map((size, ii) =>
                                   <option key={ii} value={size}>{size}</option>
                                 )
                               )}
                             </FormControl>
+                          : this.state.items[key].size}
                           </td>
                           <td><FormControl type="text" value={this.state.items[key].flocking} onChange={this.onItemFlockingChange.bind(this, key)} /></td>
                           <td><FormPriceInput enabled={this.state.items[key].flocking && this.state.items[key].flocking.length > 0} placeholder="0,00 €" value={parseFloat(this.state.items[key].flockingPrice)} onValueChange={this.onItemFlockingPriceChange.bind(this, key)} /></td>

@@ -8,7 +8,7 @@ $results = $db->fetchAll($stmt);
 
 $i = 0;
 foreach($results as $row) {
-  $cstmt = $db->execute("SELECT id FROM orders WHERE clubid=:clubid AND NOT status='done'", ["clubid" => $row['id']]);
+  $cstmt = $db->execute("SELECT id FROM orders WHERE clubid=:clubid AND NOT status=3 AND NOT status=-1", ["clubid" => $row['id']]);
   $results[$i]["orderCount"] = $cstmt->rowCount();
 
   $cstmt = $db->execute("SELECT id FROM products WHERE clubid=:clubid", ["clubid" => $row['id']]);

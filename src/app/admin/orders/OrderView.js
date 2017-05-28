@@ -144,6 +144,18 @@ class OrderView extends Component {
               }).replace(",", "")} Uhr
             </ControlLabel>
           </FormGroup>
+          <FormGroup controlId="inputDateUpdated">
+            <ControlLabel bsClass="col-sm-1 control-label">Änderungsdatum</ControlLabel>
+            <ControlLabel bsClass="col-sm-11">
+              {(new Date(this.state.updated)).toLocaleString("de-DE", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+              }).replace(",", "")} Uhr
+            </ControlLabel>
+          </FormGroup>
           <FormGroup controlId="inputStatus">
             <ControlLabel bsClass="col-sm-1 control-label">Status</ControlLabel>
             <ControlLabel bsClass="col-sm-11">{Statics.OrderStatus[this.state.status]}</ControlLabel>

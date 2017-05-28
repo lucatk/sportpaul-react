@@ -7,10 +7,6 @@ $stmt = $db->execute("SELECT * FROM orders WHERE clubid=:clubid AND id=:orderid"
                                                                                     "clubid" => $_POST["clubid"]]);
 $results = $db->fetchAssoc($stmt, 1);
 
-$cstmt = $db->execute("SELECT name FROM clubs WHERE id=:clubid", ["clubid" => $_POST["clubid"]]);
-$cresults = $db->fetchAssoc($cstmt, 1);
-$results["clubname"] = $cresults["name"];
-
 $cstmt = $db->execute("SELECT status, flocking, flockingPrice, price FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $_POST["clubid"],
                                                                                             "orderid" => $_POST["id"]]);
 $cresults = $db->fetchAll($cstmt);
