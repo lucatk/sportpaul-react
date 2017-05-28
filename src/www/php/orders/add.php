@@ -33,6 +33,9 @@ if($stmt->errorCode() !== "00000") {
   $id = $db->lastInsertId();
   $cart = json_decode($_POST["cart"]);
   foreach($cart as $key => $item) {
+    if($item->flockingPrice === null || $item->flocking === null || strlen($item->flocking) < 1) {
+      $item->flockingPrice = 0;
+    }
     $stmt2 = $db->execute("INSERT INTO items(clubid, orderid, productid, flocking, size, price, flockingPrice) VALUES(:clubid, :orderid, :productid, :flocking, :size, :price, :flockingPrice)",
                           ["clubid" => $_POST["clubid"],
                            "orderid" => $id,
@@ -41,10 +44,11 @@ if($stmt->errorCode() !== "00000") {
                            "size" => $item->size,
                            "price" => $item->price,
                            "flockingPrice" => $item->flockingPrice]);
-    $rowsAffected += $stmt->rowCount();
+    $rowsAffected += $stmt2->rowCount();
     if($stmt2->errorCode() !== "00000") {
       die(json_encode([
         "error" => $stmt2->errorCode(),
+        "errorInfo" => $stmt2->errorInfo(),
         "rowsAffected" => $rowsAffected
       ]));
     }

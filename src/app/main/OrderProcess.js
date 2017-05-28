@@ -45,15 +45,15 @@ class OrderProcess extends Component {
   }
 
   onFirstnameChange(ev) {
-    this.setState({firstname:ev.target.value.trim()});
+    this.setState({firstname:ev.target.value});
   }
 
   onLastnameChange(ev) {
-    this.setState({lastname:ev.target.value.trim()});
+    this.setState({lastname:ev.target.value});
   }
 
   onStreetChange(ev) {
-    this.setState({street:ev.target.value.trim()});
+    this.setState({street:ev.target.value});
   }
 
   onHousenrChange(ev) {
@@ -65,7 +65,7 @@ class OrderProcess extends Component {
   }
 
   onTownChange(ev) {
-    this.setState({town:ev.target.value.trim()});
+    this.setState({town:ev.target.value});
   }
 
   onPhoneChange(ev) {
@@ -89,13 +89,13 @@ class OrderProcess extends Component {
   }
 
   validateAllInputs() {
-    if(this.state.firstname === undefined || this.validateInput(this.state.firstname, this.regexFirstname)) return false;
-    if(this.state.lastname === undefined || this.validateInput(this.state.lastname, this.regexLastname)) return false;
-    if(this.state.street === undefined || this.validateInput(this.state.street, this.regexStreet)) return false;
-    if(this.state.housenr === undefined || this.validateInput(this.state.housenr, this.regexHousenr)) return false;
-    if(this.state.postcode === undefined || this.validateInput(this.state.postcode, this.regexPostcode)) return false;
-    if(this.state.town === undefined || this.validateInput(this.state.town, this.regexTown)) return false;
-    if(this.state.phone === undefined || this.validateInput(this.state.phone, this.regexPhone)) return false;
+    if(this.state.firstname === undefined || this.validateInput(this.state.firstname.trim(), this.regexFirstname)) return false;
+    if(this.state.lastname === undefined || this.validateInput(this.state.lastname.trim(), this.regexLastname)) return false;
+    if(this.state.street === undefined || this.validateInput(this.state.street.trim(), this.regexStreet)) return false;
+    if(this.state.housenr === undefined || this.validateInput(this.state.housenr.trim(), this.regexHousenr)) return false;
+    if(this.state.postcode === undefined || this.validateInput(this.state.postcode.trim(), this.regexPostcode)) return false;
+    if(this.state.town === undefined || this.validateInput(this.state.town.trim(), this.regexTown)) return false;
+    if(this.state.phone === undefined || this.validateInput(this.state.phone.trim(), this.regexPhone)) return false;
     if(this.validateInput(this.state.email, this.regexEmail, true)) return false;
     return true;
   }

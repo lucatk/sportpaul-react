@@ -78,12 +78,7 @@ class OrderSummary extends Component {
     return (
       <div>
         <LoadingOverlay show={this.state.loading} />
-        {this.state.done && <div className="order-summary">
-          <h1 className="page-header">Bestellung abschließen</h1>
-          {this.state.success && <p className="done">Die Bestellung wurde aufgenommen. Informationen zur Bestellung werden an die E-Mail <span>{this.customerData.email}</span> gesendet.</p>}
-          {!this.state.success && <p className="done">Es gab einen Fehler bei der Bestellung.</p>}
-        </div>}
-        {!this.state.done && <div className="order-summary">
+        <div className="order-summary">
           <h1 className="page-header">Bestellung abschließen</h1>
           <Row>
             <Col lg="4">
@@ -125,8 +120,10 @@ class OrderSummary extends Component {
               </Table>
             </Col>
           </Row>
-          <Button bsStyle="primary" onClick={this.onClickOrder}>Bestellen</Button>
-        </div>}
+          {!this.state.done && <Button bsStyle="primary" onClick={this.onClickOrder}>Bestellen</Button>}
+          {(this.state.done && this.state.success) && <div className="done"><p>Die Bestellung wurde aufgenommen. Informationen zur Bestellung werden an die E-Mail <span>{this.customerData.email}</span> gesendet.</p><Button bsStyle="primary"><Glyphicon glyph="print" /> Bestellübersicht drucken</Button></div>}
+          {(this.state.done && !this.state.success) && <div className="done"><p>Es gab einen Fehler bei der Bestellung.</p></div>}
+        </div>
       </div>
     );
   }

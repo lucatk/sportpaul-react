@@ -39,6 +39,8 @@
 
 * Bestellung überprüfen
 
+* E-Mail-Versand
+
 * Titel-Bug
 
 * Konsolenausgabe

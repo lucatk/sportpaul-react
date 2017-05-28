@@ -302,6 +302,15 @@
   font-weight: bold;
 }
 
+.order-summary .done {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.order-summary .done p {
+  font-weight: bold;
+}
+
 /*@media(min-width: 970px) {
   .product-list .product-item {
     flex-basis: calc(33.33% - 40px);
