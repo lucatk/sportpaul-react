@@ -33,6 +33,7 @@ class OrderView extends Component {
       updated: null,
       status: '',
       items: [],
+      total: 0,
       loadedInfo: false,
       loadedItems: false,
       loading: true
@@ -180,7 +181,7 @@ class OrderView extends Component {
           </FormGroup>
           <FormGroup controlId="inputTotal">
             <ControlLabel bsClass="col-sm-1 control-label">Gesamtpreis</ControlLabel>
-            <ControlLabel bsClass="col-sm-11">{Object.keys(this.state.items).reduce((function(acc, val, i){return acc += parseFloat(this.state.items[val].price);}).bind(this), 0).toFixed(2).replace(".", ",")} €</ControlLabel>
+            <ControlLabel bsClass="col-sm-11">{parseFloat(this.state.total).toFixed(2).replace(".", ",")} €</ControlLabel>
           </FormGroup>
         </form>
       </div>

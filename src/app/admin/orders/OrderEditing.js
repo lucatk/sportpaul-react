@@ -37,6 +37,7 @@ class OrderEditing extends Component {
       updated: null,
       status: '',
       items: [],
+      total: 0,
       // showItemEditModal: false,
       // scopeItemEditModal: -1,
       // showItemRemoveModal: false,
@@ -259,6 +260,7 @@ class OrderEditing extends Component {
     var toUpdate = this.state.toUpdateItems;
     if(!toUpdate.includes(key)) toUpdate.push(key);
     this.setState({items: items, toUpdateItems: toUpdate, hasChanges: true});
+    this.calculateTotal(items);
   }
   onItemFlockingPriceChange(key, newPrice) {
     var items = this.state.items;
@@ -266,6 +268,7 @@ class OrderEditing extends Component {
     var toUpdate = this.state.toUpdateItems;
     if(!toUpdate.includes(key)) toUpdate.push(key);
     this.setState({items: items, toUpdateItems: toUpdate, hasChanges: true});
+    this.calculateTotal(items);
   }
   onItemPriceChange(key, newPrice) {
     var items = this.state.items;
@@ -273,6 +276,7 @@ class OrderEditing extends Component {
     var toUpdate = this.state.toUpdateItems;
     if(!toUpdate.includes(key)) toUpdate.push(key);
     this.setState({items: items, toUpdateItems: toUpdate, hasChanges: true});
+    this.calculateTotal(items);
     // TODO
   }
   onItemStatusChange(key, ev) {
@@ -321,6 +325,16 @@ class OrderEditing extends Component {
     var toUpdate = this.state.toUpdateItems;
     if(!toUpdate.includes(key)) toUpdate.push(key);
     this.setState({items: items, toUpdateItems: toUpdate, hasChanges: true});
+  }
+  calculateTotal(items) {
+    var total = 0;
+    items.forEach((item) => {
+      total += parseFloat(item.price);
+      if(item.flocking && item.flocking.length > 0) {
+        total += parseFloat(item.flockingPrice);
+      }
+    });
+    this.setState({total: total});
   }
   render() {
     document.title = "ID: " + this.state.clubid + "/" + this.state.id + " | Bestellung bearbeiten | Sport-Paul Vereinsbekleidung";
@@ -491,7 +505,7 @@ class OrderEditing extends Component {
           </FormGroup>
           <FormGroup controlId="inputTotal">
             <ControlLabel bsClass="col-sm-1 control-label">Gesamtpreis</ControlLabel>
-            <ControlLabel bsClass="col-sm-11">{Object.keys(this.state.items).reduce((function(acc, val, i){return acc += parseFloat(this.state.items[val].price);}).bind(this), 0).toFixed(2).replace(".", ",")} €</ControlLabel>
+            <ControlLabel bsClass="col-sm-11">{parseFloat(this.state.total).toFixed(2).replace(".", ",")} €</ControlLabel>
           </FormGroup>
         </form>
       </div>
