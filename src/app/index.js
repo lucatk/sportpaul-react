@@ -18,6 +18,7 @@ import ClubCreation from './admin/clubs/ClubCreation';
 
 import Orders from './admin/orders/Orders';
 import OrderView from './admin/orders/OrderView';
+import OrderEditing from './admin/orders/OrderEditing';
 
 import Settings from './admin/settings/Settings';
 
@@ -32,6 +33,7 @@ ReactDOM.render(
       </Route>
       <Route path="/admin/orders" component={Orders}>
         <Route path="/admin/orders/view/:clubid/:orderid" component={OrderView}></Route>
+        <Route path="/admin/orders/edit/:clubid/:orderid" component={OrderEditing}></Route>
       </Route>
       <Route path="/admin/settings" component={Settings}></Route>
     </Route>

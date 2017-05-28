@@ -3,7 +3,7 @@ import React, { Component, ReactDOM } from 'react';
 import { FormControl } from 'react-bootstrap';
 
 import ProductSizesInput from './ProductSizesInput';
-import ProductPriceInput from './ProductPriceInput';
+import FormPriceInput from '../../utils/FormPriceInput';
 
 class ProductPricegroupsControl extends Component {
   constructor(props) {
@@ -58,7 +58,7 @@ class ProductPricegroupsControl extends Component {
               <ProductSizesInput value={group.sizes} onValueChange={this.onSizesValueChange.bind(this, i)} ref={(input) => { this.sizesInputs[i] = input }} />
             </div>
             <div className="col-sm-4">
-              <ProductPriceInput value={group.price} onValueChange={this.onPriceValueChange.bind(this, i)} />
+              <FormPriceInput value={group.price} onValueChange={this.onPriceValueChange.bind(this, i)} />
             </div>
           </div>
         )}

@@ -3,29 +3,19 @@ include('../database.php');
 
 $db = new Database();
 
-if(isset($_FILES["logodata"])) {
-  $stmt = $db->execute("SELECT logodata FROM clubs WHERE id=:clubid", ["clubid" => $_POST["id"]]);
-  $results = $db->fetchAssoc($stmt, 1);
-  if($results["logodata"] !== null && strlen($results["logodata"]) > 0) {
-    unlink("../../clublogos/" . $results["logodata"]);
-  }
-
-  $fileName = time() . "-" . $_FILES["logodata"]["name"];
-  if(move_uploaded_file($_FILES["logodata"]["tmp_name"], "../../clublogos/" . $fileName)) {
-    $image = new Imagick();
-    $image->readImage("../../clublogos/" . $fileName);
-    $image->resizeImage(400, 400, Imagick::FILTER_CUBIC, 1, true);
-    $image->writeImage("../../clublogos/" . $fileName);
-    $image->clear();
-  }
-
-  $stmt = $db->execute("UPDATE clubs SET name=:name, logodata=:logodata WHERE id=:clubid", ["clubid" => $_POST["id"],
-                                                                                            "name" => $_POST["name"],
-                                                                                            "logodata" => $fileName]);
-} else {
-  $stmt = $db->execute("UPDATE clubs SET name=:name WHERE id=:clubid", ["clubid" => $_POST["id"],
-                                                                        "name" => $_POST["name"]]);
-}
+array_walk_recursive($_POST, function(&$entry){$entry=utf8_encode($entry);});
+$stmt = $db->execute("UPDATE orders SET firstname=:firstName, lastname=:lastName, street=:street, housenr=:housenr, postcode=:postCode, town=:town, email=:email, telephone=:telephone, status=:status, updated=NOW() WHERE clubid=:clubid AND id=:orderid",
+                      ["clubid" => $_POST["clubid"],
+                       "orderid" => $_POST["orderid"],
+                       "firstName" => $_POST["firstName"],
+                       "lastName" => $_POST["lastName"],
+                       "street" => $_POST["street"],
+                       "housenr" => $_POST["housenr"],
+                       "postCode" => $_POST["postCode"],
+                       "town" => $_POST["town"],
+                       "email" => $_POST["email"],
+                       "telephone" => $_POST["telephone"],
+                       "status" => $_POST["status"]]);
 
 die(json_encode([
   "error" => $stmt->errorCode(),

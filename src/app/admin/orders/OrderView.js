@@ -13,9 +13,6 @@ import {
 import * as Statics from "../../utils/Statics";
 import LoadingOverlay from '../../utils/LoadingOverlay';
 
-// import ProductEditModal from './modals/ProductEditModal';
-// import ProductRemovalModal from './modals/ProductRemovalModal';
-
 class OrderView extends Component {
   constructor(props) {
     super(props);
@@ -36,6 +33,7 @@ class OrderView extends Component {
       updated: null,
       status: '',
       items: [],
+      total: 0,
       loadedInfo: false,
       loadedItems: false,
       loading: true
@@ -84,12 +82,18 @@ class OrderView extends Component {
       },
       success: function(data) {
         var items = JSON.parse(data);
+        var parsedItems = [];
+
+        for(var i in items) {
+          parsedItems[i] = items[i];
+          parsedItems[i].flockingPrice = parseFloat(items[i].flockingPrice);
+        }
 
         loadedItems = true;
         doneProcess();
 
         this.setState({
-          items: items,
+          items: parsedItems,
           loadedItems: true
         });
       }.bind(this)
@@ -103,7 +107,8 @@ class OrderView extends Component {
         <h1 className="page-header">
           Bestellung: Details
           <small> ID: {this.state.clubid}/{this.state.id}</small>
-          <Button bsStyle="danger" bsSize="small"><Glyphicon glyph="remove" /> Löschen</Button>
+          <Link to={"/admin/orders/edit/" + this.state.clubid + "/" + this.state.id}><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
+          <Link to="/admin/orders"><Button bsSize="small"><Glyphicon bsClass="flipped glyphicon" glyph="share-alt" /> Zurück</Button></Link>
         </h1>
         <form>
           <FormGroup controlId="inputClub">
@@ -150,8 +155,8 @@ class OrderView extends Component {
                 <thead>
                   <tr>
                     <th>#</th>
-                    <th>Produkt #</th>
                     <th>Name</th>
+                    <th>Artikelnr.</th>
                     <th>Größe</th>
                     <th>Beflockung</th>
                     <th>Preis</th>
@@ -159,27 +164,14 @@ class OrderView extends Component {
                   </tr>
                 </thead>
                 <tbody>
-                  {/*<tr data-id="0" data-name="Testprodukt 1">
-                    <td>0</td>
-                    <td className="product-name">Testprodukt 1</td>
-                    <td>M</td>
-                    <td>M. Mustermann</td>
-                    <td>52,48 €</td>
-                    <td className="buttons">
-                      <ButtonToolbar>
-                        <Button bsSize="small" onClick=*this.openEditProductModal*><Glyphicon glyph="pencil" /></Button>
-                        <Button bsSize="small" bsStyle="danger" onClick=*this.openRemoveProductModal*><Glyphicon glyph="remove" /></Button>
-                      </ButtonToolbar>
-                    </td>
-                  </tr>*/}
                   {this.state.items && Object.keys(this.state.items).length > 0
                     ? Object.keys(this.state.items).map((key) =>
                         <tr key={key} data-id={key} data-name={this.state.items[key].name}>
                           <td>{key}</td>
-                          <td>{this.state.items[key].productid}</td>
                           <td>{this.state.items[key].name}</td>
+                          <td>{this.state.items[key].internalid}</td>
                           <td>{this.state.items[key].size}</td>
-                          <td>{this.state.items[key].flocking}</td>
+                          <td>{this.state.items[key].flocking} {(this.state.items[key].flocking && this.state.items[key].flocking.length > 0 && this.state.items[key].flockingPrice > 0) && <i>(+{this.state.items[key].flockingPrice.toFixed(2).replace(".", ",")} €)</i>}</td>
                           <td>{parseFloat(this.state.items[key].price).toFixed(2).replace(".", ",")} €</td>
                           <td>{Statics.ItemStatus[this.state.items[key].status]}</td>
                         </tr>
@@ -190,7 +182,7 @@ class OrderView extends Component {
           </FormGroup>
           <FormGroup controlId="inputTotal">
             <ControlLabel bsClass="col-sm-1 control-label">Gesamtpreis</ControlLabel>
-            <ControlLabel bsClass="col-sm-11">{Object.keys(this.state.items).reduce((function(acc, val, i){return acc += parseFloat(this.state.items[val].price);}).bind(this), 0).toFixed(2).replace(".", ",")} €</ControlLabel>
+            <ControlLabel bsClass="col-sm-11">{parseFloat(this.state.total).toFixed(2).replace(".", ",")} €</ControlLabel>
           </FormGroup>
         </form>
       </div>

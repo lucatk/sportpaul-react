@@ -8,13 +8,16 @@ $results = $db->fetchAll($stmt);
 
 $i = 0;
 foreach($results as $row) {
-  $cstmt = $db->execute("SELECT status, price FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $row['clubid'],
+  $cstmt = $db->execute("SELECT status, price, flocking, flockingPrice FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $row['clubid'],
                                                                                               "orderid" => $row['id']]);
   $cresults = $db->fetchAll($cstmt);
   $total = 0;
   $orderDone = true;
   foreach($cresults as $crow) {
     $total += $crow["price"];
+    if($crow["flocking"] != null && strlen($crow["flocking"]) > 0) {
+      $total += $crow["flockingPrice"];
+    }
     if($row["status"] === 2) {
       if($crow["status"] < 3) $orderDone = false;
     } else {
