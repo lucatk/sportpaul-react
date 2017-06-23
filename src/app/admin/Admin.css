@@ -210,6 +210,22 @@
   min-width: 120px;
 }
 
+.admin .container[data-page=Settings] .form-group {
+  margin: 0;
+}
+
+.admin .container[data-page=Settings] .row {
+  margin-bottom: 7px;
+}
+
+.admin .container[data-page=Settings] .settings-tab[data-tab=Mailing] .row:first-of-type {
+  margin-bottom: 0;
+}
+
+.admin .container[data-page=Settings] .settings-tab[data-tab=Mailing] form[data-disabled=true] label.control-label {
+  color: #bbb;
+}
+
 .admin .container p.loading-error {
   text-align: center;
   color: #777;
@@ -218,6 +234,10 @@
 .admin .container label:not(.control-label) {
   font-weight: normal;
   cursor: auto;
+}
+
+.admin .container .checkbox label {
+  cursor: default;
 }
 
 .btn-toolbar .btn {

@@ -9,7 +9,6 @@ class Admin extends Component {
   constructor(props) {
     super(props);
   }
-
   render() {
     document.title = "Admin-Home | Sport-Paul Vereinsbekleidung";
     return (
@@ -27,7 +26,7 @@ class Admin extends Component {
             <NavItem eventKey={4} href="#/admin/settings">Einstellungen</NavItem>
           </Nav>
           <Nav pullRight>
-            <NavItem eventKey={1} href="#/">zur Hauptseite</NavItem>
+            <NavItem eventKey={-1} href="#/">zur Hauptseite</NavItem>
           </Nav>
         </Navbar>
         {!this.props.children && ""}
