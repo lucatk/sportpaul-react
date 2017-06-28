@@ -218,6 +218,15 @@
   margin-bottom: 7px;
 }
 
+.admin .container[data-page=Settings] .row:first-of-type .form-group {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.admin .container[data-page=Settings] .row:first-of-type .checkbox {
+  margin-top: 0;
+}
+
 .admin .container[data-page=Settings] .settings-tab[data-tab=Mailing] .row:first-of-type {
   margin-bottom: 0;
 }

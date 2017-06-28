@@ -50,7 +50,11 @@ class OrderEditing extends Component {
       loadedItems: false,
       loading: true,
       hasChanges: false
-    }
+    };
+
+    this.notificationsEnabled = false;
+    this.infoNotificationSubject = "";
+    this.toNotify = [];
 
     this.componentWillReceiveProps(this.props);
 
@@ -127,27 +131,69 @@ class OrderEditing extends Component {
         });
       }.bind(this)
     });
+    $.post({
+      url: 'php/settings/load.php',
+      data: {
+        names: JSON.stringify(["mail_enablenotifications", "subject_articlereceivedinfo"])
+      },
+      success: function(data) {
+        var settings = JSON.parse(data);
+        this.notificationsEnabled = (settings["mail_enablenotifications"] == "1");
+        this.infoNotificationSubject = settings["subject_articlereceivedinfo"];
+      }.bind(this)
+    });
   }
   save() {
     var updatedOrderInfo = false;
+    var notifiedCustomer = false;
     var error = false;
     var toUpdateCount = this.state.toUpdateItems.length;
 
-    var doneProcess = () => {
+    var doneProcess = (() => {
       if(!updatedOrderInfo || toUpdateCount > 0) return;
-
-      this.setState({
-        toUpdateItems: [],
-        hasChanges: false,
-        loading: false
-      });
+      // || (notifyCustomer && !notifiedCustomer)
 
       if(error) {
         console.log("error");
       } else {
-        this.props.router.push("/admin/orders");
+        if(this.toNotify.length > 0 && this.notificationsEnabled && this.state.email && this.state.email.length > 0) {
+          var receivedItems = this.state.items.filter((item) => (item.status == 2));
+          this.popupModal.showModal("Möchten Sie den Kunden über die Statusänderung der Artikel informieren?", "Diese Bestellung enthält " + receivedItems.length + " Artikel die abholbereit sind. Soll der Kunde darüber informiert werden?", (answer) => {
+            var data = new FormData();
+            data.append("template", "receiveditems_notification");
+            data.append("email", this.state.email);
+            data.append("subject", this.infoNotificationSubject);
+            data.append("clubname", this.state.clubname);
+            data.append("firstname", this.state.firstname);
+            data.append("lastname", this.state.lastname);
+            data.append("items", JSON.stringify(receivedItems));
+            $.post({
+              url: 'php/mailing/send_template.php',
+              contentType: false,
+              processData: false,
+              data: data,
+              success: function(data) {
+                console.log(data);
+                this.toNotify = [];
+                this.setState({
+                  toUpdateItems: [],
+                  hasChanges: false,
+                  loading: false
+                });
+                this.props.router.push("/admin/orders");
+              }.bind(this)
+            });
+          }, "Ja", "Nein");
+        } else {
+          this.setState({
+            toUpdateItems: [],
+            hasChanges: false,
+            loading: false
+          });
+          this.props.router.push("/admin/orders");
+        }
       }
-    };
+    }).bind(this);
 
     var data = new FormData();
     data.append("orderid", this.state.id);
@@ -282,8 +328,11 @@ class OrderEditing extends Component {
     // TODO
   }
   onItemStatusChange(key, ev) {
+    var oldItemStatus = this.state.items[key].status;
+
+    console.log(ev.target.value, this.state.status);
     if(ev.target.value == -1) {
-      if(this.state.status > 1) {
+      if(parseInt(this.state.status) > 1) {
         var value = ev.target.value;
         this.popupModal.showModal("Möchten Sie den Status wirklich ändern?", "Durch diese Statusänderung wird der Status der Bestellung auf \"" + Statics.OrderStatus[1] + "\" gesetzt.", function(success) {
           if(success) {
@@ -296,37 +345,68 @@ class OrderEditing extends Component {
         }.bind(this), "Okay", "Abbrechen");
         return;
       }
-    } else if(ev.target.value < 3) {
-      if(this.state.status > 2) {
-        var value = ev.target.value;
-        this.popupModal.showModal("Möchten Sie den Status wirklich ändern?", "Durch diese Statusänderung wird der Status der Bestellung auf \"" + Statics.OrderStatus[2] + "\" gesetzt.", function(success) {
-          if(success) {
-            var items = this.state.items;
-            items[key].status = value;
-            var toUpdate = this.state.toUpdateItems;
-            if(!toUpdate.includes(key)) toUpdate.push(key);
-            this.setState({items: items, toUpdateItems: toUpdate, status: 2, hasChanges: true});
-          }
-        }.bind(this), "Okay", "Abbrechen");
-        return;
-      }
+    } else if(ev.target.value > -1) {
+      if(ev.target.value < 3) {
+        if(parseInt(this.state.status) > 2) {
+          var value = ev.target.value;
+          this.popupModal.showModal("Möchten Sie den Status wirklich ändern?", "Durch diese Statusänderung wird der Status der Bestellung auf \"" + Statics.OrderStatus[2] + "\" gesetzt.", function(success) {
+            if(success) {
+              var items = this.state.items;
+              items[key].status = value;
+              var toUpdate = this.state.toUpdateItems;
+              if(!toUpdate.includes(key)) toUpdate.push(key);
+              this.setState({items: items, toUpdateItems: toUpdate, status: 2, hasChanges: true});
+            }
+          }.bind(this), "Okay", "Abbrechen");
+          return;
+        }
+      } else {
+
+    
     }
     var items = this.state.items;
     items[key].status = ev.target.value;
+
+    this.validateItemStatus(key, items[key], oldItemStatus);
+
     var toUpdate = this.state.toUpdateItems;
     if(!toUpdate.includes(key)) toUpdate.push(key);
     this.setState({items: items, toUpdateItems: toUpdate, hasChanges: true});
   }
   onItemStatusUp(key, ev) {
     var items = this.state.items;
+    var oldItemStatus = items[key].status;
     if(items[key].status == 0) {
       items[key].status = 2;
     } else {
       items[key].status++;
     }
+
+    this.validateItemStatus(items[key], oldItemStatus);
+
     var toUpdate = this.state.toUpdateItems;
     if(!toUpdate.includes(key)) toUpdate.push(key);
     this.setState({items: items, toUpdateItems: toUpdate, hasChanges: true});
+  }
+  validateItemStatus(key, item, oldItemStatus) {
+    var orderDone = !this.state.items.some((item) => {
+      if(item.status < 3) {
+        return true;
+      }
+    });
+    if(orderDone) {
+      this.popupModal.showModal("Soll der Status der Bestellung geändert werden?", "Alle Positionen haben den Status \"" + Statics.ItemStatus[3] + "\". Soll auch der Status der Bestellung auf \"" + Statics.OrderStatus[3] + "\" gesetzt werden?", function(success) {
+        if(success) {
+          this.setState({status: 3});
+        }
+      }.bind(this), "Ja", "Nein");
+    }
+    if(oldItemStatus < 2 && item.status == 2 && !this.toNotify.includes(key)) {
+      this.toNotify.push(key);
+    }
+    if(this.toNotify.includes(key) && item.status < 2) {
+      delete this.toNotify[key];
+    }
   }
   calculateTotal(items) {
     var total = 0;
