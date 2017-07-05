@@ -23,12 +23,11 @@ class OrderView extends Component {
       clubname: '',
       firstname: '',
       lastname: '',
-      street: '',
-      housenr: '',
+      address: '',
       postcode: '',
       town: '',
       email: '',
-      telephone: '',
+      phone: '',
       created: null,
       updated: null,
       status: '',
@@ -120,13 +119,13 @@ class OrderView extends Component {
             <ControlLabel bsClass="col-sm-1 control-label">Kunde</ControlLabel>
             <ControlLabel bsClass="col-sm-11">
               <p className="name">{this.state.firstname} {this.state.lastname}</p>
-              <p className="address">{this.state.street} {this.state.housenr}</p>
+              <p className="address">{this.state.address}</p>
               <p className="town">{this.state.postcode} {this.state.town}</p>
             </ControlLabel>
           </FormGroup>
-          <FormGroup controlId="inputTelephone">
+          <FormGroup controlId="inputPhone">
             <ControlLabel bsClass="col-sm-1 control-label">Telefon</ControlLabel>
-            <ControlLabel bsClass="col-sm-11">{this.state.telephone}</ControlLabel>
+            <ControlLabel bsClass="col-sm-11">{this.state.phone}</ControlLabel>
           </FormGroup>
           {this.state.email.length > 0 && <FormGroup controlId="inputEmail">
             <ControlLabel bsClass="col-sm-1 control-label">E-Mail</ControlLabel>

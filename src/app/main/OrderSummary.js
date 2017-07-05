@@ -94,7 +94,7 @@ class OrderSummary extends Component {
               <div className="customer-data">
                 <h2>Kundeninformationen:</h2>
                 <p>{this.customerData.firstname} {this.customerData.lastname}</p>
-                <p>{this.customerData.street} {this.customerData.housenr}</p>
+                <p>{this.customerData.address}</p>
                 <p>{this.customerData.postcode} {this.customerData.town}</p>
                 <p>Telefon: {this.customerData.phone}</p>
                 <p>E-Mail: {this.customerData.email}</p>

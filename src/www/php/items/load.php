@@ -14,15 +14,16 @@ foreach($results as $row) {
                                                                                                     "productid" => $row['id']]);
   $cresults = $db->fetchAssoc($cstmt, 1);
   if(!$cresults) {
-    $results[$i]["pricegroups"] = "";
+    $row["pricegroups"] = "";
   } else {
-    $results[$i]["pricegroups"] = $cresults["pricegroups"];
+    $row["pricegroups"] = $cresults["pricegroups"];
   }
 
-  $assoc[$row["id"]] = $results[$i];
+  // array_walk($row, function(&$s, $key){$s = iconv("LATIN-1", "UTF-8", $s);});
+  $assoc[$row["id"]] = $row;
   $i++;
 }
-array_walk_recursive($assoc, function(&$s){$s = utf8_decode($s);});
+
 die(json_encode($assoc));
 
 ?>
