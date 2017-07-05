@@ -227,11 +227,11 @@
   margin-top: 0;
 }
 
-.admin .container[data-page=Settings] .settings-tab[data-tab=Mailing] .row:first-of-type {
+/*.admin .container[data-page=Settings] .settings-tab[data-tab=Mailing] .row:first-of-type {
   margin-bottom: 0;
-}
+}*/
 
-.admin .container[data-page=Settings] .settings-tab[data-tab=Mailing] form[data-disabled=true] label.control-label {
+.admin .container[data-page=Settings] form[data-disabled=true] label.control-label {
   color: #bbb;
 }
 

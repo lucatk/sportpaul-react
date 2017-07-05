@@ -12,7 +12,7 @@ if(isset($_POST["names"])) {
 }
 $results = $db->fetchAllPairs($stmt);
 
-array_walk($results, function(&$s, $key){if(gettype($s) === "string") {$s = utf8_encode($s);}});
+// array_walk($results, function(&$s, $key){if(gettype($s) === "string") {$s = utf8_encode($s);}});
 
 die(json_encode($results));
 

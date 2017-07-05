@@ -66,7 +66,7 @@
         <td class="container" style="font-family:sans-serif;font-size:14px;vertical-align:top;display:block;max-width:580px;padding:10px;width:580px;Margin:0 auto !important;">
           <div class="content" style="box-sizing:border-box;display:block;Margin:0 auto;max-width:580px;padding:10px;">
             <!-- START CENTERED WHITE CONTAINER -->
-            <span class="preheader" style="color:transparent;display:none;height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;visibility:hidden;width:0;">Einer oder mehrere Ihrer Artikel stehen zur Abholung bereit!</span>
+            <span class="preheader" style="color:transparent;display:none;height:0;max-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;visibility:hidden;width:0;">Ihre Bestellung wurde angenommen und wird bearbeitet.</span>
             <table class="main" style="border-collapse:separate;mso-table-lspace:0pt;mso-table-rspace:0pt;background:#fff;border-radius:3px;width:100%;">
               <!-- START MAIN CONTENT AREA -->
               <tr>
@@ -75,15 +75,20 @@
                     <tr>
                       <td style="font-family:sans-serif;font-size:14px;vertical-align:top;">
                         <p style="font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;">Sehr geehrter Herr <?php echo $_POST["lastname"]; ?>,</p>
-                        <p style="font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;">folgende Artikel sind eingetroffen und stehen zur Abholung bereit:</p>
-                        <?php $items = json_decode($_POST["items"]); ?>
+                        <p style="font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:10px;">Ihre Bestellung wurde soeben bestätigt und befindet sich in Bearbeitung.</p>
                         <table class="item-list" border="0" cellpadding="0" cellspacing="0" style="border-collapse:separate;mso-table-lspace:0pt;mso-table-rspace:0pt;width:100%;margin-bottom:15px;">
-                          <?php foreach($items as $item) { ?>
                           <tr>
-                            <td class="bullet-point" style="font-family:sans-serif;font-size:14px;vertical-align:top;padding:0 6px;">•</td>
-                            <td style="font-family:sans-serif;font-size:14px;vertical-align:top;"><?php echo $item->name ?> (Art. Nr. <?php echo $item->internalid ?>, Größe: <?php echo $item->size ?><?php echo (strlen($item->flocking) > 0 ? "; Beflockung: " . $item->flocking : "") ?>)</td>
+                            <td style="font-family:sans-serif;font-size:14px;vertical-align:top;font-weight:bold;">Bestelldetails:</td>
                           </tr>
-                          <?php } ?>
+                          <tr>
+                            <td style="font-family:sans-serif;font-size:14px;vertical-align:top;padding: 0 15px;font-weight:bold;">Verein: <span style="font-weight:normal;"><?php echo $_POST["clubname"]; ?></span></td>
+                          </tr>
+                          <tr>
+                            <td style="font-family:sans-serif;font-size:14px;vertical-align:top;padding: 0 15px;font-weight:bold;">Bestellt am: <span style="font-weight:normal;"><?php echo date("d.m.Y H:i", strtotime($_POST["created"])); ?> Uhr</span></td>
+                          </tr>
+                          <tr>
+                            <td style="font-family:sans-serif;font-size:14px;vertical-align:top;padding: 0 15px;font-weight:bold;">Gesamt: <span style="font-weight:normal;"><?php echo number_format(floatval($_POST["total"]), 2, ",", ""); ?> €</span></td>
+                          </tr>
                         </table>
                         <p class="ending" style="font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;margin-bottom:5px !important;">Mit freundlichen Grüßen,</p>
                         <p class="no-bmargin" style="font-family:sans-serif;font-size:14px;font-weight:normal;margin:0;Margin-bottom:15px;margin-bottom:0 !important;">Michael Egerter</p>

@@ -27,12 +27,11 @@ class OrderEditing extends Component {
       clubname: '',
       firstname: '',
       lastname: '',
-      street: '',
-      housenr: '',
+      address: '',
       postcode: '',
       town: '',
       email: '',
-      telephone: '',
+      phone: '',
       created: null,
       updated: null,
       status: '',
@@ -52,6 +51,7 @@ class OrderEditing extends Component {
       hasChanges: false
     };
 
+    this.oldStatus = -1;
     this.notificationsEnabled = false;
     this.infoNotificationSubject = "";
     this.toNotify = [];
@@ -63,11 +63,10 @@ class OrderEditing extends Component {
 
     this.onFirstNameChange = this.onFirstNameChange.bind(this);
     this.onLastNameChange = this.onLastNameChange.bind(this);
-    this.onStreetChange = this.onStreetChange.bind(this);
-    this.onHousenrChange = this.onHousenrChange.bind(this);
+    this.onAddressChange = this.onAddressChange.bind(this);
     this.onPostcodeChange = this.onPostcodeChange.bind(this);
     this.onTownChange = this.onTownChange.bind(this);
-    this.onTelephoneChange = this.onTelephoneChange.bind(this);
+    this.onPhoneChange = this.onPhoneChange.bind(this);
     this.onEmailChange = this.onEmailChange.bind(this);
     this.onStatusChange = this.onStatusChange.bind(this);
     // TODO
@@ -102,6 +101,7 @@ class OrderEditing extends Component {
           ...parsed,
           loadedInfo: true
         });
+        this.oldStatus = parsed.status;
       }.bind(this)
     });
     $.post({
@@ -134,21 +134,37 @@ class OrderEditing extends Component {
     $.post({
       url: 'php/settings/load.php',
       data: {
-        names: JSON.stringify(["mail_enablenotifications", "subject_articlereceivedinfo"])
+        names: JSON.stringify(["mail_enablenotifications", "subject_articlereceivedinfo", "subject_orderconfirmed"])
       },
       success: function(data) {
         var settings = JSON.parse(data);
         this.notificationsEnabled = (settings["mail_enablenotifications"] == "1");
+        this.orderConfirmedSubject = settings["subject_orderconfirmed"];
         this.infoNotificationSubject = settings["subject_articlereceivedinfo"];
       }.bind(this)
     });
   }
   save() {
     var updatedOrderInfo = false;
-    var notifiedCustomer = false;
+    // var notifiedCustomer = false;
+
+    var sentItemStatusNotification = false;
+    var sentOrderConfirmedNotification = false;
+
     var error = false;
     var toUpdateCount = this.state.toUpdateItems.length;
 
+    var doneNotifications = (() => {
+      if(!sentItemStatusNotification || !sentOrderConfirmedNotification) return;
+
+      this.toNotify = [];
+      this.setState({
+        toUpdateItems: [],
+        hasChanges: false,
+        loading: false
+      });
+      this.props.router.push("/admin/orders");
+    }).bind(this);
     var doneProcess = (() => {
       if(!updatedOrderInfo || toUpdateCount > 0) return;
       // || (notifyCustomer && !notifiedCustomer)
@@ -156,34 +172,62 @@ class OrderEditing extends Component {
       if(error) {
         console.log("error");
       } else {
-        if(this.toNotify.length > 0 && this.notificationsEnabled && this.state.email && this.state.email.length > 0) {
-          var receivedItems = this.state.items.filter((item) => (item.status == 2));
-          this.popupModal.showModal("Möchten Sie den Kunden über die Statusänderung der Artikel informieren?", "Diese Bestellung enthält " + receivedItems.length + " Artikel die abholbereit sind. Soll der Kunde darüber informiert werden?", (answer) => {
-            var data = new FormData();
-            data.append("template", "receiveditems_notification");
-            data.append("email", this.state.email);
-            data.append("subject", this.infoNotificationSubject);
-            data.append("clubname", this.state.clubname);
-            data.append("firstname", this.state.firstname);
-            data.append("lastname", this.state.lastname);
-            data.append("items", JSON.stringify(receivedItems));
-            $.post({
-              url: 'php/mailing/send_template.php',
-              contentType: false,
-              processData: false,
-              data: data,
-              success: function(data) {
-                console.log(data);
-                this.toNotify = [];
-                this.setState({
-                  toUpdateItems: [],
-                  hasChanges: false,
-                  loading: false
-                });
-                this.props.router.push("/admin/orders");
-              }.bind(this)
-            });
-          }, "Ja", "Nein");
+        if(this.notificationsEnabled && this.state.email && this.state.email.length > 0) {
+          if(this.oldStatus < 1 && this.state.status >= 1) {
+            this.popupModal.showModal("Möchten Sie den Kunden über die Bestätigung der Bestellung informieren?", "Der Status dieser Bestellung wurde von " + Statics.OrderStatus[this.oldStatus] + " zu " + Statics.OrderStatus[this.state.status] + " geändert und somit wurde die Bestellung angenommen. Soll der Kunde darüber informiert werden?", (answer) => {
+              var data = new FormData();
+              data.append("template", "orderconfirmed_notification");
+              data.append("email", this.state.email);
+              data.append("subject", this.orderConfirmedSubject);
+              data.append("clubname", this.state.clubname);
+              data.append("firstname", this.state.firstname);
+              data.append("lastname", this.state.lastname);
+              data.append("created", this.state.created);
+              this.calculateTotal(this.state.items);
+              data.append("total", this.state.total);
+              $.post({
+                url: 'php/mailing/send_template.php',
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function(data) {
+                  console.log(data);
+                  sentOrderConfirmedNotification = true;
+                  doneNotifications();
+                }.bind(this)
+              });
+            }, "Ja", "Nein");
+          } else {
+            sentOrderConfirmedNotification = true;
+            doneNotifications();
+          }
+          if(this.toNotify.length > 0) {
+            var receivedItems = this.state.items.filter((item) => (item.status == 2));
+            this.popupModal.showModal("Möchten Sie den Kunden über die Statusänderung der Artikel informieren?", "Diese Bestellung enthält " + receivedItems.length + " Artikel die abholbereit sind. Soll der Kunde darüber informiert werden?", (answer) => {
+              var data = new FormData();
+              data.append("template", "receiveditems_notification");
+              data.append("email", this.state.email);
+              data.append("subject", this.infoNotificationSubject);
+              data.append("clubname", this.state.clubname);
+              data.append("firstname", this.state.firstname);
+              data.append("lastname", this.state.lastname);
+              data.append("items", JSON.stringify(receivedItems));
+              $.post({
+                url: 'php/mailing/send_template.php',
+                contentType: false,
+                processData: false,
+                data: data,
+                success: function(data) {
+                  console.log(data);
+                  sentItemStatusNotification = true;
+                  doneNotifications();
+                }.bind(this)
+              });
+            }, "Ja", "Nein");
+          } else {
+            sentItemStatusNotification = true;
+            doneNotifications();
+          }
         } else {
           this.setState({
             toUpdateItems: [],
@@ -200,12 +244,11 @@ class OrderEditing extends Component {
     data.append("clubid", this.state.clubid);
     data.append("firstName", this.state.firstname);
     data.append("lastName", this.state.lastname);
-    data.append("street", this.state.street);
-    data.append("housenr", this.state.housenr);
+    data.append("address", this.state.address);
     data.append("postCode", this.state.postcode);
     data.append("town", this.state.town);
     data.append("email", this.state.email);
-    data.append("telephone", this.state.telephone);
+    data.append("phone", this.state.phone);
     data.append("status", this.state.status);
     $.post({
       url: 'php/orders/update.php',
@@ -259,11 +302,8 @@ class OrderEditing extends Component {
   onLastNameChange(ev) {
     this.setState({lastname: ev.target.value, hasChanges: true});
   }
-  onStreetChange(ev) {
-    this.setState({street: ev.target.value, hasChanges: true});
-  }
-  onHousenrChange(ev) {
-    this.setState({housenr: ev.target.value, hasChanges: true});
+  onAddressChange(ev) {
+    this.setState({address: ev.target.value, hasChanges: true});
   }
   onPostcodeChange(ev) {
     this.setState({postcode: ev.target.value, hasChanges: true});
@@ -271,21 +311,61 @@ class OrderEditing extends Component {
   onTownChange(ev) {
     this.setState({town: ev.target.value, hasChanges: true});
   }
-  onTelephoneChange(ev) {
-    this.setState({telephone: ev.target.value, hasChanges: true});
+  onPhoneChange(ev) {
+    this.setState({phone: ev.target.value, hasChanges: true});
   }
   onEmailChange(ev) {
     this.setState({email: ev.target.value, hasChanges: true});
   }
   onStatusChange(ev) {
-    if(ev.target.value == 3) {
+    if(ev.target.value == -1) {
+      if(this.state.status > 0) {
+        this.popupModal.showModal("Möchten Sie die Bestellung wirklich stornieren?", "Durch diese Statusänderung wird der Status aller Positionen zurückgesetzt.", function(success) {
+          if(success) {
+            var items = this.state.items;
+            var toUpdate = this.state.toUpdateItems;
+            items.forEach((item, key) => {
+              item.status = -1;
+              if(!toUpdate.includes(key)) toUpdate.push(key);
+            });
+            this.setState({status: -1, items: items, toUpdateItems: toUpdate, hasChanges: true});
+          }
+        }.bind(this), "Okay", "Abbrechen");
+      } else {
+        this.setState({status: -1, hasChanges: true});
+      }
+    } else if(ev.target.value == 2) {
+      var updateItems = false;
+      var items = this.state.items;
+      var toUpdate = this.state.toUpdateItems;
+      items.forEach((item) => {
+        if(item.status < 0) updateItems = true;
+      });
+      if(updateItems) {
+        this.popupModal.showModal("Möchten Sie den Status wirklich ändern?", "Durch diese Statusänderung wird der Status von mindestens einer Position auf \"" + Statics.ItemStatus[0] + "\" gesetzt.", function(success) {
+          if(success) {
+            items.forEach((item, key) => {
+              if(item.status < 0) {
+                item.status = 0;
+                if(!toUpdate.includes(key)) toUpdate.push(key);
+              }
+            });
+            this.setState({status: 2, items: items, toUpdateItems: toUpdate, hasChanges: true});
+          }
+        }.bind(this), "Okay", "Abbrechen");
+      } else {
+        this.setState({status: 2, hasChanges: true});
+      }
+    } else if(ev.target.value == 3) {
       this.popupModal.showModal("Möchten Sie den Status wirklich ändern?", "Durch diese Statusänderung wird der Status aller Positionen auf \"" + Statics.ItemStatus[3] + "\" gesetzt.", function(success) {
         if(success) {
           var items = this.state.items;
-          items.forEach((item) => {
+          var toUpdate = this.state.toUpdateItems;
+          items.forEach((item, key) => {
             item.status = 3;
+            if(!toUpdate.includes(key)) toUpdate.push(key);
           });
-          this.setState({status: 3, items: items, hasChanges: true});
+          this.setState({status: 3, items: items, toUpdateItems: toUpdate, hasChanges: true});
         }
       }.bind(this), "Okay", "Abbrechen");
     } else {
@@ -332,7 +412,7 @@ class OrderEditing extends Component {
 
     console.log(ev.target.value, this.state.status);
     if(ev.target.value == -1) {
-      if(parseInt(this.state.status) > 1) {
+      if(this.state.status > 1) {
         var value = ev.target.value;
         this.popupModal.showModal("Möchten Sie den Status wirklich ändern?", "Durch diese Statusänderung wird der Status der Bestellung auf \"" + Statics.OrderStatus[1] + "\" gesetzt.", function(success) {
           if(success) {
@@ -345,9 +425,21 @@ class OrderEditing extends Component {
         }.bind(this), "Okay", "Abbrechen");
         return;
       }
+    } else if(ev.target.value >= 0 && ev.target.value <= 1) {
+      var isOrdered = true;
+      this.state.items.forEach((item, k) => {
+        if(item.status < 0 && key != k) isOrdered = false;
+      });
+      if(isOrdered && this.state.status < 2) {
+        this.popupModal.showModal("Möchten Sie den Status der Bestellung ändern?", "Alle Positionen haben den Status " + Statics.ItemStatus[0] + ". Soll der Status der Bestellung auf \"" + Statics.OrderStatus[2] + "\" gesetzt werden?", function(success) {
+          if(success) {
+            this.setState({status: 2});
+          }
+        }.bind(this), "Okay", "Abbrechen");
+      }
     } else if(ev.target.value > -1) {
       if(ev.target.value < 3) {
-        if(parseInt(this.state.status) > 2) {
+        if(this.state.status > 2) {
           var value = ev.target.value;
           this.popupModal.showModal("Möchten Sie den Status wirklich ändern?", "Durch diese Statusänderung wird der Status der Bestellung auf \"" + Statics.OrderStatus[2] + "\" gesetzt.", function(success) {
             if(success) {
@@ -362,7 +454,7 @@ class OrderEditing extends Component {
         }
       } else {
 
-    
+      }
     }
     var items = this.state.items;
     items[key].status = ev.target.value;
@@ -457,14 +549,11 @@ class OrderEditing extends Component {
                 </Row>
                 <Row>
                   <Col sm={6}>
-                  <Row>
-                    <FormGroup controlId="inputStreet" bsClass="form-group col-sm-9">
-                      <FormControl type="text" value={this.state.street} onChange={this.onStreetChange} />
-                    </FormGroup>
-                    <FormGroup controlId="inputHousenr" bsClass="form-group col-sm-3">
-                      <FormControl type="text" value={this.state.housenr} onChange={this.onHousenrChange} />
-                    </FormGroup>
-                  </Row>
+                    <Row>
+                      <FormGroup controlId="inputAddress" bsClass="form-group col-sm-12">
+                        <FormControl type="text" value={this.state.address} onChange={this.onAddressChange} />
+                      </FormGroup>
+                    </Row>
                   </Col>
                   <Col sm={6}>
                     <Row>
@@ -480,13 +569,13 @@ class OrderEditing extends Component {
               </div>
             </Col>
           </FormGroup>
-          <FormGroup controlId="inputTelephone">
+          <FormGroup controlId="inputPhone">
             <ControlLabel bsClass="col-sm-1 control-label">Telefon</ControlLabel>
             <Col sm={11}>
               <Row>
                 <Col sm={3}>
-                  <FormGroup controlId="inputTelephone">
-                    <FormControl value={this.state.telephone} onChange={this.onTelephoneChange} />
+                  <FormGroup controlId="inputPhone">
+                    <FormControl value={this.state.phone} onChange={this.onPhoneChange} />
                   </FormGroup>
                 </Col>
               </Row>
@@ -536,7 +625,7 @@ class OrderEditing extends Component {
                   <FormGroup controlId="inputStatus">
                     <FormControl componentClass="select" value={this.state.status} onChange={this.onStatusChange}>
                       {Object.keys(Statics.OrderStatus).map((key, i) =>
-                      <option key={i} value={key}>{Statics.OrderStatus[key]}</option>)}
+                      <option key={i} value={key} disabled={key == 0 && this.state.status != 0}>{Statics.OrderStatus[key]}</option>)}
                     </FormControl>
                   </FormGroup>
                 </Col>
@@ -582,10 +671,12 @@ class OrderEditing extends Component {
                           <td><FormPriceInput enabled={this.state.items[key].flocking && this.state.items[key].flocking.length > 0} placeholder="0,00 €" value={parseFloat(this.state.items[key].flockingPrice)} onValueChange={this.onItemFlockingPriceChange.bind(this, key)} /></td>
                           <td><FormPriceInput value={parseFloat(this.state.items[key].price)} onValueChange={this.onItemPriceChange.bind(this, key)} /></td>
                           <td className="status">
-                            <FormControl componentClass="select" value={this.state.items[key].status} onChange={this.onItemStatusChange.bind(this, key)}>
-                              {Object.keys(Statics.ItemStatus).map((key, i) =>
-                              <option key={i} value={key}>{Statics.ItemStatus[key]}</option>)}
-                            </FormControl>
+                            {this.state.status > 0
+                            ? <FormControl componentClass="select" value={this.state.items[key].status} onChange={this.onItemStatusChange.bind(this, key)}>
+                                {Object.keys(Statics.ItemStatus).map((key, i) =>
+                                <option key={i} value={key}>{Statics.ItemStatus[key]}</option>)}
+                              </FormControl>
+                            : "-"}
                           </td>
                           <td className="buttons">
                             <ButtonToolbar>
