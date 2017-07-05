@@ -1,0 +1,45 @@
+settings:
+  name
+  value
+
+clubs:
+  id
+  name
+  logodata
+
+products:
+  id
+  clubid
+  internalid
+  name
+  pricegroups
+  flockingPrice
+  defaultFlocking
+  defaultFlockingInfo
+  picture
+
+orders:
+  id
+  clubid
+  clubname
+  firstname
+  lastname
+  street
+  housenr
+  postcode
+  town
+  email
+  phone
+  status
+  created
+  updated
+
+items:
+  clubid
+  orderid
+  id
+  flocking
+  size
+  price
+  flockingPrice
+  status

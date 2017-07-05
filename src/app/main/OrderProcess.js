@@ -13,8 +13,7 @@ class OrderProcess extends Component {
 
     this.regexFirstname = /^.{1,}$/;
     this.regexLastname = /^.{1,}$/;
-    this.regexStreet = /^.{1,}$/;
-    this.regexHousenr = /^\d+([\/\-]\d+)?[A-Za-z]*$/;
+    this.regexAddress = /^.{1,}$/;
     this.regexPostcode = /^([0]{1}[1-9]{1}|[1-9]{1}[0-9]{1})[0-9]{3}$/;
     this.regexTown = /^.{1,}$/;
     this.regexPhone = /^(0|0049\s?|\+49\s?|\(\+49\)\s?){1}([1-9]{2,4})([ \-\/]?[0-9]{1,10})+$/;
@@ -23,8 +22,7 @@ class OrderProcess extends Component {
     this.state = {
       firstname: undefined,
       lastname: undefined,
-      street: undefined,
-      housenr: undefined,
+      address: undefined,
       postcode: undefined,
       town: undefined,
       phone: undefined,
@@ -33,8 +31,7 @@ class OrderProcess extends Component {
 
     this.onFirstnameChange = this.onFirstnameChange.bind(this);
     this.onLastnameChange = this.onLastnameChange.bind(this);
-    this.onStreetChange = this.onStreetChange.bind(this);
-    this.onHousenrChange = this.onHousenrChange.bind(this);
+    this.onAddressChange = this.onAddressChange.bind(this);
     this.onPostcodeChange = this.onPostcodeChange.bind(this);
     this.onTownChange = this.onTownChange.bind(this);
     this.onPhoneChange = this.onPhoneChange.bind(this);
@@ -52,12 +49,8 @@ class OrderProcess extends Component {
     this.setState({lastname:ev.target.value});
   }
 
-  onStreetChange(ev) {
-    this.setState({street:ev.target.value});
-  }
-
-  onHousenrChange(ev) {
-    this.setState({housenr:ev.target.value.trim()});
+  onAddressChange(ev) {
+    this.setState({address:ev.target.value});
   }
 
   onPostcodeChange(ev) {
@@ -91,8 +84,7 @@ class OrderProcess extends Component {
   validateAllInputs() {
     if(this.state.firstname === undefined || this.validateInput(this.state.firstname.trim(), this.regexFirstname)) return false;
     if(this.state.lastname === undefined || this.validateInput(this.state.lastname.trim(), this.regexLastname)) return false;
-    if(this.state.street === undefined || this.validateInput(this.state.street.trim(), this.regexStreet)) return false;
-    if(this.state.housenr === undefined || this.validateInput(this.state.housenr.trim(), this.regexHousenr)) return false;
+    if(this.state.address === undefined || this.validateInput(this.state.address.trim(), this.regexAddress)) return false;
     if(this.state.postcode === undefined || this.validateInput(this.state.postcode.trim(), this.regexPostcode)) return false;
     if(this.state.town === undefined || this.validateInput(this.state.town.trim(), this.regexTown)) return false;
     if(this.state.phone === undefined || this.validateInput(this.state.phone.trim(), this.regexPhone)) return false;
@@ -126,16 +118,10 @@ class OrderProcess extends Component {
           <Row>
             <Col lg={6}>
               <Row>
-                <Col sm={10}>
-                  <FormGroup controlId="pd_street" validationState={this.validateInput(this.state.street, this.regexStreet)}>
-                    <ControlLabel>Straße</ControlLabel>
-                    <FormControl type="text" value={this.state.street} onChange={this.onStreetChange} onFocus={this.onStreetChange} />
-                  </FormGroup>
-                </Col>
-                <Col sm={2}>
-                  <FormGroup controlId="pd_housenr" validationState={this.validateInput(this.state.housenr, this.regexHousenr)}>
-                    <ControlLabel>Hausnr.</ControlLabel>
-                    <FormControl type="text" value={this.state.housenr} onChange={this.onHousenrChange} onFocus={this.onHousenrChange} />
+                <Col sm={12}>
+                  <FormGroup controlId="pd_address" validationState={this.validateInput(this.state.address, this.regexAddress)}>
+                    <ControlLabel>Adresse</ControlLabel>
+                    <FormControl type="text" value={this.state.address} onChange={this.onAddressChange} onFocus={this.onAddressChange} />
                   </FormGroup>
                 </Col>
               </Row>

@@ -69,27 +69,36 @@ class Orders extends Component {
           toLoad++;
           orders[i].export = false;
         }
-        orders.forEach((order, key) => {
-          $.post({
-            url: 'php/items/load.php',
-            data: {
-              orderid: orders[key].id,
-              clubid: orders[key].clubid
-            },
-            success: function(data) {
-              orders[key].items = JSON.parse(data);
-              toLoad--;
+        if(toLoad > 0) {
+          orders.forEach((order, key) => {
+            $.post({
+              url: 'php/items/load.php',
+              data: {
+                orderid: order.id,
+                clubid: order.clubid
+              },
+              success: function(data) {
+                console.log(data);
+                orders[key].items = JSON.parse(data);
+                toLoad--;
 
-              if(toLoad < 1) {
-                this.setState({
-                  orders: orders,
-                  loadedOrders: true,
-                  loading: false
-                });
-              }
-            }.bind(this)
+                if(toLoad < 1) {
+                  this.setState({
+                    orders: orders,
+                    loadedOrders: true,
+                    loading: false
+                  });
+                }
+              }.bind(this)
+            });
           });
-        });
+        } else {
+          this.setState({
+            orders: [],
+            loadedOrders: true,
+            loading: false
+          });
+        }
       }.bind(this)
     });
   }
@@ -122,11 +131,11 @@ class Orders extends Component {
       removeModalScope: e.target.parentElement.parentElement.parentElement.dataset
     });
   }
-  onOrderExportCheckChange(clubid, id, checked) {
+  onOrderExportCheckChange(clubid, id) {
     var newOrders = this.state.orders;
     for(var i in newOrders) {
       if(newOrders[i].clubid == clubid && newOrders[i].id == id) {
-        newOrders[i].export = checked;
+        newOrders[i].export = !newOrders[i].export;
       }
     }
     this.setState({orders:newOrders});
@@ -301,6 +310,10 @@ class Orders extends Component {
   }
   render() {
     document.title = "Bestellungen | Sport-Paul Vereinsbekleidung";
+    var toExport = 0;
+    this.state.orders.forEach((order) => {
+      if(order.export) toExport++;
+    });
     return (
       <div>
         {!this.props.children && <div className="container" data-page="Orders">
@@ -348,7 +361,7 @@ class Orders extends Component {
             </div>}
           {(!this.state.loadedOrders && !this.state.loading) && <p className="loading-error">Es ist ein Fehler aufgetreten. Bitte laden Sie die Seite neu!</p>}
 
-          <Button bsSize="small" bsStyle="success" onClick={this.onClickExport}><Glyphicon glyph="save" /> Exportieren</Button>
+          <Button bsSize="small" bsStyle="success" onClick={this.onClickExport} disabled={toExport < 1}><Glyphicon glyph="save" /> Exportieren</Button>
         </div>}
         {this.props.children}
       </div>

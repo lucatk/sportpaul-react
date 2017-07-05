@@ -15,7 +15,7 @@ var config = {
       {
         test : /\.jsx?/,
         include: APP_DIR,
-        loader: 'babel',
+        loader: 'babel-loader',
         query: {
           presets: ['es2015', 'react', 'stage-2']
         }
@@ -26,17 +26,20 @@ var config = {
       },
       {
           test: /\.(eot|svg|ttf|woff|woff2)$/,
-          loader: 'file?name=fonts/[name].[ext]'
+          loader: 'file-loader?name=fonts/[name].[ext]'
       }
     ]
   },
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['.js', '.jsx'],
     unsafeCache: true
   },
   node: {
     fs: "empty"
-  }
+  },
+  watchOptions: {
+    ignored: /node_modules/
+  },
 };
 
 module.exports = config;

@@ -14,17 +14,16 @@ $rowsAffected = 0;
 $stmt = $db->execute("SELECT name FROM clubs WHERE id=:clubid", ["clubid" => $_POST["clubid"]]);
 $results = $db->fetchAssoc($stmt, 1);
 
-$stmt = $db->execute("INSERT INTO orders(clubid, clubname, firstname, lastname, street, housenr, postcode, town, email, telephone, created, updated) VALUES(:clubid, :clubname, :firstname, :lastname, :street, :housenr, :postcode, :town, :email, :telephone, NOW(), NOW())",
+$stmt = $db->execute("INSERT INTO orders(clubid, clubname, firstname, lastname, address, postcode, town, email, phone, created, updated) VALUES(:clubid, :clubname, :firstname, :lastname, :address, :postcode, :town, :email, :phone, NOW(), NOW())",
                     ["clubid" => $_POST["clubid"],
                      "clubname" => $results["name"],
                      "firstname" => $_POST["firstname"],
                      "lastname" => $_POST["lastname"],
-                     "street" => $_POST["street"],
-                     "housenr" => $_POST["housenr"],
+                     "address" => $_POST["address"],
                      "postcode" => $_POST["postcode"],
                      "town" => $_POST["town"],
                      "email" => $_POST["email"],
-                     "telephone" => $_POST["phone"]]);
+                     "phone" => $_POST["phone"]]);
 
 $rowsAffected += $stmt->rowCount();
 

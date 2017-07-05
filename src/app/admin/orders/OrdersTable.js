@@ -218,7 +218,7 @@ class OrdersTable extends Component {
           {data && data.length > 0
             ? data.map((row) =>
                 <tr key={row.clubid + "/" + row.id} data-id={row.id} data-clubid={row.clubid} data-club={row.clubname}>
-                  <td className="export-check" onClick={this.props.onExportCheckChange.bind(row.clubid, row.id, !row.export)}><input type="checkbox" checked={row.export} /></td>
+                  <td className="export-check" onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}><input type="checkbox" checked={row.export} /></td>
                   <td>{row.clubname}</td>
                   <td>
                     {(new Date(row.created)).toLocaleString("de-DE", {
