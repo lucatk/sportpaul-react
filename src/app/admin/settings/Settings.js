@@ -70,6 +70,7 @@ class Settings extends Component {
     $.ajax({
       url: 'php/settings/load_all.php',
       success: function(data) {
+        console.log(data);
         this.setState({
           settings: JSON.parse(data),
           loading: false
