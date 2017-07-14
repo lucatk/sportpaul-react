@@ -659,7 +659,7 @@ class OrderEditing extends Component {
                           <td>{this.state.items[key].name}</td>
                           <td>{this.state.items[key].internalid}<br />{this.state.items[key].colour != null && this.state.items[key].colour.id + " " + this.state.items[key].colour.name}</td>
                           <td>
-                          {this.state.items[key].pricegroups.length > 0
+                          {this.state.items[key].status < 0 && this.state.items[key].pricegroups.length > 0
                           ? <FormControl componentClass="select" value={this.state.items[key].size} onChange={this.onItemSizeChange.bind(this, key)}>
                               {this.state.items[key].pricegroups.map((pricegroup, i) =>
                                 pricegroup.sizes.map((size, ii) =>
@@ -669,7 +669,7 @@ class OrderEditing extends Component {
                             </FormControl>
                           : this.state.items[key].size}
                           </td>
-                          <td><FormControl type="text" value={this.state.items[key].flocking} onChange={this.onItemFlockingChange.bind(this, key)} /></td>
+                          <td>{this.state.items[key].status < 0 ? <FormControl type="text" value={this.state.items[key].flocking} onChange={this.onItemFlockingChange.bind(this, key)} /> : this.state.items[key].flocking.length > 0 ? this.state.items[key].flocking : "-"}</td>
                           <td><FormPriceInput enabled={this.state.items[key].flocking && this.state.items[key].flocking.length > 0} placeholder="0,00 €" value={parseFloat(this.state.items[key].flockingPrice)} onValueChange={this.onItemFlockingPriceChange.bind(this, key)} /></td>
                           <td><FormPriceInput value={parseFloat(this.state.items[key].price)} onValueChange={this.onItemPriceChange.bind(this, key)} /></td>
                           <td className="status">
