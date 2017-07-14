@@ -116,6 +116,8 @@ class OrderEditing extends Component {
 
         Object.values(items).forEach((item) => {
           var parsedItem = item;
+          if(item.colour && item.colour.length > 0)
+            parsedItem.colour = JSON.parse(item.colour);
           if(item.pricegroups.length > 0) {
             parsedItem.pricegroups = JSON.parse(item.pricegroups);
           }
@@ -655,7 +657,7 @@ class OrderEditing extends Component {
                         <tr key={key} data-id={this.state.items[key].id} data-name={this.state.items[key].name}>
                           <td>{key}</td>
                           <td>{this.state.items[key].name}</td>
-                          <td>{this.state.items[key].internalid}</td>
+                          <td>{this.state.items[key].internalid}<br />{this.state.items[key].colour != null && this.state.items[key].colour.id + " " + this.state.items[key].colour.name}</td>
                           <td>
                           {this.state.items[key].pricegroups.length > 0
                           ? <FormControl componentClass="select" value={this.state.items[key].size} onChange={this.onItemSizeChange.bind(this, key)}>

@@ -27,6 +27,7 @@ class OrderSummary extends Component {
         id: product.id,
         internalid: product.internalid,
         name: product.name,
+        colour: product.colour,
         size: product.size,
         price: -1,
         displayPrice: -1,
@@ -52,12 +53,18 @@ class OrderSummary extends Component {
 
   onClickOrder() {
     this.setState({loading:true});
+    var cart = this.orderCart;
+    this.orderCart.forEach((item, i) => {
+      if(item.colour)
+        item.colour = JSON.stringify(item.colour);
+      cart[i] = item;
+    });
     $.post({
       url: 'php/orders/add.php',
       data: {
         clubid: this.props.clubid,
         ...this.customerData,
-        cart: JSON.stringify(this.orderCart)
+        cart: JSON.stringify(cart)
       },
       success: function(data) {
         this.setState({loading:false, done:true});
@@ -106,6 +113,7 @@ class OrderSummary extends Component {
                 <thead>
                   <tr>
                     <th>Produkt</th>
+                    <th>Farbe</th>
                     <th>Größe</th>
                     <th>Beflockung</th>
                     <th>Gesamtpreis</th>
@@ -115,6 +123,7 @@ class OrderSummary extends Component {
                   {this.orderCart.map((row, i) =>
                   <tr>
                     <td>{row.name}</td>
+                    <td>{row.colour != null ? row.colour.id + " " + row.colour.name : "-"}</td>
                     <td>{row.size}</td>
                     <td>{(row.flocking && row.flocking.length > 0) ? row.flocking : '-'}</td>
                     <td>{row.displayPrice.toFixed(2).replace('.', ',')} €</td>
@@ -122,7 +131,7 @@ class OrderSummary extends Component {
                 </tbody>
                 <tfoot>
                   <tr>
-                    <td colSpan="3"></td>
+                    <td colSpan="4"></td>
                     <td>{this.total.toFixed(2).replace('.', ',')} €</td>
                   </tr>
                 </tfoot>

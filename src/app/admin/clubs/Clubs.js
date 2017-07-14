@@ -105,7 +105,9 @@ class Clubs extends Component {
 
           <Link to="/admin/clubs/create"><Button bsSize="small" bsStyle="success"><Glyphicon glyph="plus" /> Hinzufügen...</Button></Link>
         </div>}
-        {this.props.children}
+        {this.props.children && React.cloneElement(this.props.children, {
+          onPicturePreviewRequest: this.props.onPicturePreviewRequest
+        })}
       </div>
     );
   }

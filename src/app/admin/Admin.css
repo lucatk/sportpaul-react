@@ -86,7 +86,7 @@
 .admin .container[data-page=ClubEditing] .form-group table,
 .admin .container[data-page=ClubCreation] .form-group label[for=inputProducts],
 .admin .container[data-page=ClubCreation] .form-group table {
-  margin: 116px 0 10px;
+  margin: 12px 0 10px;
 }
 
 .admin .container[data-page=OrderEditing] .form-group .editing-container {
@@ -206,6 +206,16 @@
   margin: 3px auto;
 }
 
+.admin .container[data-page=ClubEditing] div .image-lightbox {
+  /*background: initial;*/
+}
+
+.admin .container[data-page=ClubCreation] .form-group .mini-btn
+.admin .container[data-page=ClubEditing] .form-group .mini-btn {
+  margin-left: 5px;
+  line-height: 35px;
+}
+
 .admin .container[data-page=OrderEditing] td.status {
   min-width: 120px;
 }
@@ -298,17 +308,56 @@
   margin: 0;
 }
 
+.modal-dialog .form-group .colours-edit .row,
 .modal-dialog .form-group .pricegroups-edit .row {
   margin-left: -2px;
   margin-right: 0;
 }
 
+.modal-dialog .form-group .colours-edit .row div,
 .modal-dialog .form-group .pricegroups-edit .row div {
   padding: 2px;
 }
 
+.modal-dialog .form-group .colours-edit .row input,
 .modal-dialog .form-group .pricegroups-edit .row input {
   max-width: none;
+}
+
+.modal-dialog .form-group .colours-edit .row input[type=file] {
+  padding: 3px 0;
+}
+
+.modal-dialog .form-group .colours-edit .row .drag-handle {
+  padding: 0 5px;
+  cursor: -webkit-grab;
+  cursor: grab;
+}
+
+.colour-sortable-helper {
+  z-index: 1051 !important;
+  pointer-events: auto !important;
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}
+
+.modal-dialog .form-group .picture-edit .mini-btn {
+  margin-left: 5px;
+  line-height: 35px;
+}
+
+.modal-dialog .preview-backdrop {
+  /*position: fixed;
+  top: 0;
+  left: 0;
+  background: rgba(0,0,0,.7);
+  width: 100%;
+  height: 100%;
+  z-index: 1050;*/
+}
+
+.upload-control {
+  display: inline-block;
 }
 
 input[type=file] {

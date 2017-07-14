@@ -8,7 +8,7 @@ $stmt = $db->execute("SELECT * FROM orders WHERE clubid=:clubid AND id=:orderid"
 $results = $db->fetchAssoc($stmt, 1);
 
 $cstmt = $db->execute("SELECT status, flocking, flockingPrice, price FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $_POST["clubid"],
-                                                                                            "orderid" => $_POST["id"]]);
+                                                                                                                             "orderid" => $_POST["id"]]);
 $cresults = $db->fetchAll($cstmt);
 $total = 0;
 $orderDone = true;

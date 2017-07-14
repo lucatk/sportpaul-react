@@ -12,6 +12,7 @@ import {
 
 import LoadingOverlay from '../../utils/LoadingOverlay';
 import ImageUploadControl from './ImageUploadControl';
+import ImageLightbox from '../../utils/ImageLightbox';
 
 class ClubCreation extends Component {
   constructor(props) {
@@ -20,12 +21,20 @@ class ClubCreation extends Component {
     this.state = {
       name: '',
       logodata: '',
-      loading: false
+      loading: false,
+      picturePreview: null,
     }
+
+    this.fileReader = new FileReader();
+    this.fileReader.onload = ((e) => {
+      this.setState({picturePreview: e.target.result});
+    }).bind(this);
 
     this.onNameChange = this.onNameChange.bind(this);
     this.onLogodataChange = this.onLogodataChange.bind(this);
     this.save = this.save.bind(this);
+    this.onPicturePreviewRequest = this.onPicturePreviewRequest.bind(this);
+    this.onClosePicturePreview = this.onClosePicturePreview.bind(this);
   }
   componentDidMount() {
     this.props.router.setRouteLeaveHook(this.props.route, () => {
@@ -43,6 +52,14 @@ class ClubCreation extends Component {
     this.setState({
       logodata: newLogodata
     });
+  }
+  onPicturePreviewRequest(picture) {
+    if(picture && typeof picture === "object")
+      this.fileReader.readAsDataURL(picture);
+    this.setState({picturePreview: picture});
+  }
+  onClosePicturePreview() {
+    this.setState({picturePreview: null});
   }
   save() {
     this.setState({loading: true});
@@ -73,6 +90,7 @@ class ClubCreation extends Component {
     document.title = "Verein hinzufügen | Sport-Paul Vereinsbekleidung";
     return (
       <div className="container" data-page="ClubCreation">
+        {this.state.picturePreview && <ImageLightbox image={this.state.picturePreview.startsWith("data:image/") ? this.state.picturePreview : "clublogos/" + this.state.picturePreview} onClose={this.onClosePicturePreview} />}
         <LoadingOverlay show={this.state.loading} />
         <h1 className="page-header">
           Verein hinzufügen
@@ -90,7 +108,8 @@ class ClubCreation extends Component {
           <FormGroup controlId="inputLogo" validationState={!this.state.logodata || this.state.logodata.length < 1 ? 'error' : null}>
             <ControlLabel bsClass="col-sm-1 control-label">Logo</ControlLabel>
             <div className="col-sm-11">
-              <ImageUploadControl value={this.state.logodata} searchPath="clublogos/" onChange={this.onLogodataChange} />
+              <div className="upload-control"><ImageUploadControl showPreview={false} value={this.state.logodata} searchPath="clublogos/" onChange={this.onLogodataChange} /></div>
+              <Button bsSize="small" bsClass="mini-btn btn" onClick={this.onPicturePreviewRequest.bind(this, this.state.logodata)} disabled={this.state.logodata == null || this.state.logodata.length < 1}><Glyphicon glyph="search" /></Button>
             </div>
           </FormGroup>
         </form>
