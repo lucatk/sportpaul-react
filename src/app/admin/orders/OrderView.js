@@ -85,6 +85,8 @@ class OrderView extends Component {
 
         for(var i in items) {
           parsedItems[i] = items[i];
+          if(items[i].colour && items[i].colour.length > 0)
+            parsedItems[i].colour = JSON.parse(items[i].colour);
           parsedItems[i].flockingPrice = parseFloat(items[i].flockingPrice);
         }
 
@@ -180,7 +182,7 @@ class OrderView extends Component {
                         <tr key={key} data-id={key} data-name={this.state.items[key].name}>
                           <td>{key}</td>
                           <td>{this.state.items[key].name}</td>
-                          <td>{this.state.items[key].internalid}</td>
+                          <td>{this.state.items[key].internalid}<br />{this.state.items[key].colour != null && this.state.items[key].colour.id + " " + this.state.items[key].colour.name}</td>
                           <td>{this.state.items[key].size}</td>
                           <td>{this.state.items[key].flocking} {(this.state.items[key].flocking && this.state.items[key].flocking.length > 0 && this.state.items[key].flockingPrice > 0) && <i>(+{this.state.items[key].flockingPrice.toFixed(2).replace(".", ",")} €)</i>}</td>
                           <td>{parseFloat(this.state.items[key].price).toFixed(2).replace(".", ",")} €</td>

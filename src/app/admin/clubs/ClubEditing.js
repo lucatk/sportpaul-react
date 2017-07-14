@@ -11,6 +11,7 @@ import {
 } from 'react-bootstrap';
 
 import LoadingOverlay from '../../utils/LoadingOverlay';
+import ImageLightbox from '../../utils/ImageLightbox';
 import ProductEditModal from './modals/ProductEditModal';
 import ProductRemovalModal from './modals/ProductRemovalModal';
 import ProductAddModal from './modals/ProductAddModal';
@@ -30,6 +31,7 @@ class ClubEditing extends Component {
       showProductRemoveModal: false,
       scopeProductRemoveModal: -1,
       showProductAddModal: false,
+      picturePreview: null,
       toUpdateProducts: [],
       toRemoveProducts: [],
       toAddProducts: [],
@@ -37,6 +39,11 @@ class ClubEditing extends Component {
       loadedProducts: false,
       loading: false
     }
+
+    this.fileReader = new FileReader();
+    this.fileReader.onload = ((e) => {
+      this.setState({picturePreview: e.target.result});
+    }).bind(this);
 
     this.componentWillReceiveProps(this.props);
 
@@ -48,6 +55,8 @@ class ClubEditing extends Component {
     this.onCloseProductEditModal = this.onCloseProductEditModal.bind(this);
     this.onCloseProductRemoveModal = this.onCloseProductRemoveModal.bind(this);
     this.onCloseProductAddModal = this.onCloseProductAddModal.bind(this);
+    this.onPicturePreviewRequest = this.onPicturePreviewRequest.bind(this);
+    this.onClosePicturePreview = this.onClosePicturePreview.bind(this);
     this.save = this.save.bind(this);
   }
   componentDidMount() {
@@ -86,6 +95,14 @@ class ClubEditing extends Component {
   openProductAddModal() {
     this.setState({showProductAddModal: true});
   }
+  onPicturePreviewRequest(picture) {
+    if(picture && typeof picture === "object")
+      this.fileReader.readAsDataURL(picture);
+    this.setState({picturePreview: picture});
+  }
+  onClosePicturePreview() {
+    this.setState({picturePreview: null});
+  }
   onCloseProductEditModal(e) {
     if(e) {
       var products = this.state.products;
@@ -93,11 +110,13 @@ class ClubEditing extends Component {
       var product = products[e.id];
       product.name = e.name;
       product.internalid = e.internalid;
+      product.colours = e.colours;
       product.pricegroups = e.pricegroups;
       product.flockingPrice = e.flockingPrice;
       product.picture = e.picture;
       product.defaultFlocking = e.defaultFlocking;
       product.defaultFlockingInfo = e.defaultFlockingInfo;
+      product.coloursPictures = e.coloursPictures;
       products[e.id] = product;
       this.setState({products: products});
 
@@ -145,9 +164,7 @@ class ClubEditing extends Component {
   onCloseProductAddModal(e) {
     if(e) {
       var products = this.state.products;
-      console.log(products);
       var newId = products.length;
-      console.log(products.length, newId);
       products[newId] = {
         new: true,
         id: newId,
@@ -156,7 +173,6 @@ class ClubEditing extends Component {
       };
       var toAdd = this.state.toAddProducts;
       toAdd[newId] = products[newId];
-      console.log(toAdd);
       this.setState({
         products: products,
         toAddProducts: toAdd
@@ -226,12 +242,20 @@ class ClubEditing extends Component {
       data.append("clubid", product.clubid);
       data.append("name", product.name);
       data.append("internalid", product.internalid);
+      data.append("colours", product.colours);
       data.append("pricegroups", product.pricegroups);
       data.append("flockingPrice", product.flockingPrice);
       data.append("defaultFlocking", product.defaultFlocking?1:0);
       data.append("defaultFlockingInfo", product.defaultFlockingInfo);
-      if(typeof product.picture === "object")
-        data.append("picture", product.picture);
+      if(product.coloursPictures) {
+        product.coloursPictures.forEach((picture, i) => {
+          if(picture != null && picture instanceof File)
+            data.append(i, picture);
+        });
+      } else {
+        if(typeof product.picture === "object")
+          data.append("picture", product.picture);
+      }
       $.post({
         url: 'php/products/update.php',
         contentType: false,
@@ -254,12 +278,20 @@ class ClubEditing extends Component {
       data.append("clubid", product.clubid);
       data.append("name", product.name);
       data.append("internalid", product.internalid);
+      data.append("colours", product.colours);
       data.append("pricegroups", product.pricegroups);
       data.append("flockingPrice", product.flockingPrice);
       data.append("defaultFlocking", product.defaultFlocking?1:0);
       data.append("defaultFlockingInfo", product.defaultFlockingInfo);
-      if(typeof product.picture === "object")
-        data.append("picture", product.picture);
+      if(product.coloursPictures) {
+        product.coloursPictures.forEach((picture, i) => {
+          if(picture != null && picture instanceof File)
+            data.append(i, picture);
+        });
+      } else {
+        if(typeof product.picture === "object")
+          data.append("picture", product.picture);
+      }
       $.post({
         url: 'php/products/add.php',
         contentType: false,
@@ -334,6 +366,7 @@ class ClubEditing extends Component {
       },
       success: function(data) {
         var products = JSON.parse(data);
+        
         var parsedProducts = [];
         for(var i in products) {
           parsedProducts[i] = products[i];
@@ -355,6 +388,7 @@ class ClubEditing extends Component {
     if((this.state.loadedInfo && this.state.loadedProducts) || this.state.loading) {
       return (
         <div className="container" data-page="ClubEditing">
+          {this.state.picturePreview && <ImageLightbox image={this.state.picturePreview.startsWith("data:image/") ? this.state.picturePreview : "clublogos/" + this.state.picturePreview} onClose={this.onClosePicturePreview} />}
           <LoadingOverlay show={this.state.loading} />
           <h1 className="page-header">
             Verein bearbeiten <small>ID: {this.state.id}</small>
@@ -375,7 +409,8 @@ class ClubEditing extends Component {
             <FormGroup controlId="inputLogo">
               <ControlLabel bsClass="col-sm-1 control-label">Logo</ControlLabel>
               <div className="col-sm-11">
-                <ImageUploadControl value={this.state.logodata} searchPath="clublogos/" onChange={this.onLogodataChange} />
+                <div className="upload-control"><ImageUploadControl showPreview={false} value={this.state.logodata} searchPath="clublogos/" onChange={this.onLogodataChange} /></div>
+                <Button bsSize="small" bsClass="mini-btn btn" onClick={this.onPicturePreviewRequest.bind(this, this.state.logodata)} disabled={this.state.logodata == null || this.state.logodata.length < 1}><Glyphicon glyph="search" /></Button>
               </div>
             </FormGroup>
             <FormGroup controlId="inputProducts">
@@ -398,7 +433,12 @@ class ClubEditing extends Component {
                           <tr key={i} data-id={key} data-name={this.state.products[key].name}>
                             <td>{this.state.products[key].new?'':key}</td>
                             <td className="product-name">{this.state.products[key].name}</td>
-                            <td className="internalid">{this.state.products[key].internalid}</td>
+                            <td className="internalid">
+                              {this.state.products[key].internalid}
+                              {(this.state.products[key].colours && (this.colours = JSON.parse(this.state.products[key].colours)) && this.colours.length > 0)
+                              ? [<br />, this.colours.length > 1 ? this.colours.length + " Farben" : this.colours[0].id + " " + this.colours[0].name]
+                              : ''}
+                            </td>
                             <td className="pricegroups">
                               {JSON.parse(this.state.products[key].pricegroups).map((group, i) =>
                                 <div key={i}>
@@ -430,7 +470,7 @@ class ClubEditing extends Component {
             </FormGroup>
           </form>
 
-          <ProductEditModal show={this.state.showProductEditModal} scope={this.state.scopeProductEditModal} onClose={this.onCloseProductEditModal} />
+          <ProductEditModal show={this.state.showProductEditModal} scope={this.state.scopeProductEditModal} onClose={this.onCloseProductEditModal} onPicturePreviewRequest={this.onPicturePreviewRequest} />
           <ProductRemovalModal show={this.state.showProductRemoveModal} scope={this.state.scopeProductRemoveModal} onClose={this.onCloseProductRemoveModal} />
           <ProductAddModal show={this.state.showProductAddModal} onClose={this.onCloseProductAddModal} />
         </div>

@@ -72,6 +72,7 @@ class App extends Component {
           var parsedProducts = [];
           club.products.forEach((product) => {
             var parsedProduct = product;
+            parsedProduct.colours = JSON.parse(product.colours);
             parsedProduct.pricegroups = JSON.parse(product.pricegroups);
             parsedProduct.flockingPrice = parseFloat(product.flockingPrice);
             parsedProduct.defaultFlocking = parsedProduct.defaultFlocking == 1;
@@ -110,7 +111,8 @@ class App extends Component {
       defaultFlocking: product.defaultFlocking,
       size: input.selectedSize,
       pricegroups: product.pricegroups,
-      picture: product.picture
+      picture: product.picture,
+      colour: product.colours[input.selectedColour]
     };
     newContents[this.state.cartContents.length] = cartProduct;
     this.setState({cartContents: newContents, clubInUse: this.state.selectedClub});

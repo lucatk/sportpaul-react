@@ -181,6 +181,14 @@
   padding: 0 10px 0 0;
 }
 
+.product-list .product-item .right-column .list-group-item.product-item-action .row > div.col-xs-12 {
+  padding: 0;
+}
+
+.product-list .product-item .right-column .list-group-item.product-item-action .product-item-colour {
+  margin: 0 0 5px;
+}
+
 .product-list .product-item .right-column .list-group-item.product-item-action .product-item-size {
   width: 100%;
 }

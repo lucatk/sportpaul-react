@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 'on');
+
 include('../database.php');
 
 if(!isset($_POST["cart"])) {
@@ -39,12 +42,13 @@ if($stmt->errorCode() !== "00000") {
     if($item->flockingPrice === null || $item->flocking === null || strlen($item->flocking) < 1) {
       $item->flockingPrice = 0;
     }
-    $stmt2 = $db->execute("INSERT INTO items(clubid, orderid, productid, internalid, name, flocking, defaultFlocking, size, price, flockingPrice) VALUES(:clubid, :orderid, :productid, :internalid, :name, :flocking, :defaultFlocking, :size, :price, :flockingPrice)",
+    $stmt2 = $db->execute("INSERT INTO items(clubid, orderid, productid, internalid, name, colour, flocking, defaultFlocking, size, price, flockingPrice) VALUES(:clubid, :orderid, :productid, :internalid, :name, :colour, :flocking, :defaultFlocking, :size, :price, :flockingPrice)",
                           ["clubid" => $_POST["clubid"],
                            "orderid" => $id,
                            "productid" => $item->id,
                            "internalid" => $item->internalid,
                            "name" => $item->name,
+                           "colour" => $item->colour,
                            "flocking" => $item->flocking,
                            "defaultFlocking" => $item->defaultFlocking,
                            "size" => $item->size,

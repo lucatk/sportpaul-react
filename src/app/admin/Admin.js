@@ -3,11 +3,24 @@ import React, { Component } from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
 
+import ImageLightbox from '../utils/ImageLightbox';
+
 import './Admin.css';
 
 class Admin extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      picturePreview: null
+    };
+
+    this.onClosePicturePreview.bind(this);
+  }
+  onPicturePreviewRequest(picture) {
+    this.setState({picturePreview: picture});
+  }
+  onClosePicturePreview() {
+    this.setState({picturePreview: null});
   }
   render() {
     document.title = "Admin-Home | Sport-Paul Vereinsbekleidung";
@@ -30,7 +43,9 @@ class Admin extends Component {
           </Nav>
         </Navbar>
         {!this.props.children && ""}
-        {this.props.children}
+        {this.props.children && React.cloneElement(this.props.children, {
+          onPicturePreviewRequest: this.onPicturePreviewRequest.bind(this)
+        })}
       </div>
     );
   }
