@@ -177,27 +177,31 @@ class OrderEditing extends Component {
         if(this.notificationsEnabled && this.state.email && this.state.email.length > 0) {
           if(this.oldStatus < 1 && this.state.status >= 1) {
             this.popupModal.showModal("Möchten Sie den Kunden über die Bestätigung der Bestellung informieren?", "Der Status dieser Bestellung wurde von " + Statics.OrderStatus[this.oldStatus] + " zu " + Statics.OrderStatus[this.state.status] + " geändert und somit wurde die Bestellung angenommen. Soll der Kunde darüber informiert werden?", (answer) => {
-              var data = new FormData();
-              data.append("template", "orderconfirmed_notification");
-              data.append("email", this.state.email);
-              data.append("subject", this.orderConfirmedSubject);
-              data.append("clubname", this.state.clubname);
-              data.append("firstname", this.state.firstname);
-              data.append("lastname", this.state.lastname);
-              data.append("created", this.state.created);
-              this.calculateTotal(this.state.items);
-              data.append("total", this.state.total);
-              $.post({
-                url: 'php/mailing/send_template.php',
-                contentType: false,
-                processData: false,
-                data: data,
-                success: function(data) {
-                  console.log(data);
-                  sentOrderConfirmedNotification = true;
-                  doneNotifications();
-                }.bind(this)
-              });
+              if(answer) {
+                var data = new FormData();
+                data.append("template", "orderconfirmed_notification");
+                data.append("email", this.state.email);
+                data.append("subject", this.orderConfirmedSubject);
+                data.append("clubname", this.state.clubname);
+                data.append("firstname", this.state.firstname);
+                data.append("lastname", this.state.lastname);
+                data.append("created", this.state.created);
+                this.calculateTotal(this.state.items);
+                data.append("total", this.state.total);
+                $.post({
+                  url: 'php/mailing/send_template.php',
+                  contentType: false,
+                  processData: false,
+                  data: data,
+                  success: function(data) {
+                    sentOrderConfirmedNotification = true;
+                    doneNotifications();
+                  }.bind(this)
+                });
+              } else {
+                sentOrderConfirmedNotification = true;
+                doneNotifications();
+              }
             }, "Ja", "Nein");
           } else {
             sentOrderConfirmedNotification = true;
@@ -206,25 +210,29 @@ class OrderEditing extends Component {
           if(this.toNotify.length > 0) {
             var receivedItems = this.state.items.filter((item) => (item.status == 2));
             this.popupModal.showModal("Möchten Sie den Kunden über die Statusänderung der Artikel informieren?", "Diese Bestellung enthält " + receivedItems.length + " Artikel die abholbereit sind. Soll der Kunde darüber informiert werden?", (answer) => {
-              var data = new FormData();
-              data.append("template", "receiveditems_notification");
-              data.append("email", this.state.email);
-              data.append("subject", this.infoNotificationSubject);
-              data.append("clubname", this.state.clubname);
-              data.append("firstname", this.state.firstname);
-              data.append("lastname", this.state.lastname);
-              data.append("items", JSON.stringify(receivedItems));
-              $.post({
-                url: 'php/mailing/send_template.php',
-                contentType: false,
-                processData: false,
-                data: data,
-                success: function(data) {
-                  console.log(data);
-                  sentItemStatusNotification = true;
-                  doneNotifications();
-                }.bind(this)
-              });
+              if(answer) {
+                var data = new FormData();
+                data.append("template", "receiveditems_notification");
+                data.append("email", this.state.email);
+                data.append("subject", this.infoNotificationSubject);
+                data.append("clubname", this.state.clubname);
+                data.append("firstname", this.state.firstname);
+                data.append("lastname", this.state.lastname);
+                data.append("items", JSON.stringify(receivedItems));
+                $.post({
+                  url: 'php/mailing/send_template.php',
+                  contentType: false,
+                  processData: false,
+                  data: data,
+                  success: function(data) {
+                    sentItemStatusNotification = true;
+                    doneNotifications();
+                  }.bind(this)
+                });
+              } else {
+                sentItemStatusNotification = true;
+                doneNotifications();
+              }
             }, "Ja", "Nein");
           } else {
             sentItemStatusNotification = true;
