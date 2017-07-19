@@ -42,7 +42,7 @@ class OrdersTable extends Component {
           var dateMatcher = this.props.filterDate.match(/(\d+)/g);
           var parsedDate = new Date(dateMatcher[2] || new Date().getFullYear(), (dateMatcher[1] || new Date().getMonth()+1) - 1, dateMatcher[0] || 1);
           var createdDate = new Date(value.created);
-          console.log(parsedDate, createdDate);
+
           switch(this.props.filterDateModifier) {
             case "before":
               if(createdDate.valueOf() >= parsedDate.valueOf()) return false;
@@ -217,10 +217,10 @@ class OrdersTable extends Component {
           </tr>
           {data && data.length > 0
             ? data.map((row) =>
-                <tr key={row.clubid + "/" + row.id} data-id={row.id} data-clubid={row.clubid} data-club={row.clubname}>
-                  <td className="export-check" onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}><input type="checkbox" checked={row.export} /></td>
-                  <td>{row.clubname}</td>
-                  <td>
+                <tr key={row.clubid + "/" + row.id} data-id={row.id} data-clubid={row.clubid} data-club={row.clubname} data-export={row.export}>
+                  <td className="export-check" onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{row.status >= 1 && <input type="checkbox" checked={row.export} />}</td>
+                  <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{row.clubname}</td>
+                  <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>
                     {(new Date(row.created)).toLocaleString("de-DE", {
                       day: "2-digit",
                       month: "2-digit",
@@ -229,10 +229,10 @@ class OrdersTable extends Component {
                       minute: "2-digit"
                     })} Uhr
                   </td>
-                  <td>{row.firstname} {row.lastname}</td>
-                  <td>{row.itemCount} Position{row.itemCount==1?'':'en'}</td>
-                  <td>{parseFloat(row.total).toFixed(2).replace(".", ",")} €</td>
-                  <td>{Statics.OrderStatus[row.status]}</td>
+                  <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{row.firstname} {row.lastname}</td>
+                  <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{row.itemCount} Position{row.itemCount==1?'':'en'}</td>
+                  <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{parseFloat(row.total).toFixed(2).replace(".", ",")} €</td>
+                  <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{Statics.OrderStatus[row.status]}</td>
                   <td className="buttons">
                     <ButtonToolbar>
                       <Link to={"/admin/orders/view/" + row.clubid + "/" + row.id}><Button bsSize="small"><Glyphicon glyph="search" /> Details</Button></Link>

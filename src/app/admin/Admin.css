@@ -166,6 +166,10 @@
   width: 7em;
 }
 
+.admin .container[data-page=Orders] tr[data-export=true] td:not(.buttons) {
+  color: #F44336;
+}
+
 .admin .container[data-page=Orders] td.product-name,
 .admin .container[data-page=Orders] td.buttons {
   width: 20%;
@@ -222,6 +226,8 @@
 
 .admin .container[data-page=Settings] .form-group {
   margin: 0;
+  display: flex;
+  align-items: center;
 }
 
 .admin .container[data-page=Settings] .row {
@@ -230,7 +236,7 @@
 
 .admin .container[data-page=Settings] .row:first-of-type .form-group {
   margin-top: 10px;
-  margin-bottom: 10px;
+  margin-bottom: 0;
 }
 
 .admin .container[data-page=Settings] .row:first-of-type .checkbox {

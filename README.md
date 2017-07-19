@@ -17,7 +17,7 @@
   * 17-2-...
 * [Verein erst löschen wenn keine Bestellungen vorhanden, etc....]
 
-* (✓) Logobeflockung vermerken
+* ✓ Logobeflockung vermerken
 
 * ✓ Bestellungsstatus
   * ✓ offen
@@ -33,13 +33,14 @@
 
 * ✓ Admin Bestellungen sortieren (Datum)
 
-* Export Optionen (nur Beflockung, ohne Beflockung, ...)
+* ✓ Export Optionen (nur Beflockung, ohne Beflockung, ...)
+  * Test mit mehreren Vereinen
 
 * ✓ Bestellung Suche nach Artikel
 
-* Bestellung überprüfen
+* ✓ Bestellung überprüfen
 
-* E-Mail-Versand
+* ✓ E-Mail-Versand
 
 * Titel-Bug
 

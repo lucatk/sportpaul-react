@@ -12,7 +12,10 @@ import {
 import json2csv from 'json2csv';
 
 import LoadingOverlay from '../../utils/LoadingOverlay';
+import PopupModal from '../../utils/PopupModal';
 import OrdersTable from './OrdersTable';
+
+import * as Statics from '../../utils/Statics';
 
 class Orders extends Component {
   constructor(props) {
@@ -56,6 +59,7 @@ class Orders extends Component {
     this.onSortingTotalClicked = this.onSortingTotalClicked.bind(this);
     this.onSortingStatusClicked = this.onSortingStatusClicked.bind(this);
     this.onOrderExportCheckChange = this.onOrderExportCheckChange.bind(this);
+    this.onClickExport = this.onClickExport.bind(this);
   }
   loadOrders() {
     this.setState({loading:true});
@@ -101,6 +105,15 @@ class Orders extends Component {
         }
       }.bind(this)
     });
+    $.post({
+      url: 'php/settings/load.php',
+      data: {
+        name: "general_exportcombineclubs"
+      },
+      success: function(data) {
+        this.combineClubs = (JSON.parse(data)["export_combineclubs"] == "1");
+      }.bind(this)
+    });
   }
   removeOrder(e) {
     $.post({
@@ -134,7 +147,7 @@ class Orders extends Component {
   onOrderExportCheckChange(clubid, id) {
     var newOrders = this.state.orders;
     for(var i in newOrders) {
-      if(newOrders[i].clubid == clubid && newOrders[i].id == id) {
+      if(newOrders[i].clubid == clubid && newOrders[i].id == id && newOrders[i].status >= 1) {
         newOrders[i].export = !newOrders[i].export;
       }
     }
@@ -261,47 +274,122 @@ class Orders extends Component {
     });
   }
   onClickExport() {
-
-    // TESTING
+    this.setState({loading: true});
 
     var toExport = {};
-    for(var i in this.state.orders) {
-      if(this.state.orders[i].export) {
-        var exports = toExport[this.state.orders[i].clubid];
+    var toExportCount = 0;
+    var hasOrderedArticles = false;
+    this.state.orders.forEach((order) => {
+      if(order.export) {
+        var exports = toExport[order.clubid];
         if(!exports) exports = [];
-        exports.push(this.state.orders[i]);
-        toExport[this.state.orders[i].clubid] = exports;
+        exports.push(order.id);
+        toExport[order.clubid] = exports;
+        toExportCount++;
+
+        if(!hasOrderedArticles) {
+          for(var i in order.items) {
+            console.log(order.items[i]);
+            if(order.items[i].status >= 0) {
+              hasOrderedArticles = true;
+              break;
+            }
+          }
+        }
       }
+    });
+
+
+    var skipOrdered = false;
+    var onAnswer = () => {
+      if(this.combineClubs) {
+        var clubStrings = [];
+        Object.keys(toExport).forEach((key) => {
+          clubStrings.push(key + ":" + toExport[key].join(","));
+        });
+        window.open("php/orders/csv.php?multipleclubs=1&request=" + clubStrings.join(";") + "&skipordered=" + (skipOrdered ? 1 : 0));
+      } else {
+        Object.keys(toExport).forEach((key) => {
+          window.open("php/orders/csv.php?clubid=" + key + "&request=" + toExport[key].join(",") + "&skipordered=" + (skipOrdered ? 1 : 0));
+        });
+      }
+
+      var toUpdateOrders = [];
+      var toUpdateItems = [];
+      this.state.orders.forEach((order) => {
+        if(toExport[order.clubid] != undefined && toExport[order.clubid].includes(order.id)) {
+          if(order.status < 2)
+            toUpdateOrders.push({clubid: order.clubid, id: order.id});
+          Object.values(order.items).forEach((item) => {
+            if(item.status < 0)
+              toUpdateItems.push({clubid: order.clubid, orderid: order.id, id: item.id});
+          });
+        }
+      });
+
+      if(toUpdateOrders.length > 0 || toUpdateItems.length > 0) {
+        this.popupModal.showModal("Bestellungen exportieren...", "Es wurden " + toExportCount + " Bestellungen exportiert. " + toUpdateOrders.length + " dieser Bestellung(en) und " + toUpdateItems.length + " Artikel werden nun auf den Status " + Statics.OrderStatus[2] + " gesetzt. Fortfahren?", (answer) => {
+          if(answer) {
+            var doneOrders = false;
+            var doneItems = false;
+            var done = (() => {
+              if(doneOrders && doneItems)
+                this.loadOrders();
+            }).bind(this);
+            var ordersData = new FormData();
+            ordersData.append("data", JSON.stringify(toUpdateOrders));
+            ordersData.append("status", "2");
+            $.post({
+              url: 'php/orders/bulk_status.php',
+              contentType: false,
+              processData: false,
+              data: ordersData,
+              success: function(data) {
+                console.log(data);
+                doneOrders = true;
+                done();
+              }.bind(this)
+            });
+            var itemsData = new FormData();
+            itemsData.append("data", JSON.stringify(toUpdateItems));
+            itemsData.append("status", "0");
+            $.post({
+              url: 'php/items/bulk_status.php',
+              contentType: false,
+              processData: false,
+              data: itemsData,
+              success: function(data) {
+                console.log(data);
+                doneItems = true;
+                done();
+              }.bind(this)
+            });
+          } else {
+            this.setState({loading:false});
+            this.uncheckAll();
+          }
+        }, "Ja", "Nein");
+      } else {
+        this.setState({loading:false});
+        this.uncheckAll();
+      }
+    };
+
+    if(hasOrderedArticles) {
+      this.popupModal.showModal("Bestellungen exportieren...", "Dieser Exportvorgang enthält Bestellungen mit Artikeln, die bereits den Status " + Statics.ItemStatus[0] + " besitzen. Sollen diese Artikel übersprungen werden?", (answer) => {
+        skipOrdered = answer;
+        onAnswer();
+      }, "Ja, bereits bestellte Artikel überspringen", "Nein, nicht überspringen");
+    } else {
+      onAnswer();
     }
-    var fields = ['ID', 'ArtikelNr', ''];
-    var myCars = [
-      {
-        "car": "Audiü",
-        "price": 40000,
-        "color": "blue"
-      }, {
-        "car": "BMWß",
-        "price": 35000,
-        "color": "black"
-      }, {
-        "car": "Porsche",
-        "price": 60000,
-        "color": "green"
-      }
-    ];
-    var csv = json2csv({ data: myCars, fields: fields, del: ";" });
-    console.log(csv);
-
-    var link = document.createElement('a');
-    link.href = "data:text/csv;charset=iso8859-1," + encodeURI(csv);
-    link.download = "export_.csv";
-    document.body.appendChild(link);
-    link.click();
-
-    // var uriContent = "data:application/vnd.openxmlformats," + encodeURIComponent(xls);
-    // var newWindow=window.open(uriContent, 'filename.txt');
-
-    // var xls = json2xls(json);
+  }
+  uncheckAll() {
+    var newOrders = this.state.orders;
+    this.state.orders.forEach((order, i) => {
+      newOrders[i].export = false;
+    });
+    this.setState({orders: newOrders});
   }
   componentWillReceiveProps(nextProps) {
     if(!nextProps.children) {
@@ -317,6 +405,7 @@ class Orders extends Component {
     return (
       <div>
         {!this.props.children && <div className="container" data-page="Orders">
+          <PopupModal ref={(ref) => {this.popupModal = ref;}} />
           <LoadingOverlay show={this.state.loading} />
           <h1 className="page-header">Bestellungen</h1>
           {this.state.loadedOrders &&
