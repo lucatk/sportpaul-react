@@ -8,6 +8,7 @@ import {
   Row, Col,
   Table
 } from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 
 import LoadingOverlay from '../utils/LoadingOverlay';
 
@@ -101,6 +102,9 @@ class OrderSummary extends Component {
   render() {
     return (
       <div>
+        <Helmet>
+          <title>Bestellung abschließen | Sport-Paul Vereinsbekleidung</title>
+        </Helmet>
         <LoadingOverlay show={this.state.loading} />
         <div className="order-summary">
           <h1 className="page-header">Bestellung abschließen</h1>

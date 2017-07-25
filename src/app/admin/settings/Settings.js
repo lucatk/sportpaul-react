@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import $ from 'jquery';
 import { Nav, NavItem } from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 
 import LoadingOverlay from '../../utils/LoadingOverlay'
 
@@ -79,9 +80,11 @@ class Settings extends Component {
     });
   }
   render() {
-    document.title = "Admin-Einstellungen | Sport-Paul Vereinsbekleidung";
     return (
       <div>
+        <Helmet>
+          <title>Admin-Einstellungen | Sport-Paul Vereinsbekleidung</title>
+        </Helmet>
         <div className="container" data-page="Settings">
           <LoadingOverlay show={this.state.loading} />
           <Nav bsStyle="tabs" activeHref={"#" + this.props.location.pathname}>

@@ -42,7 +42,7 @@
 
 * ✓ E-Mail-Versand
 
-* Titel-Bug
+* ✓ Titel-Bug
 
 * Konsolenausgabe
 

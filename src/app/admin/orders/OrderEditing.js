@@ -10,6 +10,7 @@ import {
   Glyphicon,
   Col, Row
 } from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 
 import * as Statics from "../../utils/Statics";
 import LoadingOverlay from '../../utils/LoadingOverlay';
@@ -521,9 +522,11 @@ class OrderEditing extends Component {
     this.setState({total: total});
   }
   render() {
-    document.title = "ID: " + this.state.clubid + "/" + this.state.id + " | Bestellung bearbeiten | Sport-Paul Vereinsbekleidung";
     return (
       <div className="container" data-page="OrderEditing">
+        <Helmet>
+          <title>{"ID: " + this.state.clubid + "/" + this.state.id + " | Bestellung bearbeiten | Sport-Paul Vereinsbekleidung"}</title>
+        </Helmet>
         <PopupModal ref={(ref) => {this.popupModal = ref;}} />
         <LoadingOverlay show={this.state.loading} />
         <h1 className="page-header">

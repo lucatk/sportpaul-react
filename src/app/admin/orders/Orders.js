@@ -10,6 +10,7 @@ import {
   Modal
 } from 'react-bootstrap';
 import json2csv from 'json2csv';
+import {Helmet} from "react-helmet";
 
 import LoadingOverlay from '../../utils/LoadingOverlay';
 import PopupModal from '../../utils/PopupModal';
@@ -397,13 +398,15 @@ class Orders extends Component {
     }
   }
   render() {
-    document.title = "Bestellungen | Sport-Paul Vereinsbekleidung";
     var toExport = 0;
     this.state.orders.forEach((order) => {
       if(order.export) toExport++;
     });
     return (
       <div>
+        <Helmet>
+          <title>Bestellungen | Sport-Paul Vereinsbekleidung</title>
+        </Helmet>
         {!this.props.children && <div className="container" data-page="Orders">
           <PopupModal ref={(ref) => {this.popupModal = ref;}} />
           <LoadingOverlay show={this.state.loading} />

@@ -9,6 +9,7 @@ import {
   ButtonToolbar, Button,
   Glyphicon
 } from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 
 import * as Statics from "../../utils/Statics";
 import LoadingOverlay from '../../utils/LoadingOverlay';
@@ -101,9 +102,11 @@ class OrderView extends Component {
     });
   }
   render() {
-    document.title = "ID: " + this.state.clubid + "/" + this.state.id + " | Bestellung-Details | Sport-Paul Vereinsbekleidung";
     return (
       <div className="container" data-page="OrderView">
+        <Helmet>
+          <title>{"ID: " + this.state.clubid + "/" + this.state.id + " | Bestellung-Details | Sport-Paul Vereinsbekleidung"}</title>
+        </Helmet>
         <LoadingOverlay show={this.state.loading} />
         <h1 className="page-header">
           Bestellung: Details

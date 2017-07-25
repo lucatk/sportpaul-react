@@ -4,6 +4,7 @@ import {
   Button,
   Glyphicon
 } from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 
 import ProductCartTable from './ProductCartTable';
 
@@ -15,6 +16,9 @@ class ProductCart extends Component {
   render() {
     return (
       <div className="product-cart">
+        <Helmet>
+          <title>Warenkorb | Sport-Paul Vereinsbekleidung</title>
+        </Helmet>
         <h1 className="page-header">Ihr Warenkorb <small>/ Persönliche Details / Bestellung abschließen</small></h1>
         <div className="cart-contents">
           <ProductCartTable data={this.props.contents} onRemove={this.props.onProductRemoveFromCart} onPreview={this.props.onProductPreviewRequest} />

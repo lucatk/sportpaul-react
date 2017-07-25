@@ -9,6 +9,7 @@ import {
   ButtonToolbar, Button,
   Glyphicon
 } from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 
 import LoadingOverlay from '../../utils/LoadingOverlay';
 import ImageLightbox from '../../utils/ImageLightbox';
@@ -366,7 +367,7 @@ class ClubEditing extends Component {
       },
       success: function(data) {
         var products = JSON.parse(data);
-        
+
         var parsedProducts = [];
         for(var i in products) {
           parsedProducts[i] = products[i];
@@ -384,10 +385,12 @@ class ClubEditing extends Component {
     });
   }
   render() {
-    document.title = "ID: " + this.state.id + " | Verein bearbeiten | Sport-Paul Vereinsbekleidung";
     if((this.state.loadedInfo && this.state.loadedProducts) || this.state.loading) {
       return (
         <div className="container" data-page="ClubEditing">
+          <Helmet>
+            <title>{"ID: " + this.state.id + " | Verein bearbeiten | Sport-Paul Vereinsbekleidung"}</title>
+          </Helmet>
           {this.state.picturePreview && <ImageLightbox image={this.state.picturePreview.startsWith("data:image/") ? this.state.picturePreview : "clublogos/" + this.state.picturePreview} onClose={this.onClosePicturePreview} />}
           <LoadingOverlay show={this.state.loading} />
           <h1 className="page-header">
@@ -478,6 +481,9 @@ class ClubEditing extends Component {
     } else {
       return (
         <div className="container" data-page="ClubEditing">
+          <Helmet>
+            <title>{"ID: " + this.state.id + " | Verein bearbeiten | Sport-Paul Vereinsbekleidung"}</title>
+          </Helmet>
           <h1 className="page-header">
             Verein bearbeiten <small>ID: {this.state.id}</small>
           </h1>

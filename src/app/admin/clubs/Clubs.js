@@ -7,6 +7,7 @@ import {
   Glyphicon,
   Modal
 } from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 
 import LoadingOverlay from '../../utils/LoadingOverlay';
 import ClubsTable from './ClubsTable';
@@ -78,10 +79,12 @@ class Clubs extends Component {
     }
   }
   render() {
-    document.title = "Vereine | Sport-Paul Vereinsbekleidung";
     return (
       <div>
         {!this.props.children && <div className="container" data-page="Clubs">
+          <Helmet>
+            <title>Vereine | Sport-Paul Vereinsbekleidung</title>
+          </Helmet>
           <LoadingOverlay show={this.state.loading} />
           <h1 className="page-header">Vereine</h1>
           {this.state.loadedClubs &&

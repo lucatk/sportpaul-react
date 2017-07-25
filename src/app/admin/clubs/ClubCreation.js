@@ -9,6 +9,7 @@ import {
   ButtonToolbar, Button,
   Glyphicon
 } from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 
 import LoadingOverlay from '../../utils/LoadingOverlay';
 import ImageUploadControl from './ImageUploadControl';
@@ -87,9 +88,11 @@ class ClubCreation extends Component {
     });
   }
   render() {
-    document.title = "Verein hinzufügen | Sport-Paul Vereinsbekleidung";
     return (
       <div className="container" data-page="ClubCreation">
+        <Helmet>
+          <title>Verein hinzufügen | Sport-Paul Vereinsbekleidung</title>
+        </Helmet>
         {this.state.picturePreview && <ImageLightbox image={this.state.picturePreview.startsWith("data:image/") ? this.state.picturePreview : "clublogos/" + this.state.picturePreview} onClose={this.onClosePicturePreview} />}
         <LoadingOverlay show={this.state.loading} />
         <h1 className="page-header">

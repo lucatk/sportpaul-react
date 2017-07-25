@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router';
+import {Helmet} from "react-helmet";
 
 import ImageLightbox from '../utils/ImageLightbox';
 
@@ -23,9 +24,12 @@ class Admin extends Component {
     this.setState({picturePreview: null});
   }
   render() {
-    document.title = "Admin-Home | Sport-Paul Vereinsbekleidung";
     return (
       <div className="admin">
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>Admin-Home | Sport-Paul Vereinsbekleidung</title>
+        </Helmet>
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>

@@ -6,6 +6,7 @@ import {
   Row, Col,
   FormGroup, FormControl, ControlLabel
 } from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 
 class OrderProcess extends Component {
   constructor(props) {
@@ -95,6 +96,9 @@ class OrderProcess extends Component {
   render() {
     return (
       <div className="order-process">
+        <Helmet>
+          <title>Persönliche Details | Sport-Paul Vereinsbekleidung</title>
+        </Helmet>
         <h1 className="page-header">Persönliche Details <small>/ Bestellung abschließen</small></h1>
         <form>
           <Row>

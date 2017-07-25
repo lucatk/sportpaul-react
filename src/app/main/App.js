@@ -5,6 +5,7 @@ import {
   Button,
   FormGroup, FormControl, ControlLabel
 } from 'react-bootstrap';
+import {Helmet} from "react-helmet";
 
 import LoadingOverlay from '../utils/LoadingOverlay';
 import ImageLightbox from '../utils/ImageLightbox';
@@ -20,8 +21,6 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
-
-    document.title = "Home | Sport-Paul Vereinsbekleidung";
 
     var cartContents = [];
     var clubInUse = -1;
@@ -196,22 +195,14 @@ class App extends Component {
   }
 
   render() {
-    if(this.state.selectedClub >= 0) {
-      document.title = this.getClubWithId(this.state.selectedClub).name + " | Sport-Paul Vereinsbekleidung";
-    } else if(this.state.selectedClub === -2) {
-      document.title = "Warenkorb | Sport-Paul Vereinsbekleidung";
-    } else if(this.state.selectedClub === -3) {
-      document.title = "Persönliche Details | Sport-Paul Vereinsbekleidung";
-    } else if(this.state.selectedClub === -4) {
-      document.title = "Bestellung abschließen | Sport-Paul Vereinsbekleidung";
-    } else {
-      document.title = "Home | Sport-Paul Vereinsbekleidung";
-    }
-
     this.cartTotal = 0;
     this.state.cartContents.forEach((el) => this.cartTotal += el.price);
     return (
       <div className="App">
+        <Helmet>
+          <meta charSet="utf-8" />
+          <title>Home | Sport-Paul Vereinsbekleidung</title>
+        </Helmet>
         <LoadingOverlay show={this.state.loading} />
         {this.state.previewProduct && <ImageLightbox image={"productpics/" + this.state.previewProduct.picture} onClose={this.onCloseProductPreview} />}
         {this.state.flockingModal.target !== -1 &&
@@ -238,7 +229,7 @@ class App extends Component {
             </div>
             <div className="col-xs-12 col-sm-9 col-md-10 col-xxl-9">
               {this.state.selectedClub >= 0 ? (
-                <ClubProducts productList={this.getClubWithId(this.state.selectedClub).products || []} onProductAddToCart={this.onProductAddToCart} onProductPreviewRequest={this.onProductPreviewRequest} />
+                <ClubProducts clubName={this.getClubWithId(this.state.selectedClub).name} productList={this.getClubWithId(this.state.selectedClub).products || []} onProductAddToCart={this.onProductAddToCart} onProductPreviewRequest={this.onProductPreviewRequest} />
               ) : this.state.selectedClub === -2 ? (
                 <ProductCart contents={this.state.cartContents} onProductRemoveFromCart={this.onProductRemoveFromCart} onProductPreviewRequest={this.onProductPreviewRequest} onContinue={this.onShowOrderProcess} />
               ) : this.state.selectedClub === -3 ? (
