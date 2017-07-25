@@ -45,7 +45,7 @@ $orders = array();
 foreach($results as $club) {
   foreach($club["orders"] as $row) {
     $cstmt = $db->execute("SELECT internalid, name, colour, flocking, size, status FROM items WHERE clubid=:clubid AND orderid=:orderid ORDER BY id ASC", ["clubid" => $clubid,
-                                                                                                                                                   "orderid" => $row["id"]]);
+                                                                                                                                                           "orderid" => $row["id"]]);
     $cresults = $db->fetchAll($cstmt);
     if($skipOrdered)
       $cresults = array_filter($cresults, function($var) { return intval($var["status"]) < 0; });

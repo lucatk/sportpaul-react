@@ -29,7 +29,7 @@
 * ✓ Einzelstatus ("variiert")
 * ✓ individueller Position-Status (verspätet)
 
-* Bestellung abschließen Druckfunktion
+* ✓ Bestellung abschließen Druckfunktion
 
 * ✓ Admin Bestellungen sortieren (Datum)
 

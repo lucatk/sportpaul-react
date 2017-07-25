@@ -26,6 +26,7 @@ $stmt = $db->execute("INSERT INTO orders(clubid, clubname, firstname, lastname, 
                      "phone" => $_POST["phone"]]);
 
 $rowsAffected += $stmt->rowCount();
+$id = -1;
 
 if($stmt->errorCode() !== "00000") {
   die(json_encode([
@@ -64,7 +65,8 @@ if($stmt->errorCode() !== "00000") {
 
 die(json_encode([
   "error" => $stmt->errorCode(),
-  "rowsAffected" => $rowsAffected
+  "rowsAffected" => $rowsAffected,
+  "newid" => $id
 ]));
 
 ?>

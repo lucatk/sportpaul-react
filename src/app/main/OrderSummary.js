@@ -16,7 +16,10 @@ class OrderSummary extends Component {
     super(props);
 
     this.state = {
-      loading: false
+      loading: false,
+      success: false,
+      newid: -1,
+      newclubid: -1
     };
 
     this.total = 0;
@@ -55,14 +58,19 @@ class OrderSummary extends Component {
     this.setState({loading:true});
     var cart = this.orderCart;
     this.orderCart.forEach((item, i) => {
-      if(item.colour)
+      if(item.colour) {
         item.colour = JSON.stringify(item.colour);
+      } else {
+        item.colour = "";
+      }
+
       cart[i] = item;
     });
+    var clubid = this.props.clubid;
     $.post({
       url: 'php/orders/add.php',
       data: {
-        clubid: this.props.clubid,
+        clubid: clubid,
         ...this.customerData,
         cart: JSON.stringify(cart)
       },
@@ -83,7 +91,7 @@ class OrderSummary extends Component {
           this.setState({success:false});
         } else {
           success = true;
-          this.setState({success:true});
+          this.setState({success:true,newid:parsed.newid,newclubid:clubid});
         }
         this.props.onOrder(success);
       }.bind(this)
@@ -123,7 +131,7 @@ class OrderSummary extends Component {
                   {this.orderCart.map((row, i) =>
                   <tr>
                     <td>{row.name}</td>
-                    <td>{row.colour != null ? row.colour.id + " " + row.colour.name : "-"}</td>
+                    <td>{row.colour !== undefined && row.colour != null && row.colour.length > 0 ? row.colour.id + " " + row.colour.name : "-"}</td>
                     <td>{row.size}</td>
                     <td>{(row.flocking && row.flocking.length > 0) ? row.flocking : '-'}</td>
                     <td>{row.displayPrice.toFixed(2).replace('.', ',')} €</td>
@@ -139,7 +147,7 @@ class OrderSummary extends Component {
             </Col>
           </Row>
           {!this.state.done && <Button bsStyle="primary" onClick={this.onClickOrder}>Bestellen</Button>}
-          {(this.state.done && this.state.success) && <div className="done"><p>Die Bestellung wurde aufgenommen. Informationen zur Bestellung werden an die E-Mail <span>{this.customerData.email}</span> gesendet.</p><Button bsStyle="primary"><Glyphicon glyph="print" /> Bestellübersicht drucken</Button></div>}
+          {(this.state.done && this.state.success) && <div className="done"><p>Die Bestellung wurde aufgenommen. Informationen zur Bestellung werden an die E-Mail <span>{this.customerData.email}</span> gesendet.</p><Button bsStyle="primary" onClick={() => {window.open("php/orders/pdf.php?clubid=" + this.state.newclubid + "&id=" + this.state.newid)}}><Glyphicon glyph="print" /> Bestellübersicht drucken</Button></div>}
           {(this.state.done && !this.state.success) && <div className="done"><p>Es gab einen Fehler bei der Bestellung.</p></div>}
         </div>
       </div>
