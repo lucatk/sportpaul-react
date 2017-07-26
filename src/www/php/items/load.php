@@ -19,7 +19,6 @@ foreach($results as $row) {
     $row["pricegroups"] = $cresults["pricegroups"];
   }
 
-  // array_walk($row, function(&$s, $key){$s = iconv("LATIN-1", "UTF-8", $s);});
   $assoc[$row["id"]] = $row;
   $i++;
 }

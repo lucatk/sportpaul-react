@@ -20,7 +20,6 @@ foreach($results as $row) {
     $results[$i]["products"] = $cresults;
   }
 
-  array_walk($results[$i], function(&$s, $key){if(gettype($s) === "string") {$s = utf8_encode($s);}});
   $i++;
 }
 

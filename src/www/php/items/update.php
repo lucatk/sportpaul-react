@@ -3,7 +3,6 @@ include('../database.php');
 
 $db = new Database();
 
-array_walk_recursive($_POST, function(&$entry){$entry=utf8_encode($entry);});
 $stmt = $db->execute("UPDATE items SET flocking=:flocking, size=:size, price=:price, flockingPrice=:flockingPrice, status=:status WHERE clubid=:clubid AND orderid=:orderid AND id=:id",
                       ["clubid" => $_POST["clubid"],
                        "orderid" => $_POST["orderid"],

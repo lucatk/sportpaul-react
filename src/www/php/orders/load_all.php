@@ -29,7 +29,6 @@ foreach($results as $row) {
   $results[$i]["total"] = $total;
   $results[$i]["itemCount"] = $cstmt->rowCount();
 
-  array_walk($results[$i], function(&$s, $key){$s = utf8_encode($s);});
   $i++;
 }
 
