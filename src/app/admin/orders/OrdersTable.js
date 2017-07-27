@@ -230,8 +230,8 @@ class OrdersTable extends Component {
                     })} Uhr
                   </td>
                   <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{row.firstname} {row.lastname}</td>
-                  <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{row.itemCount} Position{row.itemCount==1?'':'en'}</td>
-                  <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{parseFloat(row.total).toFixed(2).replace(".", ",")} €</td>
+                  <td className="items" onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{row.itemCount} Position{row.itemCount==1?'':'en'}</td>
+                  <td className="price" onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{parseFloat(row.total).toFixed(2).replace(".", ",")} €</td>
                   <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{Statics.OrderStatus[row.status]}</td>
                   <td className="buttons">
                     <ButtonToolbar>

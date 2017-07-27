@@ -14,13 +14,8 @@ class ClubList extends Component {
       showAll: false
     };
 
-    this.handleChange = this.handleChange.bind(this);
     this.handleShowAll = this.handleShowAll.bind(this);
     this.resetShowAll = this.resetShowAll.bind(this);
-  }
-
-  handleChange(selected) {
-    this.props.onChange(selected);
   }
 
   handleShowAll() {
@@ -38,13 +33,14 @@ class ClubList extends Component {
   }
 
   render() {
+    console.log("a");
     var selectedClub = null;
     if(this.props.selectedClub >= 0) {
       selectedClub = this.getClubWithId(this.props.selectedClub);
     }
     return (
       <div className="club-list">
-        <Nav bsStyle="pills" stacked activeKey={(this.props.selectedClub < -2?-2:this.props.selectedClub) || -1} onSelect={this.handleChange}>
+        <Nav bsStyle="pills" stacked activeKey={(this.props.selectedClub < -2?-2:this.props.selectedClub) || -1} onSelect={this.props.onChange}>
           <NavItem eventKey={-1} role="button highlight"><Glyphicon glyph="home" /><p>Home</p></NavItem>
 
           {(this.props.showCart && this.props.selectedClub >= 0 && this.props.clubs.length > 8) &&

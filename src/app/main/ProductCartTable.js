@@ -27,7 +27,7 @@ class ProductCartTable extends Component {
               {this.props.data.map((row, i) =>
                 <tr key={i} data-id={row.id} data-product={row.name}>
                   <td>{i+1}</td>
-                  <td><img className="product-thumbnail" onClick={this.props.onPreview.bind(null, row)} src={"productpics/" + (row.colour != null && row.colour.picture != null ? row.colour.picture : row.picture)} />{row.name}</td>
+                  <td><img className="product-thumbnail" onClick={this.props.onPreview.bind(null, row.colour != null && row.colour.picture != null ? row.colour.picture : row.picture)} src={"productpics/" + (row.colour != null && row.colour.picture != null ? row.colour.picture : row.picture)} />{row.name}</td>
                   <td>{row.internalid}{row.colour != null && [<br />, row.colour.id + " " + row.colour.name]}</td>
                   <td>{row.size}</td>
                   {(row.flocking && row.flocking.length > 0) ?

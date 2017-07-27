@@ -170,6 +170,14 @@
   color: #F44336;
 }
 
+.admin .container[data-page=Orders] td.items {
+  min-width: 110px;
+}
+
+.admin .container[data-page=Orders] td.price {
+  min-width: 80px;
+}
+
 .admin .container[data-page=Orders] td.product-name,
 .admin .container[data-page=Orders] td.buttons {
   width: 20%;

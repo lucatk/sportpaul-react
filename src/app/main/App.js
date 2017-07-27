@@ -10,6 +10,7 @@ import {Helmet} from "react-helmet";
 import LoadingOverlay from '../utils/LoadingOverlay';
 import ImageLightbox from '../utils/ImageLightbox';
 import ClubList from './ClubList.js';
+import ClubShowcase from './ClubShowcase.js';
 import ClubProducts from './ClubProducts.js';
 import ProductCart from './ProductCart.js';
 import OrderProcess from './OrderProcess';
@@ -33,7 +34,7 @@ class App extends Component {
       selectedClub: -1,
       clubInUse: clubInUse,
       cartContents: cartContents,
-      previewProduct: null,
+      previewProductPicture: null,
       loadedClubs: false,
       loading: true,
       flockingModal: {
@@ -136,11 +137,11 @@ class App extends Component {
   }
 
   onProductPreviewRequest(product) {
-    this.setState({previewProduct: product});
+    this.setState({previewProductPicture: product});
   }
 
   onCloseProductPreview() {
-    this.setState({previewProduct: null});
+    this.setState({previewProductPicture: null});
   }
 
   onFlockingModalInput(ev) {
@@ -204,7 +205,7 @@ class App extends Component {
           <title>Home | Sport-Paul Vereinsbekleidung</title>
         </Helmet>
         <LoadingOverlay show={this.state.loading} />
-        {this.state.previewProduct && <ImageLightbox image={"productpics/" + this.state.previewProduct.picture} onClose={this.onCloseProductPreview} />}
+        {this.state.previewProductPicture && <ImageLightbox image={"productpics/" + this.state.previewProductPicture} onClose={this.onCloseProductPreview} />}
         {this.state.flockingModal.target !== -1 &&
         <Modal show={this.state.flockingModal.target !== -1} onHide={this.onFlockingModalClose.bind(this, false)}>
           <Modal.Header closeButton>
@@ -237,7 +238,7 @@ class App extends Component {
               ) : this.state.selectedClub === -4 ? (
                 <OrderSummary productCart={this.state.cartContents} customerData={this.state.customerData} clubid={this.state.clubInUse} onOrder={this.onOrder} />
               ) : (
-                <p>Home</p>
+                <ClubShowcase clubList={this.state.clubs} onChange={this.onClubChange} />
               )}
             </div>
           </div>
