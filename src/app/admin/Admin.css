@@ -348,6 +348,23 @@
   cursor: grab;
 }
 
+.modal-dialog .form-group .checkbox label,
+.modal-dialog .form-group .radio-inline {
+  line-height: initial;
+}
+
+.modal-dialog .form-group .radio-inline {
+  margin-left: 0;
+}
+
+.modal-dialog .form-group .radio-inline input {
+  margin-top: 3px;
+}
+
+.modal-dialog form.orders-export .form-group:first-child .col-sm-8 {
+  margin-top: 7px;
+}
+
 .colour-sortable-helper {
   z-index: 1051 !important;
   pointer-events: auto !important;

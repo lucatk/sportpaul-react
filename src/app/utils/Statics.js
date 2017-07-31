@@ -16,3 +16,13 @@ export const ItemStatus = {
   "2": "erhalten",
   "3": "erledigt"
 };
+export const ExportColumns = {
+  "clubname": "Verein",
+  "id": "Bestellung",
+  "customer": "Kunde",
+  "internalid": "Artikelnummer",
+  "name": "Artikel",
+  "colour": "Farbe",
+  "flocking": "Beflockung",
+  "size": "Größe"
+};

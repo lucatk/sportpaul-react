@@ -182,7 +182,7 @@
 .product-list .product-item .right-column .list-group-item span.internalid {
   font-weight: normal;
   font-size: 11px;
-  white-space: nowrap;
+  white-space: pre;
 }
 
 .product-list .product-item .right-column .list-group-item p.pricegroup {

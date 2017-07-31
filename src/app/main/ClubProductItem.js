@@ -4,6 +4,9 @@ class ClubProductItem extends Component {
   constructor(props) {
     super(props);
 
+    this.regexSizechainNumbers = /^\d{1,}$/
+    this.regexSizechainLetters = /^(\dX|X*)(S|L)|M$/
+
     this.state = {
       selectedColour: -1,
       selectedSize: '',
@@ -82,7 +85,7 @@ class ClubProductItem extends Component {
                 <li className="product-item-pricegroups list-group-item">
                   {this.props.product.pricegroups.map((pricegroup, i) =>
                     <p className="pricegroup" key={i}>
-                      <span className="sizes">{pricegroup.sizes.join(", ")}:</span> {pricegroup.price.toFixed(2).replace(".", ",")} €
+                      <span className="sizes">{pricegroup.sizes.every(s => s.match(this.regexSizechainNumbers)) || pricegroup.sizes.every(s => s.match(this.regexSizechainLetters)) ? pricegroup.sizes[0] + "-" + pricegroup.sizes[pricegroup.sizes.length-1] : pricegroup.sizes.join(", ")}:</span> {pricegroup.price.toFixed(2).replace(".", ",")} €
                     </p>
                   )}
                 </li>

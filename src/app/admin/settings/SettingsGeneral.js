@@ -57,19 +57,6 @@ class SettingsGeneral extends Component {
               </FormGroup>
             </Col>
           </Row>
-          <Row>
-            <Col xs={8}>
-              <FormGroup controlId="inputExportCombineClubs">
-                <ControlLabel bsClass="col-sm-5 control-label">Export: Bestellungen aller Vereine zusammenführen</ControlLabel>
-                <Col xs={4}>
-                  <FormControl componentClass="select" value={this.props.settings.export_combineclubs} onChange={this.props.onSettingChange.bind(this, "export_combineclubs", false)} onBlur={this.props.onSettingChange.bind(this, "export_combineclubs", true)} >
-                    <option value={1}>Ja</option>
-                    <option value={0}>Nein</option>
-                  </FormControl>
-                </Col>
-              </FormGroup>
-            </Col>
-          </Row>
         </form>
       </div>
     );

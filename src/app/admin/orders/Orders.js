@@ -15,6 +15,7 @@ import {Helmet} from "react-helmet";
 import LoadingOverlay from '../../utils/LoadingOverlay';
 import PopupModal from '../../utils/PopupModal';
 import OrdersTable from './OrdersTable';
+import OrdersExportModal from './OrdersExportModal';
 
 import * as Statics from '../../utils/Statics';
 
@@ -29,6 +30,8 @@ class Orders extends Component {
         clubid: -1,
         club: ''
       },
+      showOrdersExportModal: false,
+      scopeOrdersExportModal: null,
       loadedOrders: false,
       loading: true,
       filterClub: -1,
@@ -46,6 +49,8 @@ class Orders extends Component {
 
     this.openRemoveModal = this.openRemoveModal.bind(this);
     this.closeRemoveModal = this.closeRemoveModal.bind(this);
+    this.openOrdersExportModal = this.openOrdersExportModal.bind(this);
+    this.closeOrdersExportModal = this.closeOrdersExportModal.bind(this);
     this.removeOrder = this.removeOrder.bind(this);
     this.onFilterClubChange = this.onFilterClubChange.bind(this);
     this.onFilterDateModifierChange = this.onFilterDateModifierChange.bind(this);
@@ -274,6 +279,115 @@ class Orders extends Component {
       }.bind(this)
     });
   }
+  openOrdersExportModal() {
+    this.setState({
+      showOrdersExportModal: true,
+      scopeOrdersExportModal: this.state.orders.filter(o => o.export)
+    });
+  }
+  closeOrdersExportModal(answer) {
+    this.setState({
+      showOrdersExportModal: false,
+      scopeOrdersExportModal: null
+    });
+    if(answer) {
+      this.setState({loading: true});
+
+      var toExport = {};
+      var toExportCount = 0;
+      var hasOrderedArticles = false;
+      answer.data.forEach((order) => {
+        var exports = toExport[order.clubid];
+        if(!exports) exports = [];
+        exports.push(order.id);
+        toExport[order.clubid] = exports;
+        toExportCount++;
+
+        if(!hasOrderedArticles) {
+          for(var i in order.items) {
+            console.log(order.items[i]);
+            if(order.items[i].status >= 0) {
+              hasOrderedArticles = true;
+              break;
+            }
+          }
+        }
+      });
+
+      var columns = Object.keys(answer.columns).filter(c => answer.columns[c]);
+      if(answer.exportMode === 0) {
+        var clubStrings = [];
+        Object.keys(toExport).forEach((key) => {
+          clubStrings.push(key + ":" + toExport[key].join(","));
+        });
+        window.open("php/orders/csv.php?columns=" + columns.join(",") + "&columnnames=" + columns.map(c => Statics.ExportColumns[c]).join(",") + "&multipleclubs=1&request=" + clubStrings.join(";") + "&skipordered=" + (answer.skipOrdered ? 1 : 0));
+      } else {
+        Object.keys(toExport).forEach((key) => {
+          window.open("php/orders/csv.php?columns=" + columns.join(",") + "&columnnames=" + columns.map(c => Statics.ExportColumns[c]).join(",") + "&clubid=" + key + "&request=" + toExport[key].join(",") + "&skipordered=" + (answer.skipOrdered ? 1 : 0));
+        });
+      }
+
+      var toUpdateOrders = [];
+      var toUpdateItems = [];
+      this.state.orders.forEach((order) => {
+        if(toExport[order.clubid] != undefined && toExport[order.clubid].includes(order.id)) {
+          if(order.status < 2)
+            toUpdateOrders.push({clubid: order.clubid, id: order.id});
+          Object.values(order.items).forEach((item) => {
+            if(item.status < 0)
+              toUpdateItems.push({clubid: order.clubid, orderid: order.id, id: item.id});
+          });
+        }
+      });
+
+      if(toUpdateOrders.length > 0 || toUpdateItems.length > 0) {
+        this.popupModal.showModal("Bestellungen exportieren...", "Es wurden " + toExportCount + " Bestellungen exportiert. " + toUpdateOrders.length + " dieser Bestellung(en) und " + toUpdateItems.length + " Artikel werden nun auf den Status " + Statics.OrderStatus[2] + " gesetzt. Fortfahren?", (ans) => {
+          if(ans) {
+            var doneOrders = false;
+            var doneItems = false;
+            var done = (() => {
+              if(doneOrders && doneItems)
+                this.loadOrders();
+            }).bind(this);
+            var ordersData = new FormData();
+            ordersData.append("data", JSON.stringify(toUpdateOrders));
+            ordersData.append("status", "2");
+            $.post({
+              url: 'php/orders/bulk_status.php',
+              contentType: false,
+              processData: false,
+              data: ordersData,
+              success: function(data) {
+                console.log(data);
+                doneOrders = true;
+                done();
+              }.bind(this)
+            });
+            var itemsData = new FormData();
+            itemsData.append("data", JSON.stringify(toUpdateItems));
+            itemsData.append("status", "0");
+            $.post({
+              url: 'php/items/bulk_status.php',
+              contentType: false,
+              processData: false,
+              data: itemsData,
+              success: function(data) {
+                console.log(data);
+                doneItems = true;
+                done();
+              }.bind(this)
+            });
+          } else {
+            this.setState({loading:false});
+            this.uncheckAll();
+          }
+        }, "Ja", "Nein");
+      } else {
+        this.setState({loading:false});
+        this.uncheckAll();
+      }
+    }
+  }
   onClickExport() {
     this.setState({loading: true});
 
@@ -453,7 +567,8 @@ class Orders extends Component {
             </div>}
           {(!this.state.loadedOrders && !this.state.loading) && <p className="loading-error">Es ist ein Fehler aufgetreten. Bitte laden Sie die Seite neu!</p>}
 
-          <Button bsSize="small" bsStyle="success" onClick={this.onClickExport} disabled={toExport < 1}><Glyphicon glyph="save" /> Exportieren</Button>
+          <Button bsSize="small" bsStyle="success" onClick={this.openOrdersExportModal} disabled={toExport < 1}><Glyphicon glyph="save" /> Exportieren...</Button>
+          <OrdersExportModal show={this.state.showOrdersExportModal} scope={this.state.scopeOrdersExportModal} onClose={this.closeOrdersExportModal} />
         </div>}
         {this.props.children}
       </div>

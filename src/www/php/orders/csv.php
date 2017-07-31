@@ -63,21 +63,45 @@ header("Content-Disposition: attachment; filename=\"" . $name . ".csv\"");
 header("Content-Type: text/csv");
 
 $out = fopen("php://output", 'w');
-$headers = ["Bestellung", "Kunde", "Artikelnummer", "Artikel", "Farbe", "Beflockung", "Größe"];
-if($multipleClubs)
-  array_unshift($headers, "Verein");
+
+// $headers = ["Bestellung", "Kunde", "Artikelnummer", "Artikel", "Farbe", "Beflockung", "Größe"];
+// if($multipleClubs)
+//   array_unshift($headers, "Verein");
+$headers = explode(",", $_GET["columnnames"]);
 fputcsv($out, $headers, ',', '"');
+
+$columns = explode(",", $_GET["columns"]);
 foreach($orders as $order) {
-  $orderdata = [$order["id"], $order["firstname"] . " " . $order["lastname"]];
-  if($multipleClubs)
-    array_unshift($orderdata, $order["clubname"]);
+  // $orderdata = [$order["id"], $order["firstname"] . " " . $order["lastname"]];
+  // if($multipleClubs)
+  //   array_unshift($orderdata, $order["clubname"]);
   foreach($order["items"] as $item) {
-    unset($item["status"]);
-    if(strlen($item["colour"]) > 0) {
-      $jsonColour = json_decode($item["colour"]);
-      $item["colour"] = $jsonColour->id . " " . $jsonColour->name;
+    // unset($item["status"]);
+    // if(strlen($item["colour"]) > 0) {
+    //   $jsonColour = json_decode($item["colour"]);
+    //   $item["colour"] = $jsonColour->id . " " . $jsonColour->name;
+    // }
+    // fputcsv($out, array_merge($orderdata, $item), ',', '"');
+    $data = [];
+    foreach($columns as $column) {
+      switch($column) {
+        case "clubname":
+        case "id":
+          $data[] = $order[$column];
+          break;
+        case "customer":
+          $data[] = $order["firstname"] . " " . $order["lastname"];
+          break;
+        case "internalid":
+        case "name":
+        case "colour":
+        case "flocking":
+        case "size":
+          $data[] = $item[$column];
+          break;
+      }
     }
-    fputcsv($out, array_merge($orderdata, $item), ',', '"');
+    fputcsv($out, $data, ',', '"');
   }
 }
 fclose($out);
