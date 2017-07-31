@@ -31,6 +31,7 @@ class OrdersExportModal extends Component {
 
     this.closeModal = this.closeModal.bind(this);
     this.export = this.export.bind(this);
+    this.onChangeSkipOrdered = this.onChangeSkipOrdered.bind(this);
     this.onChangeExportMode = this.onChangeExportMode.bind(this);
     this.onChangeColumnState = this.onChangeColumnState.bind(this);
   }
@@ -88,14 +89,17 @@ class OrdersExportModal extends Component {
       }
     });
   }
+  onChangeSkipOrdered(ev) {
+    this.setState({skipOrdered:ev.target.checked});
+  }
   onChangeExportMode(mode) {
     this.setState({
       exportMode: mode
     });
   }
-  onChangeColumnState(column) {
+  onChangeColumnState(column, ev) {
     var columns = this.state.columns;
-    columns[column] = !columns[column];
+    columns[column] = ev.target.checked;
     this.setState({columns:columns});
   }
   render() {

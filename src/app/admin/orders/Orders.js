@@ -358,7 +358,6 @@ class Orders extends Component {
               processData: false,
               data: ordersData,
               success: function(data) {
-                console.log(data);
                 doneOrders = true;
                 done();
               }.bind(this)
@@ -372,7 +371,6 @@ class Orders extends Component {
               processData: false,
               data: itemsData,
               success: function(data) {
-                console.log(data);
                 doneItems = true;
                 done();
               }.bind(this)
@@ -413,7 +411,6 @@ class Orders extends Component {
         }
       }
     });
-
 
     var skipOrdered = false;
     var onAnswer = () => {

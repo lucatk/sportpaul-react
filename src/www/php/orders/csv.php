@@ -56,6 +56,11 @@ foreach($results as $club) {
   }
 }
 
+if(count($orders) < 1) {
+  // TODO
+  die("<script>window.close();</script>");
+}
+
 $name = $orders[0]["clubname"];
 if($multipleClubs)
   $name = "export_" . date("d-m-Y_h-i");
