@@ -58,12 +58,7 @@ class Orders extends Component {
     this.onFilterCustomerChange = this.onFilterCustomerChange.bind(this);
     this.onFilterStatusChange = this.onFilterStatusChange.bind(this);
     this.onFilterProductChange = this.onFilterProductChange.bind(this);
-    this.onSortingClubClicked = this.onSortingClubClicked.bind(this);
-    this.onSortingDateClicked = this.onSortingDateClicked.bind(this);
-    this.onSortingCustomerClicked = this.onSortingCustomerClicked.bind(this);
-    this.onSortingAmountItemsClicked = this.onSortingAmountItemsClicked.bind(this);
-    this.onSortingTotalClicked = this.onSortingTotalClicked.bind(this);
-    this.onSortingStatusClicked = this.onSortingStatusClicked.bind(this);
+    this.onSortingScopeChanged = this.onSortingScopeChanged.bind(this);
     this.onOrderExportCheckChange = this.onOrderExportCheckChange.bind(this);
     this.onClickExport = this.onClickExport.bind(this);
   }
@@ -193,70 +188,15 @@ class Orders extends Component {
       this.setState({filterProduct: productid});
     }
   }
-  onSortingClubClicked(e) {
-    if(this.state.sorting === 'club') {
+  onSortingScopeChanged(scope) {
+    if(this.state.sorting == scope) {
       if(this.state.sortingMode === 'asc') {
         this.setState({sortingMode: 'desc'});
       } else {
         this.setState({sorting: '', sortingMode: ''});
       }
-    } else {
-      this.setState({sorting: 'club', sortingMode: 'asc'});
-    }
-  }
-  onSortingDateClicked(e) {
-    if(this.state.sorting === 'date') {
-      if(this.state.sortingMode === 'asc') {
-        this.setState({sortingMode: 'desc'});
-      } else {
-        this.setState({sorting: '', sortingMode: ''});
-      }
-    } else {
-      this.setState({sorting: 'date', sortingMode: 'asc'});
-    }
-  }
-  onSortingCustomerClicked(e) {
-    if(this.state.sorting === 'customer') {
-      if(this.state.sortingMode === 'asc') {
-        this.setState({sortingMode: 'desc'});
-      } else {
-        this.setState({sorting: '', sortingMode: ''});
-      }
-    } else {
-      this.setState({sorting: 'customer', sortingMode: 'asc'});
-    }
-  }
-  onSortingAmountItemsClicked(e) {
-    if(this.state.sorting === 'amitems') {
-      if(this.state.sortingMode === 'asc') {
-        this.setState({sortingMode: 'desc'});
-      } else {
-        this.setState({sorting: '', sortingMode: ''});
-      }
-    } else {
-      this.setState({sorting: 'amitems', sortingMode: 'asc'});
-    }
-  }
-  onSortingTotalClicked(e) {
-    if(this.state.sorting === 'total') {
-      if(this.state.sortingMode === 'asc') {
-        this.setState({sortingMode: 'desc'});
-      } else {
-        this.setState({sorting: '', sortingMode: ''});
-      }
-    } else {
-      this.setState({sorting: 'total', sortingMode: 'asc'});
-    }
-  }
-  onSortingStatusClicked(e) {
-    if(this.state.sorting === 'status') {
-      if(this.state.sortingMode === 'asc') {
-        this.setState({sortingMode: 'desc'});
-      } else {
-        this.setState({sorting: '', sortingMode: ''});
-      }
-    } else {
-      this.setState({sorting: 'status', sortingMode: 'asc'});
+     } else {
+      this.setState({sorting: scope, sortingMode: 'asc'});
     }
   }
   loadClubProducts(clubid) {
@@ -540,12 +480,7 @@ class Orders extends Component {
                 onFilterCustomerChange={this.onFilterCustomerChange}
                 onFilterStatusChange={this.onFilterStatusChange}
                 onFilterProductChange={this.onFilterProductChange}
-                onSortingClubClicked={this.onSortingClubClicked}
-                onSortingDateClicked={this.onSortingDateClicked}
-                onSortingCustomerClicked={this.onSortingCustomerClicked}
-                onSortingAmountItemsClicked={this.onSortingAmountItemsClicked}
-                onSortingTotalClicked={this.onSortingTotalClicked}
-                onSortingStatusClicked={this.onSortingStatusClicked}
+                onSortingScopeChanged={this.onSortingScopeChanged}
                 onExportCheckChange={this.onOrderExportCheckChange}
                 onRemove={this.openRemoveModal} />
 

@@ -132,7 +132,13 @@ class OrdersTable extends Component {
             }
             break;
           case "status":
-
+            if(this.props.sortingMode === "desc") {
+              critA = b.status;
+              critB = a.status;
+            } else {
+              critA = a.status;
+              critB = b.status;
+            }
             break;
           default:
             critA = a.id;
@@ -154,12 +160,12 @@ class OrdersTable extends Component {
         <thead>
           <tr>
             <th></th>
-            <th onClick={this.props.onSortingClubClicked}>Verein{this.props.sorting === 'club' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
-            <th onClick={this.props.onSortingDateClicked}>Bestelldatum{this.props.sorting === 'date' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
-            <th onClick={this.props.onSortingCustomerClicked}>Kunde{this.props.sorting === 'customer' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
-            <th onClick={this.props.onSortingAmountItemsClicked}>Positionen{this.props.sorting === 'amitems' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
-            <th onClick={this.props.onSortingTotalClicked}>Gesamt{this.props.sorting === 'total' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
-            <th onClick={this.props.onSortingStatusClicked}>Status{this.props.sorting === 'status' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.props.onSortingScopeChanged.bind(this, "club")}>Verein{this.props.sorting === 'club' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.props.onSortingScopeChanged.bind(this, "date")}>Bestelldatum{this.props.sorting === 'date' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.props.onSortingScopeChanged.bind(this, "customer")}>Kunde{this.props.sorting === 'customer' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.props.onSortingScopeChanged.bind(this, "amitems")}>Positionen{this.props.sorting === 'amitems' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.props.onSortingScopeChanged.bind(this, "total")}>Gesamt{this.props.sorting === 'total' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
+            <th onClick={this.props.onSortingScopeChanged.bind(this, "status")}>Status{this.props.sorting === 'status' && [' ', <Glyphicon glyph={this.props.sortingMode=='asc'?'triangle-top':'triangle-bottom'} />]}</th>
             <th></th>
           </tr>
         </thead>
