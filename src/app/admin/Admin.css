@@ -30,6 +30,16 @@
   vertical-align: middle;
 }
 
+.admin .container[data-page=Login] .input-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.admin .container[data-page=Login] .input-container .btn {
+  display: block;
+  margin: 0 auto;
+}
+
 .admin .container[data-page=OrderView] .form-group:not(:first-of-type) label,
 .admin .container[data-page=OrderView] .form-group table {
   margin: 10px 0;

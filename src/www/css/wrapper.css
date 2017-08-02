@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700');
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Open Sans', sans-serif;
+}
+
+#header-wrapper {
+  height: 131px;
+  position: relative;
+  margin-bottom: 0;
+  display: block;
+  z-index: 9999;
+  background: #143ca0;
+  background: -moz-linear-gradient(top, #143ca0 0%, #133b9d 51%, #103183 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #143ca0), color-stop(51%, #133b9d), color-stop(100%, #103183));
+  background: -webkit-linear-gradient(top, #143ca0 0%, #133b9d 51%, #103183 100%);
+  background: -o-linear-gradient(top, #143ca0 0%, #133b9d 51%, #103183 100%);
+  background: -ms-linear-gradient(top, #143ca0 0%, #133b9d 51%, #103183 100%);
+  background: linear-gradient(to bottom, #143ca0 0%, #133b9d 51%, #103183 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#143ca0', endColorstr='#103183', GradientType=0);
+}
+
+#header-wrapper .container {
+  max-width: 85%;
+  margin: 0 auto;
+  padding: 10px 0;
+}
+
+#header-wrapper h1 {
+  margin: 10px 30px 0;
+  font-size: 24px;
+  font-weight: 500;
+  color: #fff;
+}

@@ -1,4 +1,12 @@
 <?php
+session_start();
+if(!isset($_SESSION["loggedIn"])) {
+  die(json_encode([
+    "error" => -99,
+    "rowsAffected" => 0
+  ]));
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 

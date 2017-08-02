@@ -41,7 +41,7 @@ class ClubList extends Component {
     return (
       <div className="club-list">
         <Nav bsStyle="pills" stacked activeKey={(this.props.selectedClub < -2?-2:this.props.selectedClub) || -1} onSelect={this.props.onChange}>
-          <NavItem eventKey={-1} role="button highlight"><Glyphicon glyph="home" /><p>Home</p></NavItem>
+          <NavItem eventKey={-1} role="button highlight"><Glyphicon glyph="home" /><p>Übersicht</p></NavItem>
 
           {(this.props.showCart && this.props.selectedClub >= 0 && this.props.clubs.length > 8) &&
             <NavItem eventKey={parseInt(selectedClub.id)}>{(typeof selectedClub.logodata === "string" && selectedClub.logodata.length > 0) && <img className="club-logo" src={"clublogos/" + selectedClub.logodata} />}<p>{selectedClub.name}</p></NavItem>

@@ -29,7 +29,8 @@ ReactDOM.render(
     <Route path="/" component={App}></Route>
     <Route path="/checkout" component={Checkout}></Route>
     <Route path="/admin" component={Admin}>
-      <Route path="/admin/clubs" component={Clubs}>
+      <IndexRedirect to="/admin/clubs"></IndexRedirect>
+      <Route name="admin-clubs" path="/admin/clubs" component={Clubs}>
         <Route path="/admin/clubs/edit/:clubid" component={ClubEditing}></Route>
         <Route path="/admin/clubs/create" component={ClubCreation}></Route>
       </Route>

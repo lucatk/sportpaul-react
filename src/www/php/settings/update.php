@@ -1,4 +1,12 @@
 <?php
+session_start();
+if(!isset($_SESSION["loggedIn"])) {
+  die(json_encode([
+    "error" => -99,
+    "rowsAffected" => 0
+  ]));
+}
+
 include('../database.php');
 
 $db = new Database();

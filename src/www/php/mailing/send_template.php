@@ -1,4 +1,9 @@
 <?php
+session_start();
+if(!isset($_SESSION["loggedIn"])) {
+  die;
+}
+
 require('../lib/phpmailer/PHPMailerAutoload.php');
 $mail = new PHPMailer;
 

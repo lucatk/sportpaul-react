@@ -1,4 +1,9 @@
 <?php
+session_start();
+if(!isset($_SESSION["loggedIn"])) {
+  die;
+}
+
 include('../database.php');
 require('../lib/vendor/autoload.php');
 use Spipu\Html2Pdf\Html2Pdf;

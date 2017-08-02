@@ -1,10 +1,15 @@
 <?php
+session_start();
+if(!isset($_SESSION["loggedIn"])) {
+  die;
+}
+
 include('../database.php');
 
 $db = new Database();
 
 $stmt = $db->execute("SELECT * FROM items WHERE clubid=:clubid AND orderid=:orderid", ["orderid" => $_POST["orderid"],
-                                                                                    "clubid" => $_POST["clubid"]]);
+                                                                                       "clubid" => $_POST["clubid"]]);
 $results = $db->fetchAll($stmt);
 
 $assoc = array();

@@ -6,15 +6,8 @@
     <link rel="shortcut icon" href="favicon.ico">
     <title>Sport-Paul Vereinsbekleidung</title>
     <link rel="stylesheet" href="css/font-awesome.min.css">
-    <link href="css/wrapper.css" rel="stylesheet">
   </head>
   <body>
-    <div id="header-wrapper">
-      <div class="container">
-        <img src="img/header-logo.png">
-        <h1>Vereinsbekleidung</h1>
-      </div>
-    </div>
     <div id="root"></div>
 
     <script type="text/javascript" src="bundle.js?q=<?php echo time(); ?>"></script>
