@@ -11,8 +11,10 @@
   <body>
     <div id="header-wrapper">
       <div class="container">
-        <img src="img/header-logo.png">
-        <h1>Vereinsbekleidung</h1>
+        <a href="/">
+          <img src="img/header-logo.png">
+          <h1>Vereinsbekleidung</h1>
+        </a>
       </div>
     </div>
     <div id="root"></div>

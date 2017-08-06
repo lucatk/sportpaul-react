@@ -99,6 +99,18 @@
   margin: 12px 0 10px;
 }
 
+.admin .container[data-page=ClubEditing] .form-group .radio {
+  margin: 3px 0;
+}
+
+.admin .container[data-page=ClubEditing] .form-group .radio:first-of-type {
+  margin-top: 0;
+}
+
+.admin .container[data-page=ClubEditing] .form-group .radio label {
+  cursor: default;
+}
+
 .admin .container[data-page=OrderEditing] .form-group .editing-container {
   max-width: 60%;
 }

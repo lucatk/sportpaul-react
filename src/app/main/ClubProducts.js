@@ -14,6 +14,7 @@ class ClubProducts extends Component {
               <ClubProductItem
                 key={product.id}
                 product={product}
+                orderable={this.props.orderable}
                 onAdd={this.props.onProductAddToCart}
                 onPreview={this.props.onProductPreviewRequest} />
             )

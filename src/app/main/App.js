@@ -41,9 +41,11 @@ class App extends Component {
         target: -1,
         input: ''
       },
-      customerData: null
+      customerData: null,
+      loggedIn: false
     };
 
+    this.checkAuth();
     this.loadClubs();
 
     this.onClubChange = this.onClubChange.bind(this);
@@ -91,8 +93,23 @@ class App extends Component {
     });
   }
 
+  checkAuth() {
+    $.ajax({
+      url: "php/auth/check.php",
+      xhrFields: { withCredentials: true },
+      success: function(data) {
+        var result = JSON.parse(data);
+        this.setState({loggedIn:result.loggedIn});
+      }.bind(this)
+    });
+  }
+
   onClubChange(newClub) {
-    this.setState({selectedClub: newClub});
+    if(newClub == -99) {
+      this.props.router.push("/admin");
+    } else {
+      this.setState({selectedClub: newClub});
+    }
   }
 
   onProductAddToCart(product, input) {
@@ -179,6 +196,10 @@ class App extends Component {
   }
 
   componentWillUpdate(nextProps, nextState) {
+    if(this.props != nextProps) {
+      this.checkAuth();
+    }
+
     if(!localStorage || !nextState) return;
     if(nextState.cartContents && nextState.cartContents.length > 0) {
       localStorage.setItem('clubInUse', nextState.clubInUse);
@@ -225,12 +246,12 @@ class App extends Component {
 
         {this.state.loadedClubs &&
           <div>
-            <div className="col-xs-12 col-sm-3 col-md-2 col-xxl-3">
-              <ClubList clubs={this.state.clubs} selectedClub={this.state.selectedClub} showCart={this.state.cartContents.length > 0} cartContent={this.state.cartContents.length} onChange={this.onClubChange} />
+            <div className="club-list-container col-xs-12 col-sm-3 col-md-2 col-xxl-3">
+              <ClubList clubs={this.state.clubs} selectedClub={this.state.selectedClub} showCart={this.state.cartContents.length > 0} cartContent={this.state.cartContents.length} loggedIn={this.state.loggedIn} onChange={this.onClubChange} />
             </div>
             <div className="col-xs-12 col-sm-9 col-md-10 col-xxl-9">
               {this.state.selectedClub >= 0 ? (
-                <ClubProducts clubName={this.getClubWithId(this.state.selectedClub).name} productList={this.getClubWithId(this.state.selectedClub).products || []} onProductAddToCart={this.onProductAddToCart} onProductPreviewRequest={this.onProductPreviewRequest} />
+                <ClubProducts clubName={this.getClubWithId(this.state.selectedClub).name} productList={this.getClubWithId(this.state.selectedClub).products || []} orderable={this.state.loggedIn || this.getClubWithId(this.state.selectedClub).displaymode >= 2} onProductAddToCart={this.onProductAddToCart} onProductPreviewRequest={this.onProductPreviewRequest} />
               ) : this.state.selectedClub === -2 ? (
                 <ProductCart contents={this.state.cartContents} onProductRemoveFromCart={this.onProductRemoveFromCart} onProductPreviewRequest={this.onProductPreviewRequest} onContinue={this.onShowOrderProcess} />
               ) : this.state.selectedClub === -3 ? (

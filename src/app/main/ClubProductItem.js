@@ -89,34 +89,37 @@ class ClubProductItem extends Component {
                     </p>
                   )}
                 </li>
-                <li className="product-item-action list-group-item">
+                {(this.props.orderable || this.props.product.defaultFlocking || (this.props.product.flockingPrice && this.props.product.flockingPrice >= 0)) ? <li className="product-item-action list-group-item">
                   {this.props.product.defaultFlocking && <p className="flocking-info">{this.props.product.defaultFlockingInfo}</p>}
-                  {this.props.product.colours.length > 1 && <div className="row">
-                    <div className="col-xs-12">
-                      <select className="product-item-colour form-control input-sm" value={this.state.selectedColour} onChange={this.handleColourChange}>
-                        <option value={-1}>Farbe...</option>
-                        {this.props.product.colours.map((colour, i) =>
-                          <option key={i} value={i}>{colour.id} {colour.name}</option>
-                        )}
-                      </select>
+                  {(this.props.product.flockingPrice && this.props.product.flockingPrice >= 0 && !this.props.orderable) ? <p className="flocking-info">Namens-Beflockung möglich ({this.props.product.flockingPrice.toFixed(2).replace(".", ",")} €)</p> : ''}
+                  {this.props.orderable && <div>
+                    {this.props.product.colours.length > 1 && <div className="row">
+                      <div className="col-xs-12">
+                        <select className="product-item-colour form-control input-sm" value={this.state.selectedColour} onChange={this.handleColourChange}>
+                          <option value={-1}>Farbe...</option>
+                          {this.props.product.colours.map((colour, i) =>
+                            <option key={i} value={i}>{colour.id} {colour.name}</option>
+                          )}
+                        </select>
+                      </div>
+                    </div>}
+                    <div className="row">
+                      <div className="col-xs-8">
+                        <select className="product-item-size form-control input-sm" value={this.state.selectedSize} onChange={this.handleSizeChange}>
+                          <option value="">Größe...</option>
+                          {this.props.product.pricegroups.map((pricegroup, i) =>
+                            <optgroup key={i} label="──────────">
+                              {pricegroup.sizes.map((size, ii) =>
+                                <option key={ii} value={size}>{size}</option>
+                              )}
+                            </optgroup>
+                          )}
+                        </select>
+                      </div>
+                      <button disabled={this.state.selectedSize.length < 1 || (this.props.product.colours && this.props.product.colours.length > 0 && this.state.selectedColour < 0)} className="btn btn-primary btn-sm cart-button col-xs-4" type="button" onClick={this.handleAddClick}><span className="glyphicon glyphicon-shopping-cart"></span></button>
                     </div>
                   </div>}
-                  <div className="row">
-                    <div className="col-xs-8">
-                      <select className="product-item-size form-control input-sm" value={this.state.selectedSize} onChange={this.handleSizeChange}>
-                        <option value="">Größe...</option>
-                        {this.props.product.pricegroups.map((pricegroup, i) =>
-                          <optgroup key={i} label="──────────">
-                            {pricegroup.sizes.map((size, ii) =>
-                              <option key={ii} value={size}>{size}</option>
-                            )}
-                          </optgroup>
-                        )}
-                      </select>
-                    </div>
-                    <button disabled={this.state.selectedSize.length < 1 || (this.props.product.colours && this.props.product.colours.length > 0 && this.state.selectedColour < 0)} className="btn btn-primary btn-sm cart-button col-xs-4" type="button" onClick={this.handleAddClick}><span className="glyphicon glyphicon-shopping-cart"></span></button>
-                  </div>
-                </li>
+                </li> : ''}
               </ul>
             </div>
           </div>

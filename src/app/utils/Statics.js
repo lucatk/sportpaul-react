@@ -26,3 +26,8 @@ export const ExportColumns = {
   "flocking": "Beflockung",
   "size": "Größe"
 };
+export const ClubDisplayMode = {
+  "0": "Versteckt",
+  "1": "Bestellungen deaktiviert",
+  "2": "Bestellungen aktiviert"
+};

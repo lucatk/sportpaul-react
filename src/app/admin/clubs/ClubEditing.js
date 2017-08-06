@@ -6,7 +6,7 @@ import {
   Modal,
   FormGroup, FormControl, ControlLabel,
   Table,
-  ButtonToolbar, Button,
+  ButtonToolbar, Button, Radio,
   Glyphicon
 } from 'react-bootstrap';
 import {Helmet} from "react-helmet";
@@ -18,6 +18,8 @@ import ProductRemovalModal from './modals/ProductRemovalModal';
 import ProductAddModal from './modals/ProductAddModal';
 import ImageUploadControl from './ImageUploadControl';
 
+import * as Statics from "../../utils/Statics";
+
 class ClubEditing extends Component {
   constructor(props) {
     super(props);
@@ -26,6 +28,7 @@ class ClubEditing extends Component {
       id: -1,
       name: '',
       logodata: '',
+      displaymode: -1,
       products: [],
       showProductEditModal: false,
       scopeProductEditModal: -1,
@@ -67,7 +70,8 @@ class ClubEditing extends Component {
               || (this.state.toRemoveProducts && this.state.toRemoveProducts.length > 0)
               || (this.state.toAddProducts && this.state.toAddProducts.length > 0)
               || this.state.name !== this.oldName
-              || this.state.logodata !== this.oldLogodata))
+              || this.state.logodata !== this.oldLogodata
+              || this.state.displaymode != this.oldDisplaymode))
         return 'Sie haben ungesicherte Änderungen, sind Sie sicher, dass Sie diese Seite verlassen wollen?';
     })
   }
@@ -79,6 +83,11 @@ class ClubEditing extends Component {
   onLogodataChange(newLogodata) {
     this.setState({
       logodata: newLogodata
+    });
+  }
+  onChangeDisplayMode(mode) {
+    this.setState({
+      displaymode: mode
     });
   }
   openProductEditModal(id, e) {
@@ -194,6 +203,7 @@ class ClubEditing extends Component {
 
       this.oldName = this.state.name;
       this.oldLogodata = this.state.logodata;
+      this.oldDisplaymode = this.state.displaymode;
       this.setState({
         toUpdateProducts: [],
         toAddProducts: [],
@@ -210,12 +220,13 @@ class ClubEditing extends Component {
 
     this.setState({loading: true});
 
-    if(this.state.name !== this.oldName || this.state.logodata !== this.oldLogodata) {
+    if(this.state.name !== this.oldName || this.state.logodata !== this.oldLogodata || this.state.displaymode != this.oldDisplaymode) {
       var data = new FormData();
       data.append("id", this.state.id);
       data.append("name", this.state.name);
       if(typeof this.state.logodata === "object")
         data.append("logodata", this.state.logodata);
+      data.append("displaymode", this.state.displaymode);
       $.post({
         url: 'php/clubs/update.php',
         contentType: false,
@@ -358,6 +369,7 @@ class ClubEditing extends Component {
         });
         this.oldName = parsed.name;
         this.oldLogodata = parsed.logodata;
+        this.oldDisplaymode = parsed.displaymode;
       }.bind(this)
     });
     $.post({
@@ -395,7 +407,7 @@ class ClubEditing extends Component {
           <LoadingOverlay show={this.state.loading} />
           <h1 className="page-header">
             Verein bearbeiten <small>ID: {this.state.id}</small>
-            {(this.state.toUpdateProducts && this.state.toUpdateProducts.length > 0) || (this.state.toRemoveProducts && this.state.toRemoveProducts.length > 0) || (this.state.toAddProducts && this.state.toAddProducts.length > 0) || this.state.name !== this.oldName || this.state.logodata !== this.oldLogodata ?
+            {(this.state.toUpdateProducts && this.state.toUpdateProducts.length > 0) || (this.state.toRemoveProducts && this.state.toRemoveProducts.length > 0) || (this.state.toAddProducts && this.state.toAddProducts.length > 0) || this.state.name !== this.oldName || this.state.logodata !== this.oldLogodata || this.state.displaymode != this.oldDisplaymode ?
               <div className="unsaved-changes">
                 <small>Sie haben ungesicherte Änderungen!</small>
                 <Button bsStyle="success" bsSize="small" onClick={this.save}
@@ -414,6 +426,13 @@ class ClubEditing extends Component {
               <div className="col-sm-11">
                 <div className="upload-control"><ImageUploadControl showPreview={false} value={this.state.logodata} searchPath="clublogos/" onChange={this.onLogodataChange} /></div>
                 <Button bsSize="small" bsClass="mini-btn btn" onClick={this.onPicturePreviewRequest.bind(this, this.state.logodata)} disabled={this.state.logodata == null || this.state.logodata.length < 1}><Glyphicon glyph="search" /></Button>
+              </div>
+            </FormGroup>
+            <FormGroup controlId="inputDisplayMode">
+              <ControlLabel bsClass="col-sm-1 control-label">Anzeigemodus</ControlLabel>
+              <div className="col-sm-11">
+                {Object.keys(Statics.ClubDisplayMode).map((key, i) =>
+                <Radio key={i} name="groupDisplayMode" checked={this.state.displaymode == key} onChange={this.onChangeDisplayMode.bind(this, key)}>{Statics.ClubDisplayMode[key]}</Radio>)}
               </div>
             </FormGroup>
             <FormGroup controlId="inputProducts">

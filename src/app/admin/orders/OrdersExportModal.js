@@ -116,13 +116,13 @@ class OrdersExportModal extends Component {
                   <Checkbox checked={this.state.skipOrdered} onChange={this.onChangeSkipOrdered}>Bereits bestellte Artikel überspringen</Checkbox>
                 </div>
               </FormGroup>
-                <FormGroup controlId="inputExportMode">
-                  <ControlLabel bsClass="col-sm-4 control-label">Export-Modus</ControlLabel>
-                  <div className="col-sm-8">
-                    <Radio name="groupExportMode" checked={this.state.exportMode == 0} onChange={this.onChangeExportMode.bind(this, 0)} inline>Alle Bestellungen zusammenführen</Radio>
-                    <Radio name="groupExportMode" checked={this.state.exportMode == 1} onChange={this.onChangeExportMode.bind(this, 1)} inline>Bestellungen der Vereine in separate Dateien</Radio>
-                  </div>
-                </FormGroup>
+              <FormGroup controlId="inputExportMode">
+                <ControlLabel bsClass="col-sm-4 control-label">Export-Modus</ControlLabel>
+                <div className="col-sm-8">
+                  <Radio name="groupExportMode" checked={this.state.exportMode == 0} onChange={this.onChangeExportMode.bind(this, 0)} inline>Alle Bestellungen zusammenführen</Radio>
+                  <Radio name="groupExportMode" checked={this.state.exportMode == 1} onChange={this.onChangeExportMode.bind(this, 1)} inline>Bestellungen der Vereine in separate Dateien</Radio>
+                </div>
+              </FormGroup>
               <FormGroup controlId="inputColumns">
                 <ControlLabel bsClass="col-sm-4 control-label">Spalten</ControlLabel>
                 <div className="col-sm-8">

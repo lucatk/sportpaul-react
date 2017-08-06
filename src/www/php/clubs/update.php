@@ -28,12 +28,14 @@ if(isset($_FILES["logodata"])) {
     $image->clear();
   }
 
-  $stmt = $db->execute("UPDATE clubs SET name=:name, logodata=:logodata WHERE id=:clubid", ["clubid" => $_POST["id"],
+  $stmt = $db->execute("UPDATE clubs SET name=:name, logodata=:logodata, displaymode=:displaymode WHERE id=:clubid", ["clubid" => $_POST["id"],
                                                                                             "name" => $_POST["name"],
-                                                                                            "logodata" => $fileName]);
+                                                                                            "logodata" => $fileName,
+                                                                                            "displaymode" => $_POST["displaymode"]]);
 } else {
-  $stmt = $db->execute("UPDATE clubs SET name=:name WHERE id=:clubid", ["clubid" => $_POST["id"],
-                                                                        "name" => $_POST["name"]]);
+  $stmt = $db->execute("UPDATE clubs SET name=:name, displaymode=:displaymode WHERE id=:clubid", ["clubid" => $_POST["id"],
+                                                                                                  "name" => $_POST["name"],
+                                                                                                  "displaymode" => $_POST["displaymode"]]);
 }
 
 die(json_encode([

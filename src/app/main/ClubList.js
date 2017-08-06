@@ -33,7 +33,6 @@ class ClubList extends Component {
   }
 
   render() {
-    console.log("a");
     var selectedClub = null;
     if(this.props.selectedClub >= 0) {
       selectedClub = this.getClubWithId(this.props.selectedClub);
@@ -61,6 +60,11 @@ class ClubList extends Component {
 
           {(this.props.showCart || this.props.selectedClub <= -2) && <NavItem eventKey={-2} role="button highlight"><Glyphicon glyph="shopping-cart" /><p>Warenkorb</p>{this.props.cartContent > 0 && <Badge pullRight>{this.props.cartContent}</Badge>}</NavItem>}
         </Nav>
+        {this.props.loggedIn && <div className="admin-nav col-xs-12 col-sm-3 col-md-2 col-xxl-3">
+          <Nav bsStyle="pills" stacked onSelect={this.props.onChange}>
+            <NavItem eventKey={-99} role="button highlight"><Glyphicon glyph="briefcase" /><p>Admin</p></NavItem>
+          </Nav>
+        </div>}
       </div>
     );
   }

@@ -1,9 +1,10 @@
 <?php
+session_start();
 include('../database.php');
 
 $db = new Database();
 
-$stmt = $db->execute("SELECT * FROM clubs", NULL);
+$stmt = $db->execute("SELECT * FROM clubs" . (isset($_SESSION["loggedIn"]) ? "" : " WHERE NOT displaymode = 0"), NULL);
 $results = $db->fetchAll($stmt);
 
 $i = 0;
