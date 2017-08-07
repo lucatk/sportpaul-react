@@ -62,7 +62,6 @@ foreach($results as $club) {
 }
 
 if(count($orders) < 1) {
-  // TODO
   die("<script>window.close();</script>");
 }
 

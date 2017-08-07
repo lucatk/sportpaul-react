@@ -117,8 +117,7 @@ class OrderView extends Component {
         <form>
           <FormGroup controlId="inputClub">
             <ControlLabel bsClass="col-sm-1 control-label">Verein</ControlLabel>
-            <ControlLabel bsClass="col-sm-11"><Link to={"/admin/clubs/edit/" + this.state.clubid}>{this.state.clubname} <span className="text-muted">(ID: {this.state.clubid})</span></Link></ControlLabel>
-            {/*// TODO: alle Bestellungen fuer Verein anzeigen, statt Verein-Bearbeitungsseite*/}
+            <ControlLabel bsClass="col-sm-11"><Link to={"/admin/orders/club/" + this.state.clubid}>{this.state.clubname} <span className="text-muted">(ID: {this.state.clubid})</span></Link></ControlLabel>
           </FormGroup>
           <FormGroup controlId="inputCustomerInfo">
             <ControlLabel bsClass="col-sm-1 control-label">Kunde</ControlLabel>

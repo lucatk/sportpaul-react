@@ -38,6 +38,7 @@ ReactDOM.render(
         <Route path="/admin/orders/view/:clubid/:orderid" component={OrderView}></Route>
         <Route path="/admin/orders/edit/:clubid/:orderid" component={OrderEditing}></Route>
       </Route>
+      <Route path="/admin/orders/club/:club" component={Orders}></Route>
       <Route path="/admin/settings" component={Settings}>
         <IndexRedirect to="/admin/settings/general"></IndexRedirect>
         <Route name="settings-general" path="/admin/settings/general" component={SettingsGeneral}></Route>

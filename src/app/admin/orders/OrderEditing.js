@@ -38,14 +38,7 @@ class OrderEditing extends Component {
       status: '',
       items: [],
       total: 0,
-      // showItemEditModal: false,
-      // scopeItemEditModal: -1,
-      // showItemRemoveModal: false,
-      // scopeItemRemoveModal: -1,
-      // showItemAddModal: false,
       toUpdateItems: [],
-      // toRemoveItems: [],
-      // toAddItems: [],
       loadedInfo: false,
       loadedItems: false,
       loading: true,
@@ -60,7 +53,6 @@ class OrderEditing extends Component {
     this.componentWillReceiveProps(this.props);
 
     this.save = this.save.bind(this);
-    this.delete = this.delete.bind(this);
 
     this.onFirstNameChange = this.onFirstNameChange.bind(this);
     this.onLastNameChange = this.onLastNameChange.bind(this);
@@ -70,7 +62,12 @@ class OrderEditing extends Component {
     this.onPhoneChange = this.onPhoneChange.bind(this);
     this.onEmailChange = this.onEmailChange.bind(this);
     this.onStatusChange = this.onStatusChange.bind(this);
-    // TODO
+    this.onItemSizeChange = this.onItemSizeChange.bind(this);
+    this.onItemFlockingChange = this.onItemFlockingChange.bind(this);
+    this.onItemFlockingPriceChange = this.onItemFlockingPriceChange.bind(this);
+    this.onItemPriceChange = this.onItemPriceChange.bind(this);
+    this.onItemStatusChange = this.onItemStatusChange.bind(this);
+    this.onItemStatusUp = this.onItemStatusUp.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -304,9 +301,6 @@ class OrderEditing extends Component {
       });
     });
   }
-  delete() {
-
-  }
   onFirstNameChange(ev) {
     this.setState({firstname: ev.target.value, hasChanges: true});
   }
@@ -416,7 +410,6 @@ class OrderEditing extends Component {
     if(!toUpdate.includes(key)) toUpdate.push(key);
     this.setState({items: items, toUpdateItems: toUpdate, hasChanges: true});
     this.calculateTotal(items);
-    // TODO
   }
   onItemStatusChange(key, ev) {
     var oldItemStatus = this.state.items[key].status;
@@ -541,8 +534,7 @@ class OrderEditing extends Component {
         <form>
           <FormGroup controlId="inputClub">
             <ControlLabel bsClass="col-sm-1 control-label">Verein</ControlLabel>
-            <ControlLabel bsClass="col-sm-11"><Link to={"/admin/clubs/edit/" + this.state.clubid}>{this.state.clubname} <span className="text-muted">(ID: {this.state.clubid})</span></Link></ControlLabel>
-            {/*// TODO: alle Bestellungen fuer Verein anzeigen, statt Verein-Bearbeitungsseite*/}
+            <ControlLabel bsClass="col-sm-11"><Link to={"/admin/orders/club/" + this.state.clubid}>{this.state.clubname} <span className="text-muted">(ID: {this.state.clubid})</span></Link></ControlLabel>
           </FormGroup>
           <FormGroup controlId="inputCustomerInfo">
             <ControlLabel bsClass="col-sm-1 control-label">Kunde</ControlLabel>

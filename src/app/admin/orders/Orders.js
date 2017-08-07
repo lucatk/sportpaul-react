@@ -47,6 +47,10 @@ class Orders extends Component {
 
     this.loadOrders();
 
+    if(this.props.params["club"]) {
+      this.state.filterClub = parseInt(this.props.params["club"]);
+    }
+
     this.openRemoveModal = this.openRemoveModal.bind(this);
     this.closeRemoveModal = this.closeRemoveModal.bind(this);
     this.openOrdersExportModal = this.openOrdersExportModal.bind(this);
@@ -446,6 +450,9 @@ class Orders extends Component {
   componentWillReceiveProps(nextProps) {
     if(!nextProps.children) {
       this.loadOrders();
+    }
+    if(nextProps.params["club"]) {
+      this.setState({filterClub:parseInt(nextProps.params["club"])});
     }
   }
   render() {
