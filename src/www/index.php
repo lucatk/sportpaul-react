@@ -19,6 +19,8 @@
     </div>
     <div id="root"></div>
 
-    <script type="text/javascript" src="bundle.js?q=<?php echo time(); ?>"></script>
+    <script type="text/javascript" src="dist/manifest.js"></script>
+    <script type="text/javascript" src="dist/vendor.js"></script>
+    <script type="text/javascript" src="dist/app.js"></script>
   </body>
 </html>

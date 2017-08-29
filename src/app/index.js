@@ -2,27 +2,53 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, IndexRedirect, hashHistory } from 'react-router';
 
+import LoadableComponent from './utils/LoadableComponent';
+
 import '../www/css/bootstrap.min.css';
 import '../www/css/bootstrap-theme.min.css';
 import './index.css';
 
-import App from './main/App';
+const App = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "main_App" */ './main/App')
+});
 
-import Checkout from './checkout/Checkout';
+const Checkout = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "checkout_Checkout" */ './checkout/Checkout')
+});
 
-import Admin from './admin/Admin';
+const Admin = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_Admin" */ './admin/Admin')
+});
 
-import Clubs from './admin/clubs/Clubs';
-import ClubEditing from './admin/clubs/ClubEditing';
-import ClubCreation from './admin/clubs/ClubCreation';
+const Clubs = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_clubs_Clubs" */ './admin/clubs/Clubs')
+});
+const ClubEditing = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_clubs_ClubsEditing" */ './admin/clubs/ClubEditing')
+});
+const ClubCreation = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_clubs_ClubsCreation" */ './admin/clubs/ClubCreation')
+});
 
-import Orders from './admin/orders/Orders';
-import OrderView from './admin/orders/OrderView';
-import OrderEditing from './admin/orders/OrderEditing';
+const Orders = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_orders_Orders" */ './admin/orders/Orders')
+});
+const OrderView = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_orders_OrderView" */ './admin/orders/OrderView')
+});
+const OrderEditing = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_orders_OrderEditing" */ './admin/orders/OrderEditing')
+});
 
-import Settings from './admin/settings/Settings';
-import SettingsGeneral from './admin/settings/SettingsGeneral';
-import SettingsMailing from './admin/settings/SettingsMailing';
+const Settings = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_settings_Settings" */ './admin/settings/Settings')
+});
+const SettingsGeneral = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_settings_SettingsGeneral" */ './admin/settings/SettingsGeneral')
+});
+const SettingsMailing = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_settings_SettingsMailing" */ './admin/settings/SettingsMailing')
+});
 
 ReactDOM.render(
   <Router history={hashHistory}>
