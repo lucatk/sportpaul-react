@@ -11,7 +11,7 @@ import {
 import ImageUploadControl from './ImageUploadControl';
 
 const DragHandle = SortableHandle(() => <span className="drag-handle"><Glyphicon glyph="menu-hamburger" /></span>);
-const SortableColourItem = SortableElement(({i, colour, events}) => {console.log(colour, i, events);
+const SortableColourItem = SortableElement(({i, colour, events}) => {
   return (
     <div key={i} className="row">
       <div className="col-sm-2">

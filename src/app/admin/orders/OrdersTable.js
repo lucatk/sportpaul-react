@@ -15,7 +15,6 @@ import * as Statics from "../../utils/Statics";
 class OrdersTable extends Component {
   render() {
     var data = this.props.data.slice();
-    // console.log(data);
 
     var clubs = [];
     data.forEach((row) => {

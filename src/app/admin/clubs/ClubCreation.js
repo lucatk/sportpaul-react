@@ -74,13 +74,11 @@ class ClubCreation extends Component {
       processData: false,
       data: data,
       success: function(data) {
-        console.log(data);
         var result = JSON.parse(data);
-        console.log(result);
 
         this.setState({loading: false});
         if(result.error !== 0 && result.rowsAffected < 1) {
-          console.log("error");
+          console.log("Error:", result.error);
         } else {
           this.props.router.push("/admin/clubs");
         }
