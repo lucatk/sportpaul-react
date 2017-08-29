@@ -170,7 +170,7 @@ class OrderEditing extends Component {
       // || (notifyCustomer && !notifiedCustomer)
 
       if(error) {
-        console.log("error");
+        console.log("An error occured, abort.");
       } else {
         if(this.notificationsEnabled && this.state.email && this.state.email.length > 0) {
           if(this.oldStatus < 1 && this.state.status >= 1) {
@@ -265,9 +265,10 @@ class OrderEditing extends Component {
       data: data,
       success: function(data) {
         var result = JSON.parse(data);
-        if(result.error !== 0 && result.rowsAffected < 1)
+        if(result.error !== 0 && result.rowsAffected < 1) {
           error = true;
-        console.log(result, error);
+          console.log("Error:", error);
+        }
         updatedOrderInfo = true;
         doneProcess();
       }.bind(this)
@@ -292,9 +293,10 @@ class OrderEditing extends Component {
         data: data,
         success: function(data) {
           var result = JSON.parse(data);
-          if(result.error !== 0 && result.rowsAffected < 1)
+          if(result.error !== 0 && result.rowsAffected < 1) {
             error = true;
-          console.log(result, error);
+            console.log("Error:", error);
+          }
           toUpdateCount--;
           doneProcess();
         }
@@ -414,7 +416,6 @@ class OrderEditing extends Component {
   onItemStatusChange(key, ev) {
     var oldItemStatus = this.state.items[key].status;
 
-    console.log(ev.target.value, this.state.status);
     if(ev.target.value == -1) {
       if(this.state.status > 1) {
         var value = ev.target.value;

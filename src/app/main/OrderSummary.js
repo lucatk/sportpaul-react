@@ -81,7 +81,6 @@ class OrderSummary extends Component {
         try {
           parsed = JSON.parse(data);
         } catch(e) {
-          console.log(data);
           throw e;
         }
 

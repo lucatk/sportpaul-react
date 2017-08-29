@@ -212,7 +212,7 @@ class ClubEditing extends Component {
       });
 
       if(error) {
-        console.log("error");
+        console.log("An error occured, abort.");
       } else {
         this.props.router.push("/admin/clubs");
       }
@@ -233,11 +233,11 @@ class ClubEditing extends Component {
         processData: false,
         data: data,
         success: function(data) {
-          console.log(data);
           var result = JSON.parse(data);
-          if(result.error !== 0 && result.rowsAffected < 1)
+          if(result.error !== 0 && result.rowsAffected < 1) {
             error = true;
-          console.log(result, error);
+            console.log("Error:", error);
+          }
           updatedClubInfo = true;
           doneProcess();
         }.bind(this)
@@ -274,11 +274,11 @@ class ClubEditing extends Component {
         processData: false,
         data: data,
         success: function(data) {
-          console.log(data);
           var result = JSON.parse(data);
-          if(result.error !== 0 && result.rowsAffected < 1)
+          if(result.error !== 0 && result.rowsAffected < 1) {
             error = true;
-          console.log(result, error);
+            console.log("Error:", error);
+          }
           toUpdateCount--;
           doneProcess();
         }
@@ -311,9 +311,10 @@ class ClubEditing extends Component {
         data: data,
         success: function(data) {
           var result = JSON.parse(data);
-          if(result.error !== 0 && result.rowsAffected < 1)
+          if(result.error !== 0 && result.rowsAffected < 1) {
             error = true;
-          console.log(result, error);
+            console.log("Error:", error);
+          }
           toAddCount--;
           doneProcess();
         }
@@ -329,9 +330,10 @@ class ClubEditing extends Component {
         },
         success: function(data) {
           var result = JSON.parse(data);
-          if(result.error !== 0 && result.rowsAffected < 1)
+          if(result.error !== 0 && result.rowsAffected < 1) {
             error = true;
-          console.log(result, error);
+            console.log("Error:", error);
+          }
           toRemoveCount--;
           doneProcess();
         }

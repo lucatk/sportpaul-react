@@ -71,7 +71,6 @@ class Orders extends Component {
     $.ajax({
       url: 'php/orders/load_all.php',
       success: function(data) {
-        console.log(data);
         var orders = JSON.parse(data);
         var toLoad = 0;
         for(var i in orders) {
@@ -87,7 +86,6 @@ class Orders extends Component {
                 clubid: order.clubid
               },
               success: function(data) {
-                console.log(data);
                 orders[key].items = JSON.parse(data);
                 toLoad--;
 
@@ -249,7 +247,6 @@ class Orders extends Component {
 
         if(!hasOrderedArticles) {
           for(var i in order.items) {
-            console.log(order.items[i]);
             if(order.items[i].status >= 0) {
               hasOrderedArticles = true;
               break;
@@ -346,7 +343,6 @@ class Orders extends Component {
 
         if(!hasOrderedArticles) {
           for(var i in order.items) {
-            console.log(order.items[i]);
             if(order.items[i].status >= 0) {
               hasOrderedArticles = true;
               break;
@@ -401,7 +397,6 @@ class Orders extends Component {
               processData: false,
               data: ordersData,
               success: function(data) {
-                console.log(data);
                 doneOrders = true;
                 done();
               }.bind(this)
@@ -415,7 +410,6 @@ class Orders extends Component {
               processData: false,
               data: itemsData,
               success: function(data) {
-                console.log(data);
                 doneItems = true;
                 done();
               }.bind(this)

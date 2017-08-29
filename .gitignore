@@ -9,7 +9,8 @@ coverage
 
 # production
 build
-src/www/bundle.js*
+dist
+src/www/dist
 
 # misc
 .DS_Store

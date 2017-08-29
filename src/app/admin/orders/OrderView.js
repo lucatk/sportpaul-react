@@ -62,7 +62,6 @@ class OrderView extends Component {
         clubid: nextProps.params.clubid
       },
       success: function(data) {
-        console.log(data);
         var parsed = JSON.parse(data);
 
         loadedInfo = true;
