@@ -23,7 +23,7 @@ if(isset($_FILES["picture"])) {
     $image->clear();
   }
 
-  $stmt = $db->execute("INSERT INTO products(clubid, internalid, name, colours, pricegroups, flockingPrice, defaultFlocking, defaultFlockingInfo, picture) VALUES(:clubid, :internalid, :name, :pricegroups, :flockingPrice, :defaultFlocking, :defaultFlockingInfo, :picture)", ["clubid" => $_POST["clubid"],
+  $stmt = $db->execute("INSERT INTO products(clubid, internalid, name, colours, pricegroups, flockingPrice, defaultFlocking, defaultFlockingInfo, picture) VALUES(:clubid, :internalid, :name, :colours, :pricegroups, :flockingPrice, :defaultFlocking, :defaultFlockingInfo, :picture)", ["clubid" => $_POST["clubid"],
                                                                                                                                                                                                                                                                                   "internalid" => $_POST["internalid"],
                                                                                                                                                                                                                                                                                   "colours" => $_POST["colours"],
                                                                                                                                                                                                                                                                                   "name" => $_POST["name"],
@@ -60,7 +60,7 @@ if(isset($_FILES["picture"])) {
     }
   }
   $coloursUpdated = json_encode($coloursUpdated, JSON_UNESCAPED_UNICODE);
-  $stmt = $db->execute("INSERT INTO products(clubid, internalid, name, colours, pricegroups, flockingPrice, defaultFlocking, defaultFlockingInfo) VALUES(:clubid, :internalid, :name, :pricegroups, :flockingPrice, :defaultFlocking, :defaultFlockingInfo)", ["clubid" => $_POST["clubid"],
+  $stmt = $db->execute("INSERT INTO products(clubid, internalid, name, colours, pricegroups, flockingPrice, defaultFlocking, defaultFlockingInfo) VALUES(:clubid, :internalid, :name, :colours, :pricegroups, :flockingPrice, :defaultFlocking, :defaultFlockingInfo)", ["clubid" => $_POST["clubid"],
                                                                                                                                                                                                                                                                "internalid" => $_POST["internalid"],
                                                                                                                                                                                                                                                                "name" => $_POST["name"],
                                                                                                                                                                                                                                                                "colours" => $coloursUpdated,

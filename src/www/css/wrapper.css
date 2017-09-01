@@ -15,7 +15,7 @@ body {
   position: relative;
   margin-bottom: 0;
   display: block;
-  z-index: 9999;
+  z-index: 1039;
   background: #143ca0;
   background: -moz-linear-gradient(top, #143ca0 0%, #133b9d 51%, #103183 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #143ca0), color-stop(51%, #133b9d), color-stop(100%, #103183));
