@@ -9,6 +9,7 @@ import {
 } from 'react-sortable-hoc';
 
 import ImageUploadControl from './ImageUploadControl';
+import * as Statics from '../../utils/Statics';
 
 const DragHandle = SortableHandle(() => <span className="drag-handle"><Glyphicon glyph="menu-hamburger" /></span>);
 const SortableColourItem = SortableElement(({i, colour, events}) => {

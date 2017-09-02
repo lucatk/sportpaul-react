@@ -10,6 +10,12 @@ import {
   Glyphicon
 } from 'react-bootstrap';
 import {Helmet} from "react-helmet";
+import {
+  SortableContainer,
+  SortableElement,
+  SortableHandle,
+  arrayMove,
+} from 'react-sortable-hoc';
 
 import LoadingOverlay from '../../utils/LoadingOverlay';
 import ImageLightbox from '../../utils/ImageLightbox';
@@ -19,6 +25,51 @@ import ProductAddModal from './modals/ProductAddModal';
 import ImageUploadControl from './ImageUploadControl';
 
 import * as Statics from "../../utils/Statics";
+
+const DragHandle = SortableHandle(() => <span className="drag-handle"><Glyphicon glyph="menu-hamburger" /></span>);
+const SortableProductItem = SortableElement(({i, product, events}) => {
+  var colours = null;
+  if(product.colours) {
+    colours = JSON.parse(product.colours);
+  }
+  return (
+    <tr key={i} data-id={product.id} data-name={product.name}>
+      <td className="product-id-sort"><DragHandle />{product.new?'':product.id}</td>
+      <td className="product-name">{product.name}</td>
+      <td className="internalid">
+        {product.internalid}
+        {(product.colours && colours.length > 0)
+        ? [<br />, colours.length > 1 ? colours.length + " Farben" : colours[0].id + " " + colours[0].name]
+        : ''}
+      </td>
+      <td className="pricegroups">
+        {JSON.parse(product.pricegroups).map((group, i) =>
+          <div key={i}>
+            <p className="sizes">{group.sizes.join(", ")}:</p>
+            <p className="price">{group.price.toFixed(2).replace('.', ',')} €</p>
+          </div>
+        )}
+      </td>
+      <td>
+        {product.defaultFlocking ? <p>mit Standardbeflockung,</p> : ''}
+        <p>
+        {product.flockingPrice !== null && parseFloat(product.flockingPrice) >= 0
+              ? (parseFloat(product.flockingPrice) > 0
+                ? 'Zusatz Aufpreis: ' + parseFloat(product.flockingPrice).toFixed(2).replace('.', ',') + ' €'
+                : 'Zusatz kostenlos')
+              : 'kein Zusatz'}
+        </p>
+      </td>
+      <td className="buttons">
+        <Button bsSize="small" onClick={events.openProductEditModal.bind(this, product.id)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
+        <Button bsSize="small" bsStyle="danger" onClick={events.openProductRemoveModal.bind(this, product.id)}><Glyphicon glyph="trash" /> Löschen</Button>
+      </td>
+    </tr>
+  );
+});
+const SortableProductList = SortableContainer(({items, eventHandlers}) => {
+  return <tbody>{items.map((product, i) => <SortableProductItem key={i} i={i} index={i} product={product} events={eventHandlers} />)}</tbody>;
+});
 
 class ClubEditing extends Component {
   constructor(props) {
@@ -255,6 +306,7 @@ class ClubEditing extends Component {
       data.append("name", product.name);
       data.append("internalid", product.internalid);
       data.append("colours", product.colours);
+      data.append("displayorder", product.displayorder);
       data.append("pricegroups", product.pricegroups);
       data.append("flockingPrice", product.flockingPrice);
       data.append("defaultFlocking", product.defaultFlocking?1:0);
@@ -386,6 +438,7 @@ class ClubEditing extends Component {
         for(var i in products) {
           parsedProducts[i] = products[i];
           parsedProducts[i].defaultFlocking = parsedProducts[i].defaultFlocking == 1;
+          parsedProducts[i].displayorder = parseInt(parsedProducts[i].displayorder);
         }
 
         loadedProducts = true;
@@ -396,6 +449,48 @@ class ClubEditing extends Component {
           loadedProducts: true
         });
       }.bind(this)
+    });
+  }
+  onSortEnd({oldIndex, newIndex}) {
+    var data = this.state.products.concat().sort((a, b) => a.displayorder - b.displayorder);
+    data = arrayMove(data, oldIndex, newIndex);
+    var newOrder = this.state.products;
+    var lastDisplayorder = -1;
+    var lastIndexChanged = -1;
+
+    var toAdd = this.state.toAddProducts;
+    var toUpdate = this.state.toUpdateProducts;
+
+    if(data[newIndex].new)
+      toAdd = arrayMove(this.state.toAddProducts, oldIndex, newIndex);
+
+    data.forEach((product, i) => {
+      if(i == newIndex) {
+        if(data[i-1]) {
+          product.displayorder = data[i-1].displayorder+1;
+        } else {
+          product.displayorder = 0;
+        }
+        lastIndexChanged = i;
+        lastDisplayorder = product.displayorder;
+      } else if(i == lastIndexChanged+1 && lastDisplayorder > -1) {
+        if(product.displayorder <= lastDisplayorder) {
+          product.displayorder++;
+          lastIndexChanged = i;
+          lastDisplayorder = product.displayorder;
+        }
+      }
+      if(product.new) {
+        toAdd[i] = product;
+      } else {
+        toUpdate[product.id] = product;
+      }
+      newOrder[product.id] = product;
+    });
+    this.setState({
+      products: newOrder,
+      toAddProducts: toAdd,
+      toUpdateProducts: toUpdate
     });
   }
   render() {
@@ -451,43 +546,13 @@ class ClubEditing extends Component {
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {this.state.products && Object.keys(this.state.products).length > 0
-                      ? Object.keys(this.state.products).map((key, i) =>
-                          <tr key={i} data-id={key} data-name={this.state.products[key].name}>
-                            <td>{this.state.products[key].new?'':key}</td>
-                            <td className="product-name">{this.state.products[key].name}</td>
-                            <td className="internalid">
-                              {this.state.products[key].internalid}
-                              {(this.state.products[key].colours && (this.colours = JSON.parse(this.state.products[key].colours)) && this.colours.length > 0)
-                              ? [<br />, this.colours.length > 1 ? this.colours.length + " Farben" : this.colours[0].id + " " + this.colours[0].name]
-                              : ''}
-                            </td>
-                            <td className="pricegroups">
-                              {JSON.parse(this.state.products[key].pricegroups).map((group, i) =>
-                                <div key={i}>
-                                  <p className="sizes">{group.sizes.join(", ")}:</p>
-                                  <p className="price">{group.price.toFixed(2).replace('.', ',')} €</p>
-                                </div>
-                              )}
-                            </td>
-                            <td>
-                              {this.state.products[key].defaultFlocking ? <p>mit Standardbeflockung,</p> : ''}
-                              <p>
-                              {this.state.products[key].flockingPrice !== null && parseFloat(this.state.products[key].flockingPrice) >= 0
-                                    ? (parseFloat(this.state.products[key].flockingPrice) > 0
-                                      ? 'Zusatz Aufpreis: ' + parseFloat(this.state.products[key].flockingPrice).toFixed(2).replace('.', ',') + ' €'
-                                      : 'Zusatz kostenlos')
-                                    : 'kein Zusatz'}
-                              </p>
-                            </td>
-                            <td className="buttons">
-                              <Button bsSize="small" onClick={this.openProductEditModal.bind(this, key)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
-                              <Button bsSize="small" bsStyle="danger" onClick={this.openProductRemoveModal.bind(this, key)}><Glyphicon glyph="trash" /> Löschen</Button>
-                            </td>
-                          </tr>
-                    ) : <tr className="no-data"><td colSpan="6">Keine Produkte vorhanden</td></tr>}
-                  </tbody>
+                  {this.state.products && Object.keys(this.state.products).length > 0
+                    ? <SortableProductList className="product-sortable-helper" lockAxis="y" items={this.state.products.concat().sort((a, b) => a.displayorder - b.displayorder)}
+                        eventHandlers={{
+                          openProductEditModal: this.openProductEditModal.bind(this),
+                          openProductRemoveModal: this.openProductRemoveModal.bind(this)
+                        }} onSortEnd={this.onSortEnd.bind(this)} useDragHandle={true} />
+                   : <tbody><tr className="no-data"><td colSpan="6">Keine Produkte vorhanden</td></tr></tbody>}
                 </Table>
                 <Button bsSize="small" bsStyle="success" onClick={this.openProductAddModal}><Glyphicon glyph="plus" /> Hinzufügen...</Button>
               </div>

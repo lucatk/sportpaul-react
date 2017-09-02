@@ -159,6 +159,10 @@
   margin: 0 auto;
 }
 
+.admin .container[data-page=ClubEditing] td.product-id-sort {
+  min-width: 40px;
+}
+
 .admin .container[data-page=Clubs] td.product-name,
 .admin .container[data-page=Clubs] td.buttons,
 .admin .container[data-page=ClubEditing] td.product-name,

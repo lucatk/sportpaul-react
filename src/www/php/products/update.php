@@ -46,8 +46,9 @@ if(isset($_FILES["picture"])) {
     }
   // }
 
-  $stmt = $db->execute("UPDATE products SET internalid=:internalid, name=:name, colours=:colours, pricegroups=:pricegroups, flockingPrice=:flockingPrice, defaultFlocking=:defaultFlocking, defaultFlockingInfo=:defaultFlockingInfo, picture=:picture WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
+  $stmt = $db->execute("UPDATE products SET displayorder=:displayorder, internalid=:internalid, name=:name, colours=:colours, pricegroups=:pricegroups, flockingPrice=:flockingPrice, defaultFlocking=:defaultFlocking, defaultFlockingInfo=:defaultFlockingInfo, picture=:picture WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
                                                                                                                                                                                                                                                                                           "clubid" => $_POST["clubid"],
+                                                                                                                                                                                                                                                                                          "displayorder" => $_POST["displayorder"],
                                                                                                                                                                                                                                                                                           "internalid" => $_POST["internalid"],
                                                                                                                                                                                                                                                                                           "name" => $_POST["name"],
                                                                                                                                                                                                                                                                                           "colours" => $coloursUpdated,
@@ -94,8 +95,9 @@ if(isset($_FILES["picture"])) {
       $coloursUpdated[$i] = $colour;
     }
     $coloursUpdated = json_encode($coloursUpdated, JSON_UNESCAPED_UNICODE);
-    $stmt = $db->execute("UPDATE products SET internalid=:internalid, name=:name, colours=:colours, pricegroups=:pricegroups, flockingPrice=:flockingPrice, defaultFlocking=:defaultFlocking, defaultFlockingInfo=:defaultFlockingInfo WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
+    $stmt = $db->execute("UPDATE products SET displayorder=:displayorder, internalid=:internalid, name=:name, colours=:colours, pricegroups=:pricegroups, flockingPrice=:flockingPrice, defaultFlocking=:defaultFlocking, defaultFlockingInfo=:defaultFlockingInfo WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
                                                                                                                                                                                                                                                         "clubid" => $_POST["clubid"],
+                                                                                                                                                                                                                                                        "displayorder" => $_POST["displayorder"],
                                                                                                                                                                                                                                                         "internalid" => $_POST["internalid"],
                                                                                                                                                                                                                                                         "name" => $_POST["name"],
                                                                                                                                                                                                                                                         "colours" => $coloursUpdated,
@@ -126,8 +128,9 @@ if(isset($_FILES["picture"])) {
         }
       }
     }
-    $stmt = $db->execute("UPDATE products SET internalid=:internalid, name=:name, colours=:colours, pricegroups=:pricegroups, flockingPrice=:flockingPrice, defaultFlocking=:defaultFlocking, defaultFlockingInfo=:defaultFlockingInfo WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
+    $stmt = $db->execute("UPDATE products SET displayorder=:displayorder, internalid=:internalid, name=:name, colours=:colours, pricegroups=:pricegroups, flockingPrice=:flockingPrice, defaultFlocking=:defaultFlocking, defaultFlockingInfo=:defaultFlockingInfo WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
                                                                                                                                                                                                                                                         "clubid" => $_POST["clubid"],
+                                                                                                                                                                                                                                                        "displayorder" => $_POST["displayorder"],
                                                                                                                                                                                                                                                         "internalid" => $_POST["internalid"],
                                                                                                                                                                                                                                                         "name" => $_POST["name"],
                                                                                                                                                                                                                                                         "colours" => $colours,
