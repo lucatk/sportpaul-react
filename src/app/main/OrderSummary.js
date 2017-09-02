@@ -86,7 +86,7 @@ class OrderSummary extends Component {
 
         var success = false;
         if(parsed.error !== "00000" || parsed.rowsAffected < 1) {
-          console.log("Error: ", parsed);
+          console.log("Error: ", parsed.error);
 
           this.setState({success:false});
         } else {

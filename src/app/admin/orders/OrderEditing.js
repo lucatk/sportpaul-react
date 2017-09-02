@@ -267,7 +267,7 @@ class OrderEditing extends Component {
         var result = JSON.parse(data);
         if(result.error !== 0 && result.rowsAffected < 1) {
           error = true;
-          console.log("Error:", error);
+          console.log("Error:", result.error);
         }
         updatedOrderInfo = true;
         doneProcess();
@@ -295,7 +295,7 @@ class OrderEditing extends Component {
           var result = JSON.parse(data);
           if(result.error !== 0 && result.rowsAffected < 1) {
             error = true;
-            console.log("Error:", error);
+            console.log("Error:", result.error);
           }
           toUpdateCount--;
           doneProcess();

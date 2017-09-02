@@ -236,7 +236,7 @@ class ClubEditing extends Component {
           var result = JSON.parse(data);
           if(result.error !== 0 && result.rowsAffected < 1) {
             error = true;
-            console.log("Error:", error);
+            console.log("Error:", result.error);
           }
           updatedClubInfo = true;
           doneProcess();
@@ -275,9 +275,9 @@ class ClubEditing extends Component {
         data: data,
         success: function(data) {
           var result = JSON.parse(data);
-          if(result.error !== 0 && result.rowsAffected < 1) {
+          if(result.error != 0 && result.rowsAffected < 1) {
             error = true;
-            console.log("Error:", error);
+            console.log("Error:", result.error);
           }
           toUpdateCount--;
           doneProcess();
@@ -311,9 +311,9 @@ class ClubEditing extends Component {
         data: data,
         success: function(data) {
           var result = JSON.parse(data);
-          if(result.error !== 0 && result.rowsAffected < 1) {
+          if(result.error != 0 && result.rowsAffected < 1) {
             error = true;
-            console.log("Error:", error);
+            console.log("Error:", result.error);
           }
           toAddCount--;
           doneProcess();
@@ -330,9 +330,9 @@ class ClubEditing extends Component {
         },
         success: function(data) {
           var result = JSON.parse(data);
-          if(result.error !== 0 && result.rowsAffected < 1) {
+          if(result.error != 0 && result.rowsAffected < 1) {
             error = true;
-            console.log("Error:", error);
+            console.log("Error:", result.error);
           }
           toRemoveCount--;
           doneProcess();
