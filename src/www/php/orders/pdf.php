@@ -13,8 +13,8 @@ $db = new Database();
 $stmt = $db->execute("SELECT id, clubname, firstname, lastname, address, postcode, town, phone, created FROM orders WHERE clubid=:clubid AND id=:orderid", ["clubid" => $_GET["clubid"],
                                                                                                                                                             "orderid" => $_GET["id"]]);
 $order = $db->fetchAssoc($stmt, 1);
-$cstmt = $db->execute("SELECT internalid, name, colour, flocking, size, price, flockingPrice FROM items WHERE clubid=:clubid AND orderid=:orderid ORDER BY id ASC", ["clubid" => $_GET["clubid"],
-                                                                                                                                                                     "orderid" => $_GET["id"]]);
+$cstmt = $db->execute("SELECT internalid, name, colour, flockingName, flockingLogo, size, price, flockingPriceName, flockingPriceLogo FROM items WHERE clubid=:clubid AND orderid=:orderid ORDER BY id ASC", ["clubid" => $_GET["clubid"],
+                                                                                                                                                                                                              "orderid" => $_GET["id"]]);
 $order["items"] = $db->fetchAll($cstmt);
 $cstmt = $db->execute("SELECT logodata FROM clubs WHERE id=:clubid", ["clubid" => $_GET["clubid"]]);
 $order["clublogo"] = $db->fetchAssoc($cstmt, 1)["logodata"];

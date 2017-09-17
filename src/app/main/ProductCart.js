@@ -23,7 +23,7 @@ class ProductCart extends Component {
         <div className="cart-contents">
           <ProductCartTable data={this.props.contents} onRemove={this.props.onProductRemoveFromCart} onPreview={this.props.onProductPreviewRequest} />
         </div>
-        <Button className="checkout-button" bsStyle="primary" onClick={this.props.onContinue}>Weiter <Glyphicon glyph="menu-right" /></Button>
+        <Button className="checkout-button" bsStyle="primary" onClick={this.props.onContinue} disabled={this.props.contents.length < 1}>Weiter <Glyphicon glyph="menu-right" /></Button>
       </div>
     );
   }

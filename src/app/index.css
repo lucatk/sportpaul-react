@@ -88,6 +88,10 @@ span.glyphicon.flipped {
   background: white;
 }
 
+.no-fontweight {
+  font-weight: normal;
+}
+
 button.mini-btn {
   padding: 0 5px;
   text-shadow: none !important;

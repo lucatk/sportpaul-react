@@ -93,9 +93,9 @@ $toPrint = count($orders);
       <thead>
         <tr>
           <th style="width:10%;padding-top:15px;padding-bottom:0;">Art. Nr.</th>
-          <th style="width:17.5%;">Farbe</th>
-          <th style="width:30%;">Bezeichnung</th>
-          <th style="width:17.5%;">Beflockung</th>
+          <th style="width:15%;">Farbe</th>
+          <th style="width:27.5%;">Bezeichnung</th>
+          <th style="width:22.5%;">Beflockung</th>
           <th style="width:10%;">Größe</th>
           <th style="width:15%;">Preis</th>
         </tr>
@@ -106,15 +106,18 @@ $toPrint = count($orders);
         $totalThisPage = 0;
         foreach($order["items"] as $item) {
           $colour = json_decode($item["colour"]);
-          $price = floatval($item["price"]) + floatval($item["flockingPrice"]);
+          $price = floatval($item["price"]) + floatval($item["flockingPriceName"]) + floatval($item["flockingPriceLogo"]);
           $total += $price;
           $totalThisPage += $price;
+          if(strlen($item["flockingName"]) > 10) {
+            $item["flockingName"] = substr($item["flockingName"], 0, 7) . "...";
+          }
           ?>
           <tr>
             <td><?php echo $item["internalid"]; ?></td>
             <td><?php echo $colour->id . " " . $colour->name; ?></td>
             <td style="width:25%;padding-top:15px;padding-bottom:0;"><?php echo $item["name"]; ?></td>
-            <td><?php echo $item["flocking"]; ?></td>
+            <td><?php echo (strlen($item["flockingName"]) > 0 ? '"' . $item["flockingName"] . '"' . ($item["flockingLogo"] ? ", " : "") : "") . ($item["flockingLogo"] ? "Logo" : ""); ?></td>
             <td><?php echo $item["size"]; ?></td>
             <td><?php echo number_format($price, 2, ",", ""); ?> €</td>
           </tr>

@@ -299,7 +299,7 @@
 }
 
 .product-cart .cart-contents td.flocking {
-  color: #76bd23;
+  /*color: #76bd23;*/
 }
 
 .product-cart .cart-contents p {
@@ -307,7 +307,7 @@
 }
 
 .product-cart .cart-contents p.flocking-price {
-  color: #76bd23;
+  /*color: #76bd23;*/
 }
 
 .product-cart .cart-contents tfoot {

@@ -45,21 +45,25 @@ if($stmt->errorCode() !== "00000") {
   $id = $db->lastInsertId();
   $cart = json_decode($_POST["cart"]);
   foreach($cart as $key => $item) {
-    if($item->flockingPrice === null || $item->flocking === null || strlen($item->flocking) < 1) {
-      $item->flockingPrice = 0;
+    if($item->flockingPriceName == null || $item->flockingName === null || strlen($item->flockingName) < 1) {
+      $item->flockingPriceName = 0;
     }
-    $stmt2 = $db->execute("INSERT INTO items(clubid, orderid, productid, internalid, name, colour, flocking, defaultFlocking, size, price, flockingPrice) VALUES(:clubid, :orderid, :productid, :internalid, :name, :colour, :flocking, :defaultFlocking, :size, :price, :flockingPrice)",
+    if($item->flockingPriceLogo == null || !$item->flockingLogo) {
+      $item->flockingPriceLogo = 0;
+    }
+    $stmt2 = $db->execute("INSERT INTO items(clubid, orderid, productid, internalid, name, colour, flockingName, flockingLogo, size, price, flockingPriceName, flockingPriceLogo) VALUES(:clubid, :orderid, :productid, :internalid, :name, :colour, :flockingName, :flockingLogo, :size, :price, :flockingPriceName, :flockingPriceLogo)",
                           ["clubid" => $_POST["clubid"],
                            "orderid" => $id,
                            "productid" => $item->id,
                            "internalid" => $item->internalid,
                            "name" => $item->name,
                            "colour" => $item->colour,
-                           "flocking" => $item->flocking,
-                           "defaultFlocking" => $item->defaultFlocking,
+                           "flockingName" => $item->flockingName,
+                           "flockingLogo" => $item->flockingLogo,
                            "size" => $item->size,
                            "price" => $item->price,
-                           "flockingPrice" => $item->flockingPrice]);
+                           "flockingPriceName" => $item->flockingPriceName,
+                           "flockingPriceLogo" => $item->flockingPriceLogo]);
     $rowsAffected += $stmt2->rowCount();
     if($stmt2->errorCode() !== "00000") {
       die(json_encode([

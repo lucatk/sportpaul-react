@@ -11,14 +11,14 @@ include('../database.php');
 
 $db = new Database();
 
-$stmt = $db->execute("UPDATE items SET flocking=:flocking, size=:size, price=:price, flockingPrice=:flockingPrice, status=:status WHERE clubid=:clubid AND orderid=:orderid AND id=:id",
+$stmt = $db->execute("UPDATE items SET size=:size, price=:price, flockingPriceName=:flockingPriceName, flockingPriceLogo=:flockingPriceLogo, status=:status WHERE clubid=:clubid AND orderid=:orderid AND id=:id",
                       ["clubid" => $_POST["clubid"],
                        "orderid" => $_POST["orderid"],
                        "id" => $_POST["id"],
-                       "flocking" => $_POST["flocking"],
                        "size" => $_POST["size"],
                        "price" => $_POST["price"],
-                       "flockingPrice" => $_POST["flockingPrice"],
+                       "flockingPriceName" => $_POST["flockingPriceName"],
+                       "flockingPriceLogo" => $_POST["flockingPriceLogo"],
                        "status" => $_POST["status"]]);
 
 die(json_encode([

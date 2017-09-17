@@ -1,4 +1,15 @@
 <?php
+function convertToWindowsCharset($string) {
+  $charset =  mb_detect_encoding(
+    $string,
+    "UTF-8, ISO-8859-1, ISO-8859-15",
+    true
+  );
+
+  $string =  mb_convert_encoding($string, "Windows-1252", $charset);
+  return $string;
+}
+
 session_start();
 if(!isset($_SESSION["loggedIn"])) {
   die;
@@ -49,8 +60,8 @@ if($multipleClubs) {
 $orders = array();
 foreach($results as $club) {
   foreach($club["orders"] as $row) {
-    $cstmt = $db->execute("SELECT internalid, name, colour, flocking, size, status FROM items WHERE clubid=:clubid AND orderid=:orderid ORDER BY id ASC", ["clubid" => $clubid,
-                                                                                                                                                           "orderid" => $row["id"]]);
+    $cstmt = $db->execute("SELECT internalid, name, colour, flockingName, flockingLogo, size, status FROM items WHERE clubid=:clubid AND orderid=:orderid ORDER BY id ASC", ["clubid" => $clubid,
+                                                                                                                                                                             "orderid" => $row["id"]]);
     $cresults = $db->fetchAll($cstmt);
     if($skipOrdered)
       $cresults = array_filter($cresults, function($var) { return intval($var["status"]) < 0; });
@@ -72,11 +83,12 @@ header("Content-Disposition: attachment; filename=\"" . $name . ".csv\"");
 header("Content-Type: text/csv");
 
 $out = fopen("php://output", 'w');
+fwrite($out, convertToWindowsCharset("sep=,\n"));
 
 // $headers = ["Bestellung", "Kunde", "Artikelnummer", "Artikel", "Farbe", "Beflockung", "Größe"];
 // if($multipleClubs)
 //   array_unshift($headers, "Verein");
-$headers = explode(",", $_GET["columnnames"]);
+$headers = explode(",", convertToWindowsCharset($_GET["columnnames"]));
 fputcsv($out, $headers, ',', '"');
 
 $columns = explode(",", $_GET["columns"]);
@@ -96,17 +108,29 @@ foreach($orders as $order) {
       switch($column) {
         case "clubname":
         case "id":
-          $data[] = $order[$column];
+          $data[] = convertToWindowsCharset($order[$column]);
           break;
         case "customer":
-          $data[] = $order["firstname"] . " " . $order["lastname"];
+          $data[] = convertToWindowsCharset($order["firstname"] . " " . $order["lastname"]);
+          break;
+        case "colour":
+          if(strlen($item["colour"]) > 0) {
+            $colour = json_decode($item["colour"]);
+            $data[] = convertToWindowsCharset($colour->id . " " . $colour->name);
+          } else {
+            $data[] = "";
+          }
+          break;
+        case "flockingLogo":
+          $data[] = convertToWindowsCharset($item["flockingLogo"]==1?"ja":"nein");
           break;
         case "internalid":
+          $data[] = convertToWindowsCharset('="' . $item["internalid"] . '"');
+          break;
         case "name":
-        case "colour":
-        case "flocking":
+        case "flockingName":
         case "size":
-          $data[] = $item[$column];
+          $data[] = convertToWindowsCharset($item[$column]);
           break;
       }
     }

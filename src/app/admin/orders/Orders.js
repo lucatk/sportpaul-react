@@ -49,6 +49,7 @@ class Orders extends Component {
 
     if(this.props.params["club"]) {
       this.state.filterClub = parseInt(this.props.params["club"]);
+      this.loadClubProducts(this.state.filterClub);
     }
 
     this.openRemoveModal = this.openRemoveModal.bind(this);
@@ -212,7 +213,7 @@ class Orders extends Component {
         var parsedProducts = [];
         for(var i in products) {
           parsedProducts[i] = products[i];
-          parsedProducts[i].defaultFlocking = parsedProducts[i].defaultFlocking == 1;
+          // parsedProducts[i].defaultFlocking = parsedProducts[i].defaultFlocking == 1;
         }
 
         this.setState({

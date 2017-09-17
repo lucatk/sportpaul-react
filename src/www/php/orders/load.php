@@ -12,15 +12,18 @@ $stmt = $db->execute("SELECT * FROM orders WHERE clubid=:clubid AND id=:orderid"
                                                                                     "clubid" => $_POST["clubid"]]);
 $results = $db->fetchAssoc($stmt, 1);
 
-$cstmt = $db->execute("SELECT status, flocking, flockingPrice, price FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $_POST["clubid"],
+$cstmt = $db->execute("SELECT status, flockingName, flockingLogo, flockingPriceName, flockingPriceLogo, price FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $_POST["clubid"],
                                                                                                                              "orderid" => $_POST["id"]]);
 $cresults = $db->fetchAll($cstmt);
 $total = 0;
 $orderDone = true;
 foreach($cresults as $crow) {
   $total += $crow["price"];
-  if($crow["flocking"] != null && strlen($crow["flocking"]) > 0) {
-    $total += $crow["flockingPrice"];
+  if($crow["flockingName"] != null && strlen($crow["flockingName"]) > 0) {
+    $total += $crow["flockingPriceName"];
+  }
+  if($crow["flockingLogo"] != null && $crow["flockingLogo"]) {
+    $total += $crow["flockingPriceLogo"];
   }
   if($results["status"] === 2) {
     if($crow["status"] < 3) $orderDone = false;

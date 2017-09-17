@@ -35,15 +35,18 @@ class OrderSummary extends Component {
         size: product.size,
         price: -1,
         displayPrice: -1,
-        flocking: product.flocking,
-        flockingPrice: product.flockingPrice,
-        defaultFlocking: product.defaultFlocking
+        flockingName: product.flockingName,
+        flockingPriceName: product.flockingPriceName,
+        flockingLogo: product.flockingLogo,
+        flockingPriceLogo: product.flockingPriceLogo,
+        includedFlockingInfo: product.includedFlockingInfo
       };
       for(var z in product.pricegroups) {
         if(product.pricegroups[z].sizes.includes(product.size)) {
           this.orderCart[i].price = product.pricegroups[z].price;
           this.orderCart[i].displayPrice = product.pricegroups[z].price;
-          if(product.flocking && product.flocking.length > 0) this.orderCart[i].displayPrice += product.flockingPrice;
+          if(product.flockingName && product.flockingName.length > 0) this.orderCart[i].displayPrice += product.flockingPriceName;
+          if(product.flockingLogo) this.orderCart[i].displayPrice += product.flockingPriceLogo;
 
           this.total += this.orderCart[i].displayPrice;
         }
@@ -107,7 +110,7 @@ class OrderSummary extends Component {
         <LoadingOverlay show={this.state.loading} />
         <div className="order-summary">
           <h1 className="page-header">Bestellung abschließen</h1>
-          <Row>
+          {!this.state.done && <Row>
             <Col lg="4">
               <div className="customer-data">
                 <h2>Kundeninformationen:</h2>
@@ -134,9 +137,14 @@ class OrderSummary extends Component {
                   {this.orderCart.map((row, i) =>
                   <tr>
                     <td>{row.name}</td>
-                    <td>{row.colour !== undefined && row.colour != null && row.colour.length > 0 ? row.colour.id + " " + row.colour.name : "-"}</td>
+                    <td>{row.colour !== undefined && row.colour != null && row.colour.id ? row.colour.id + " " + row.colour.name : "-"}</td>
                     <td>{row.size}</td>
-                    <td>{(row.flocking && row.flocking.length > 0) ? row.flocking : '-'}</td>
+                    {((row.flockingName && row.flockingName.length > 0) || row.flockingLogo) ?
+                      <td>
+                        {(row.flockingName && row.flockingName.length > 0) && "Name (\"" + row.flockingName + "\")" + (row.flockingLogo?", ":"")}
+                        {row.flockingLogo && "Logo"}
+                      </td>
+                    : <td>-</td>}
                     <td>{row.displayPrice.toFixed(2).replace('.', ',')} €</td>
                   </tr>)}
                 </tbody>
@@ -148,7 +156,7 @@ class OrderSummary extends Component {
                 </tfoot>
               </Table>
             </Col>
-          </Row>
+          </Row>}
           {!this.state.done && <Button bsStyle="primary" onClick={this.onClickOrder}>Bestellen</Button>}
           {(this.state.done && this.state.success) && <div className="done"><p>Die Bestellung wurde aufgenommen. Informationen zur Bestellung werden an die E-Mail <span>{this.customerData.email}</span> gesendet.</p><Button bsStyle="primary" onClick={() => {window.open("php/orders/pdf.php?clubid=" + this.state.newclubid + "&id=" + this.state.newid)}}><Glyphicon glyph="print" /> Bestellübersicht drucken</Button></div>}
           {(this.state.done && !this.state.success) && <div className="done"><p>Es gab einen Fehler bei der Bestellung.</p></div>}

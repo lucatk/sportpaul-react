@@ -81,7 +81,7 @@
                           <?php foreach($items as $item) { ?>
                           <tr>
                             <td class="bullet-point" style="font-family:sans-serif;font-size:14px;vertical-align:top;padding:0 6px;">•</td>
-                            <td style="font-family:sans-serif;font-size:14px;vertical-align:top;"><?php echo $item->name ?> (Art. Nr. <?php echo $item->internalid ?>, Größe: <?php echo $item->size ?><?php echo (strlen($item->flocking) > 0 ? "; Beflockung: " . $item->flocking : "") ?>)</td>
+                            <td style="font-family:sans-serif;font-size:14px;vertical-align:top;"><?php echo $item->name ?> (Art. Nr. <?php echo $item->internalid ?>, Größe: <?php echo $item->size ?><?php echo ((strlen($item->flockingName) > 0 || $item->flockingLogo == true) ? "; Beflockung: " . (strlen($item->flockingName) > 0 ? 'Name ("' . $item->flockingName . '")' . ($item->flockingLogo == true ? ", Logo" : "") : ($item->flockingLogo == true ? "Logo" : "")) : "") ?>)</td>
                           </tr>
                           <?php } ?>
                         </table>

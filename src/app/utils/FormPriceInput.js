@@ -9,7 +9,7 @@ class FormPriceInput extends Component {
     this.state = {
       price: this.props.value || 0,
       priceTemp: this.props.value ? (this.props.value.toFixed(2).replace('.', ',') + ' €') : '',
-      placeholder: '10,00 €'
+      placeholder: '0,00 €'
     };
 
     this.onPriceChange = this.onPriceChange.bind(this);

@@ -9,8 +9,7 @@ class ClubProductItem extends Component {
 
     this.state = {
       selectedColour: -1,
-      selectedSize: '',
-      flocking: ''
+      selectedSize: ''
     };
 
     this.handleColourChange = this.handleColourChange.bind(this);
@@ -32,39 +31,29 @@ class ClubProductItem extends Component {
     this.setState({selectedColour: -1, selectedSize: ''});
   }
 
-  handlePreviewClick(event) {
-    var productPicture = this.props.product.picture;
+  getProductPicture() {
     if(this.props.product.colours.length > 0) {
       if(this.props.product.colours.length == 1) {
         if(this.props.product.colours[0].picture != null)
-          productPicture = this.props.product.colours[0].picture;
+          return this.props.product.colours[0].picture;
       } else {
         if(this.state.selectedColour < 0) {
-          productPicture = this.props.product.colours[0].picture;
+          return this.props.product.colours[0].picture;
         } else {
           if(this.props.product.colours[this.state.selectedColour].picture != null)
-            productPicture = this.props.product.colours[this.state.selectedColour].picture;
+            return this.props.product.colours[this.state.selectedColour].picture;
         }
       }
     }
-    this.props.onPreview(productPicture);
+    return this.props.product.picture;
+  }
+
+  handlePreviewClick(event) {
+    this.props.onPreview(this.getProductPicture());
   }
 
   render() {
-    var productPicture = this.props.product.picture;
-    if(this.props.product.colours.length > 0) {
-      if(this.props.product.colours.length == 1) {
-        if(this.props.product.colours[0].picture != null)
-          productPicture = this.props.product.colours[0].picture;
-      } else {
-        if(this.state.selectedColour < 0) {
-          productPicture = this.props.product.colours[0].picture;
-        } else {
-          if(this.props.product.colours[this.state.selectedColour].picture != null)
-            productPicture = this.props.product.colours[this.state.selectedColour].picture;
-        }
-      }
-    }
+    var productPicture = this.getProductPicture();
     return (
       <div className="product-item">
         <div className="panel panel-default">
@@ -89,9 +78,9 @@ class ClubProductItem extends Component {
                     </p>
                   )}
                 </li>
-                {(this.props.orderable || this.props.product.defaultFlocking || (this.props.product.flockingPrice && this.props.product.flockingPrice >= 0)) ? <li className="product-item-action list-group-item">
-                  {this.props.product.defaultFlocking && <p className="flocking-info">{this.props.product.defaultFlockingInfo}</p>}
-                  {(this.props.product.flockingPrice && this.props.product.flockingPrice >= 0 && !this.props.orderable) ? <p className="flocking-info">Namens-Beflockung möglich ({this.props.product.flockingPrice.toFixed(2).replace(".", ",")} €)</p> : ''}
+                {(this.props.orderable || this.props.product.includedFlockingInfo || (this.props.product.flockingPriceName != null && this.props.product.flockingPriceName >= 0)) ? <li className="product-item-action list-group-item">
+                  {this.props.product.includedFlockingInfo && <p className="flocking-info">{this.props.product.includedFlockingInfo}</p>}
+                  {(this.props.product.flockingPriceName != null && this.props.product.flockingPriceName >= 0 && !this.props.orderable) ? <p className="flocking-info">Namens-Beflockung möglich ({this.props.product.flockingPriceName.toFixed(2).replace(".", ",")} €)</p> : ''}
                   {this.props.orderable && <div>
                     {this.props.product.colours.length > 1 && <div className="row">
                       <div className="col-xs-12">
@@ -116,7 +105,7 @@ class ClubProductItem extends Component {
                           )}
                         </select>
                       </div>
-                      <button disabled={this.state.selectedSize.length < 1 || (this.props.product.colours && this.props.product.colours.length > 0 && this.state.selectedColour < 0)} className="btn btn-primary btn-sm cart-button col-xs-4" type="button" onClick={this.handleAddClick}><span className="glyphicon glyphicon-shopping-cart"></span></button>
+                      <button disabled={this.state.selectedSize.length < 1 || (this.props.product.colours && this.props.product.colours.length > 1 && this.state.selectedColour < 0)} className="btn btn-primary btn-sm cart-button col-xs-4" type="button" onClick={this.handleAddClick}><span className="glyphicon glyphicon-shopping-cart"></span></button>
                     </div>
                   </div>}
                 </li> : ''}

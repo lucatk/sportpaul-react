@@ -87,7 +87,9 @@ class OrderView extends Component {
           parsedItems[i] = items[i];
           if(items[i].colour && items[i].colour.length > 0)
             parsedItems[i].colour = JSON.parse(items[i].colour);
-          parsedItems[i].flockingPrice = parseFloat(items[i].flockingPrice);
+            parsedItems[i].flockingLogo = items[i].flockingLogo == 1;
+            parsedItems[i].flockingPriceName = parseFloat(items[i].flockingPriceName);
+            parsedItems[i].flockingPriceLogo = parseFloat(items[i].flockingPriceLogo);
         }
 
         loadedItems = true;
@@ -183,10 +185,19 @@ class OrderView extends Component {
                         <tr key={key} data-id={key} data-name={this.state.items[key].name}>
                           <td>{key}</td>
                           <td>{this.state.items[key].name}</td>
-                          <td>{this.state.items[key].internalid}<br />{this.state.items[key].colour != null && this.state.items[key].colour.id + " " + this.state.items[key].colour.name}</td>
+                          <td>{this.state.items[key].internalid}{(this.state.items[key].colour != null && this.state.items[key].colour.id) && [<br />, this.state.items[key].colour.id + " " + this.state.items[key].colour.name]}</td>
                           <td>{this.state.items[key].size}</td>
-                          <td>{this.state.items[key].flocking} {(this.state.items[key].flocking && this.state.items[key].flocking.length > 0 && this.state.items[key].flockingPrice > 0) && <i>(+{this.state.items[key].flockingPrice.toFixed(2).replace(".", ",")} €)</i>}</td>
-                          <td>{parseFloat(this.state.items[key].price).toFixed(2).replace(".", ",")} €</td>
+                          {((this.state.items[key].flockingName && this.state.items[key].flockingName.length > 0) || this.state.items[key].flockingLogo) ?
+                            <td className="flocking">
+                              {(this.state.items[key].flockingName && this.state.items[key].flockingName.length > 0) && "Name (\"" + this.state.items[key].flockingName + "\")" + (this.state.items[key].flockingLogo?", ":"")}
+                              {this.state.items[key].flockingLogo && "Logo"}
+                            </td>
+                          : <td>-</td>}
+                          <td>
+                            <p>{parseFloat(this.state.items[key].price).toFixed(2).replace(".", ",")} €</p>
+                            {(this.state.items[key].flockingName && this.state.items[key].flockingName.length > 0 && this.state.items[key].flockingPriceName > 0) && <p className="flocking-price">+{this.state.items[key].flockingPriceName.toFixed(2).replace('.', ',')} €</p>}
+                            {(this.state.items[key].flockingLogo && this.state.items[key].flockingPriceLogo > 0) && <p className="flocking-price">+{this.state.items[key].flockingPriceLogo.toFixed(2).replace('.', ',')} €</p>}
+                          </td>
                           <td>{Statics.ItemStatus[this.state.items[key].status]}</td>
                         </tr>
                   ) : <tr className="no-data"><td colSpan="7">Keine Positionen vorhanden</td></tr>}

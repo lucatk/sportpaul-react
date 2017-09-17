@@ -163,6 +163,11 @@
   min-width: 40px;
 }
 
+.admin .container[data-page=ClubEditing] td.product-id-sort.disabled .drag-handle {
+  cursor: not-allowed;
+  color: rgba(0,0,0,.4);
+}
+
 .admin .container[data-page=Clubs] td.product-name,
 .admin .container[data-page=Clubs] td.buttons,
 .admin .container[data-page=ClubEditing] td.product-name,
@@ -174,6 +179,10 @@
 
 .admin .container[data-page=Orders] thead tr th {
   cursor: pointer;
+}
+
+.admin .container[data-page=ClubEditing] thead tr th.notice {
+  font-weight: normal;
 }
 
 .admin .container[data-page=Orders] thead tr th span.glyphicon {
@@ -242,6 +251,10 @@
   margin-left: 10px;
 }
 
+.admin .container[data-page=ClubEditing] td.flocking p.included-flocking {
+  margin-bottom: 5px;
+}
+
 .admin .container[data-page=ClubEditing] td.buttons button,
 .admin .container[data-page=ClubCreation] td.buttons button {
   display: block;
@@ -256,6 +269,22 @@
 .admin .container[data-page=ClubEditing] .form-group .mini-btn {
   margin-left: 5px;
   line-height: 35px;
+}
+
+.admin .container[data-page=OrderEditing] td.name {
+  min-width: 160px;
+}
+
+.admin .container[data-page=OrderEditing] td.internalid {
+  min-width: 130px;
+}
+
+.admin .container[data-page=OrderEditing] td.size {
+  min-width: 80px;
+}
+
+.admin .container[data-page=OrderEditing] td.price {
+  min-width: 90px;
 }
 
 .admin .container[data-page=OrderEditing] td.status {
@@ -347,7 +376,7 @@
 }
 
 .modal-dialog .form-group .flocking-edit label,
-.modal-dialog .form-group .default-flocking-edit label {
+.modal-dialog .form-group .included-flocking-edit label {
   font-weight: normal;
   margin: 0;
 }

@@ -16,7 +16,7 @@ $assoc = array();
 $i = 0;
 foreach($results as $row) {
   $cstmt = $db->execute("SELECT pricegroups FROM products WHERE clubid=:clubid AND id=:productid", ["clubid" => $row['clubid'],
-                                                                                                    "productid" => $row['id']]);
+                                                                                                    "productid" => $row['productid']]);
   $cresults = $db->fetchAssoc($cstmt, 1);
   if(!$cresults) {
     $row["pricegroups"] = "";

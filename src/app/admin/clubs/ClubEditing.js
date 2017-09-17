@@ -34,7 +34,7 @@ const SortableProductItem = SortableElement(({i, product, events}) => {
   }
   return (
     <tr key={i} data-id={product.id} data-name={product.name}>
-      <td className="product-id-sort"><DragHandle />{product.new?'':product.id}</td>
+      <td className={events.disabled?"product-id-sort disabled":"product-id-sort"}>{!product.new && <DragHandle />}{product.new?'':product.id}</td>
       <td className="product-name">{product.name}</td>
       <td className="internalid">
         {product.internalid}
@@ -50,15 +50,18 @@ const SortableProductItem = SortableElement(({i, product, events}) => {
           </div>
         )}
       </td>
-      <td>
-        {product.defaultFlocking ? <p>mit Standardbeflockung,</p> : ''}
-        <p>
-        {product.flockingPrice !== null && parseFloat(product.flockingPrice) >= 0
-              ? (parseFloat(product.flockingPrice) > 0
-                ? 'Zusatz Aufpreis: ' + parseFloat(product.flockingPrice).toFixed(2).replace('.', ',') + ' €'
-                : 'Zusatz kostenlos')
-              : 'kein Zusatz'}
-        </p>
+      <td className="flocking">
+        {product.includedFlockingInfo.length > 0 ? <p className="included-flocking">Inklusivbeflockung ("{product.includedFlockingInfo}")</p> : ''}
+        {product.flockingPriceName !== null && parseFloat(product.flockingPriceName) >= 0
+          ? (parseFloat(product.flockingPriceName) > 0
+            ? <p>Name ({parseFloat(product.flockingPriceName).toFixed(2).replace('.', ',')} € Aufpreis)</p>
+            : <p>Name (kostenlos)</p>)
+          : ''}
+        {product.flockingPriceLogo !== null && parseFloat(product.flockingPriceLogo) >= 0
+          ? (parseFloat(product.flockingPriceLogo) > 0
+            ? <p>Logo ({parseFloat(product.flockingPriceLogo).toFixed(2).replace('.', ',')} € Aufpreis)</p>
+            : <p>Logo (kostenlos)</p>)
+          : ''}
       </td>
       <td className="buttons">
         <Button bsSize="small" onClick={events.openProductEditModal.bind(this, product.id)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
@@ -81,6 +84,8 @@ class ClubEditing extends Component {
       logodata: '',
       displaymode: -1,
       products: [],
+      sortedProductList: [],
+      sortingEnabled: true,
       showProductEditModal: false,
       scopeProductEditModal: -1,
       showProductRemoveModal: false,
@@ -173,10 +178,10 @@ class ClubEditing extends Component {
       product.internalid = e.internalid;
       product.colours = e.colours;
       product.pricegroups = e.pricegroups;
-      product.flockingPrice = e.flockingPrice;
+      product.flockingPriceName = e.flockingPriceName;
+      product.flockingPriceLogo = e.flockingPriceLogo;
       product.picture = e.picture;
-      product.defaultFlocking = e.defaultFlocking;
-      product.defaultFlockingInfo = e.defaultFlockingInfo;
+      product.includedFlockingInfo = e.includedFlockingInfo;
       product.coloursPictures = e.coloursPictures;
       products[e.id] = product;
       this.setState({products: products});
@@ -190,6 +195,9 @@ class ClubEditing extends Component {
         toUpdate[e.id] = product;
         this.setState({toUpdateProducts: toUpdate});
       }
+      setTimeout(() => {
+        this.sortProductList();
+      }, 100);
     }
 
     this.setState({
@@ -215,6 +223,9 @@ class ClubEditing extends Component {
 
       delete products[e.id];
       this.setState({products: products});
+      setTimeout(() => {
+        this.sortProductList();
+      }, 100);
     }
 
     this.setState({
@@ -238,6 +249,9 @@ class ClubEditing extends Component {
         products: products,
         toAddProducts: toAdd
       })
+      setTimeout(() => {
+        this.sortProductList();
+      }, 100);
     }
 
     this.setState({showProductAddModal: false});
@@ -308,9 +322,9 @@ class ClubEditing extends Component {
       data.append("colours", product.colours);
       data.append("displayorder", product.displayorder);
       data.append("pricegroups", product.pricegroups);
-      data.append("flockingPrice", product.flockingPrice);
-      data.append("defaultFlocking", product.defaultFlocking?1:0);
-      data.append("defaultFlockingInfo", product.defaultFlockingInfo);
+      data.append("flockingPriceName", product.flockingPriceName);
+      data.append("flockingPriceLogo", product.flockingPriceLogo);
+      data.append("includedFlockingInfo", product.includedFlockingInfo);
       if(product.coloursPictures) {
         product.coloursPictures.forEach((picture, i) => {
           if(picture != null && picture instanceof File)
@@ -344,9 +358,9 @@ class ClubEditing extends Component {
       data.append("internalid", product.internalid);
       data.append("colours", product.colours);
       data.append("pricegroups", product.pricegroups);
-      data.append("flockingPrice", product.flockingPrice);
-      data.append("defaultFlocking", product.defaultFlocking?1:0);
-      data.append("defaultFlockingInfo", product.defaultFlockingInfo);
+      data.append("flockingPriceName", product.flockingPriceName);
+      data.append("flockingPriceLogo", product.flockingPriceLogo);
+      data.append("includedFlockingInfo", product.includedFlockingInfo);
       if(product.coloursPictures) {
         product.coloursPictures.forEach((picture, i) => {
           if(picture != null && picture instanceof File)
@@ -437,7 +451,6 @@ class ClubEditing extends Component {
         var parsedProducts = [];
         for(var i in products) {
           parsedProducts[i] = products[i];
-          parsedProducts[i].defaultFlocking = parsedProducts[i].defaultFlocking == 1;
           parsedProducts[i].displayorder = parseInt(parsedProducts[i].displayorder);
         }
 
@@ -448,21 +461,20 @@ class ClubEditing extends Component {
           products: parsedProducts,
           loadedProducts: true
         });
+        setTimeout(() => {
+          this.sortProductList();
+        }, 100);
       }.bind(this)
     });
   }
   onSortEnd({oldIndex, newIndex}) {
-    var data = this.state.products.concat().sort((a, b) => a.displayorder - b.displayorder);
+    var data = this.state.sortedProductList;
     data = arrayMove(data, oldIndex, newIndex);
     var newOrder = this.state.products;
     var lastDisplayorder = -1;
     var lastIndexChanged = -1;
 
-    var toAdd = this.state.toAddProducts;
     var toUpdate = this.state.toUpdateProducts;
-
-    if(data[newIndex].new)
-      toAdd = arrayMove(this.state.toAddProducts, oldIndex, newIndex);
 
     data.forEach((product, i) => {
       if(i == newIndex) {
@@ -480,17 +492,30 @@ class ClubEditing extends Component {
           lastDisplayorder = product.displayorder;
         }
       }
-      if(product.new) {
-        toAdd[i] = product;
-      } else {
-        toUpdate[product.id] = product;
-      }
+      toUpdate[product.id] = product;
       newOrder[product.id] = product;
     });
     this.setState({
       products: newOrder,
-      toAddProducts: toAdd,
       toUpdateProducts: toUpdate
+    });
+    setTimeout(() => {
+      this.sortProductList();
+    }, 100);
+  }
+  sortProductList() {
+    var sortingEnabled = true;
+    this.state.toAddProducts.forEach((product) => {
+      if(product != null) sortingEnabled = false;
+    });
+    this.setState({
+      sortedProductList: this.state.products.concat().sort((a, b) => {
+        if(a.new && b.new) return 0;
+        if(a.new) return 1;
+        if(b.new) return -1;
+        return a.displayorder == b.displayorder ? parseInt(a.id) - parseInt(b.id) : a.displayorder - b.displayorder;
+      }),
+      sortingEnabled: sortingEnabled
     });
   }
   render() {
@@ -545,13 +570,17 @@ class ClubEditing extends Component {
                       <th>Beflockung</th>
                       <th></th>
                     </tr>
+                    <tr>
+                      {!this.state.sortingEnabled && <th className="notice" colSpan={6}>Um die Anzeigereihenfolge zu ändern müssen neu erstellte Produkte zuerst gespeichert werden!</th>}
+                    </tr>
                   </thead>
                   {this.state.products && Object.keys(this.state.products).length > 0
-                    ? <SortableProductList className="product-sortable-helper" lockAxis="y" items={this.state.products.concat().sort((a, b) => a.displayorder - b.displayorder)}
+                    ? <SortableProductList className="product-sortable-helper" lockAxis="y" items={this.state.sortedProductList}
                         eventHandlers={{
                           openProductEditModal: this.openProductEditModal.bind(this),
-                          openProductRemoveModal: this.openProductRemoveModal.bind(this)
-                        }} onSortEnd={this.onSortEnd.bind(this)} useDragHandle={true} />
+                          openProductRemoveModal: this.openProductRemoveModal.bind(this),
+                          disabled: !this.state.sortingEnabled
+                        }} shouldCancelStart={() => !this.state.sortingEnabled} onSortEnd={this.onSortEnd.bind(this)} useDragHandle={true} />
                    : <tbody><tr className="no-data"><td colSpan="6">Keine Produkte vorhanden</td></tr></tbody>}
                 </Table>
                 <Button bsSize="small" bsStyle="success" onClick={this.openProductAddModal}><Glyphicon glyph="plus" /> Hinzufügen...</Button>

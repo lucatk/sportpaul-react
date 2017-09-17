@@ -44,6 +44,6 @@
 
 * ✓ Titel-Bug
 
-* Konsolenausgabe
+* ✓ Konsolenausgabe
 
 * ✓ Encoding-Bug
