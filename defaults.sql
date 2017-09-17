@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Aug 31, 2017 at 03:12 PM
+-- Generation Time: Sep 17, 2017 at 06:08 PM
 -- Server version: 5.6.35
--- PHP Version: 7.1.1
+-- PHP Version: 5.5.38
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -13,8 +13,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `sportpaul`
 --
-CREATE DATABASE IF NOT EXISTS `sportpaul` DEFAULT CHARACTER SET latin1 COLLATE latin1_german1_ci;
-USE `sportpaul`;
 
 -- --------------------------------------------------------
 
@@ -43,11 +41,12 @@ CREATE TABLE `items` (
   `internalid` varchar(256) COLLATE latin1_german1_ci NOT NULL,
   `name` varchar(256) COLLATE latin1_german1_ci NOT NULL,
   `colour` varchar(256) COLLATE latin1_german1_ci NOT NULL DEFAULT '',
-  `flocking` varchar(256) COLLATE latin1_german1_ci NOT NULL DEFAULT '',
-  `defaultFlocking` tinyint(1) NOT NULL,
+  `flockingName` varchar(256) COLLATE latin1_german1_ci NOT NULL DEFAULT '',
+  `flockingLogo` tinyint(1) NOT NULL DEFAULT '0',
   `size` varchar(256) COLLATE latin1_german1_ci NOT NULL,
   `price` decimal(6,2) NOT NULL,
-  `flockingPrice` decimal(6,2) NOT NULL,
+  `flockingPriceName` decimal(6,2) NOT NULL,
+  `flockingPriceLogo` decimal(6,2) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '-1'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci ROW_FORMAT=DYNAMIC;
 
@@ -82,13 +81,14 @@ CREATE TABLE `orders` (
 CREATE TABLE `products` (
   `clubid` int(11) NOT NULL,
   `id` int(11) NOT NULL,
+  `displayorder` int(11) NOT NULL DEFAULT '0',
   `internalid` varchar(256) COLLATE latin1_german1_ci NOT NULL,
   `name` varchar(256) COLLATE latin1_german1_ci NOT NULL,
   `colours` varchar(1024) COLLATE latin1_german1_ci NOT NULL DEFAULT '[]',
   `pricegroups` varchar(1024) COLLATE latin1_german1_ci NOT NULL DEFAULT '[]',
-  `flockingPrice` decimal(6,2) DEFAULT NULL,
-  `defaultFlocking` tinyint(1) NOT NULL DEFAULT '1',
-  `defaultFlockingInfo` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `flockingPriceName` decimal(6,2) DEFAULT NULL,
+  `flockingPriceLogo` decimal(6,2) DEFAULT NULL,
+  `includedFlockingInfo` varchar(256) COLLATE latin1_german1_ci NOT NULL,
   `picture` varchar(1024) COLLATE latin1_german1_ci NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci ROW_FORMAT=DYNAMIC;
 
@@ -161,7 +161,7 @@ ALTER TABLE `settings`
 -- AUTO_INCREMENT for table `clubs`
 --
 ALTER TABLE `clubs`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `items`
 --
