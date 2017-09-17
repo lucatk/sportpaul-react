@@ -325,7 +325,7 @@ class ClubEditing extends Component {
       data.append("flockingPriceName", product.flockingPriceName);
       data.append("flockingPriceLogo", product.flockingPriceLogo);
       data.append("includedFlockingInfo", product.includedFlockingInfo);
-      if(product.coloursPictures) {
+      if(product.coloursPictures && product.coloursPictures.length > 0) {
         product.coloursPictures.forEach((picture, i) => {
           if(picture != null && picture instanceof File)
             data.append(i, picture);
@@ -361,7 +361,7 @@ class ClubEditing extends Component {
       data.append("flockingPriceName", product.flockingPriceName);
       data.append("flockingPriceLogo", product.flockingPriceLogo);
       data.append("includedFlockingInfo", product.includedFlockingInfo);
-      if(product.coloursPictures) {
+      if(product.coloursPictures && product.coloursPictures.length > 0) {
         product.coloursPictures.forEach((picture, i) => {
           if(picture != null && picture instanceof File)
             data.append(i, picture);
