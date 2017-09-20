@@ -1,13 +1,44 @@
 <?php
 session_start();
-if(!isset($_SESSION["loggedIn"])) {
-  die(json_encode([
-    "error" => -99,
-    "rowsAffected" => 0
-  ]));
-}
 
 include('../database.php');
+$db = new Database();
+
+if(!isset($_SESSION["loggedIn"])) {
+  if(isset($_POST["captcha"])) {
+    $stmt = $db->execute("SELECT name, value FROM settings WHERE name=?", ["general_recaptcha_secret"]);
+    $captchaSecret = $db->fetchAllPairs($stmt)["general_recaptcha_secret"];
+
+    $post_data = http_build_query(
+      array(
+        'secret' => $captchaSecret,
+        'response' => $_POST['captcha'],
+        'remoteip' => $_SERVER['REMOTE_ADDR']
+      )
+    );
+    $opts = array('http' =>
+      array(
+        'method'  => 'POST',
+        'header'  => 'Content-type: application/x-www-form-urlencoded',
+        'content' => $post_data
+      )
+    );
+    $context  = stream_context_create($opts);
+    $response = file_get_contents('https://www.google.com/recaptcha/api/siteverify', false, $context);
+    $result = json_decode($response);
+    if(!$result->success) {
+      die(json_encode([
+        "error" => -100,
+        "rowsAffected" => 0
+      ]));
+    }
+  } else {
+    die(json_encode([
+      "error" => -100,
+      "rowsAffected" => 0
+    ]));
+  }
+}
 
 if(!isset($_POST["cart"])) {
   die(json_encode([
@@ -15,12 +46,19 @@ if(!isset($_POST["cart"])) {
     "rowsAffected" => 0
   ]));
 }
-
-$db = new Database();
 $rowsAffected = 0;
 
-$stmt = $db->execute("SELECT name FROM clubs WHERE id=:clubid", ["clubid" => $_POST["clubid"]]);
+$stmt = $db->execute("SELECT name, displaymode FROM clubs WHERE id=:clubid", ["clubid" => $_POST["clubid"]]);
 $results = $db->fetchAssoc($stmt, 1);
+
+if($results["displaymode"] < 2) {
+  if(!isset($_SESSION["loggedIn"])) {
+    die(json_encode([
+      "error" => -99,
+      "rowsAffected" => 0
+    ]));
+  }
+}
 
 $stmt = $db->execute("INSERT INTO orders(clubid, clubname, firstname, lastname, address, postcode, town, email, phone, created, updated) VALUES(:clubid, :clubname, :firstname, :lastname, :address, :postcode, :town, :email, :phone, NOW(), NOW())",
                     ["clubid" => $_POST["clubid"],

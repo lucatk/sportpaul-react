@@ -43,10 +43,20 @@ class App extends Component {
         inputLogo: false
       },
       customerData: null,
-      loggedIn: false
+      loggedIn: false,
+      recaptchaSiteKey: ''
     };
 
     this.checkAuth();
+    $.post({
+      url: 'php/settings/load.php',
+      data: {
+        name: "general_recaptcha_site"
+      },
+      success: function(data) {
+        this.setState({recaptchaSiteKey: JSON.parse(data)["general_recaptcha_site"]});
+      }.bind(this)
+    });
 
     this.onClubChange = this.onClubChange.bind(this);
     this.onProductAddToCart = this.onProductAddToCart.bind(this);
@@ -281,7 +291,7 @@ class App extends Component {
               ) : this.state.selectedClub === -3 ? (
                 <OrderProcess productCart={this.state.cartContents} onContinue={this.onShowOrderSummary} />
               ) : this.state.selectedClub === -4 ? (
-                <OrderSummary productCart={this.state.cartContents} customerData={this.state.customerData} clubid={this.state.clubInUse} onOrder={this.onOrder} />
+                <OrderSummary productCart={this.state.cartContents} customerData={this.state.customerData} clubid={this.state.clubInUse} onOrder={this.onOrder} recaptchaKey={this.state.recaptchaSiteKey} loggedIn={this.state.loggedIn} />
               ) : (
                 <ClubShowcase clubList={this.state.clubs} onChange={this.onClubChange} />
               )}

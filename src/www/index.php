@@ -22,6 +22,7 @@
 
     <script type="text/javascript" src="dist/manifest.js"></script>
     <script type="text/javascript" src="dist/vendor.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script type="text/javascript" src="dist/app.js"></script>
   </body>
 </html>

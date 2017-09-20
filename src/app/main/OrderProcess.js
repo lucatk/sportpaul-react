@@ -18,7 +18,7 @@ class OrderProcess extends Component {
     this.regexPostcode = /^([0]{1}[1-9]{1}|[1-9]{1}[0-9]{1})[0-9]{3}$/;
     this.regexTown = /^.{1,}$/;
     this.regexPhone = /^(0|0049\s?|\+49\s?|\(\+49\)\s?){1}([1-9]{2,4})([ \-\/]?[0-9]{1,10})+$/;
-    this.regexEmail = /^[a-z0-9]+[_a-z0-9\.-]*[a-z0-9]+@[a-z0-9-]+(\.[a-z0-9-]+)*(\.[a-z]{2,4})$/;
+    this.regexEmail = /^[a-zA-Z0-9]+[_a-zA-Z0-9\.-]*[a-zA-Z0-9]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*(\.[a-zA-Z]{2,4})$/;
 
     this.state = {
       firstname: undefined,

@@ -89,6 +89,7 @@ class Settings extends Component {
           <Nav bsStyle="tabs" activeHref={"#" + this.props.location.pathname}>
             <NavItem eventKey={1} href="#/admin/settings/general">Allgemein</NavItem>
             <NavItem eventKey={2} href="#/admin/settings/mailing">E-Mail-Versand</NavItem>
+            <NavItem eventKey={2} href="#/admin/settings/captcha">Captcha</NavItem>
           </Nav>
           {!this.props.children && ""}
           {this.props.children && React.cloneElement(this.props.children, {

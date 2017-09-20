@@ -49,6 +49,9 @@ const SettingsGeneral = LoadableComponent({
 const SettingsMailing = LoadableComponent({
   loader: () => import(/* webpackChunkName: "admin_settings_SettingsMailing" */ './admin/settings/SettingsMailing')
 });
+const SettingsCaptcha = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_settings_SettingsCaptcha" */ './admin/settings/SettingsCaptcha')
+});
 
 ReactDOM.render(
   <Router history={hashHistory}>
@@ -69,6 +72,7 @@ ReactDOM.render(
         <IndexRedirect to="/admin/settings/general"></IndexRedirect>
         <Route name="settings-general" path="/admin/settings/general" component={SettingsGeneral}></Route>
         <Route path="/admin/settings/mailing" component={SettingsMailing}></Route>
+        <Route path="/admin/settings/captcha" component={SettingsCaptcha}></Route>
       </Route>
     </Route>
   </Router>,

@@ -1,8 +1,5 @@
 <?php
 session_start();
-if(!isset($_SESSION["loggedIn"])) {
-  die;
-}
 
 include('../database.php');
 
@@ -11,9 +8,9 @@ $db = new Database();
 if(isset($_POST["names"])) {
   $names = json_decode($_POST["names"]);
   $in = str_repeat("?,", count($names) - 1) . "?";
-  $stmt = $db->execute("SELECT name, value FROM settings WHERE name IN($in)", $names);
+  $stmt = $db->execute("SELECT name, value FROM settings WHERE name IN($in)" . (isset($_SESSION["loggedIn"])? "" : " AND private = 0"), $names);
 } else {
-  $stmt = $db->execute("SELECT name, value FROM settings WHERE name = ?", [$_POST["name"]]);
+  $stmt = $db->execute("SELECT name, value FROM settings WHERE name = ?" . (isset($_SESSION["loggedIn"])? "" : " AND private = 0"), [$_POST["name"]]);
 }
 $results = $db->fetchAllPairs($stmt);
 

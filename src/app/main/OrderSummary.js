@@ -9,6 +9,7 @@ import {
   Table
 } from 'react-bootstrap';
 import {Helmet} from "react-helmet";
+import Recaptcha from 'react-recaptcha';
 
 import LoadingOverlay from '../utils/LoadingOverlay';
 
@@ -20,7 +21,8 @@ class OrderSummary extends Component {
       loading: false,
       success: false,
       newid: -1,
-      newclubid: -1
+      newclubid: -1,
+      captcha: null
     };
 
     this.total = 0;
@@ -56,6 +58,7 @@ class OrderSummary extends Component {
     if(!this.customerData.email) this.customerData.email = '';
 
     this.onClickOrder = this.onClickOrder.bind(this);
+    this.onCaptcha = this.onCaptcha.bind(this);
   }
 
   onClickOrder() {
@@ -75,6 +78,7 @@ class OrderSummary extends Component {
       url: 'php/orders/add.php',
       data: {
         clubid: clubid,
+        captcha: this.state.captcha,
         ...this.customerData,
         cart: JSON.stringify(cart)
       },
@@ -99,6 +103,10 @@ class OrderSummary extends Component {
         this.props.onOrder(success);
       }.bind(this)
     });
+  }
+
+  onCaptcha(response) {
+    this.setState({captcha:response});
   }
 
   render() {
@@ -157,7 +165,8 @@ class OrderSummary extends Component {
               </Table>
             </Col>
           </Row>}
-          {!this.state.done && <Button bsStyle="primary" onClick={this.onClickOrder}>Bestellen</Button>}
+          {(!this.state.done && !this.props.loggedIn) && <Row><Recaptcha sitekey={this.props.recaptchaKey} render="explicit" onloadCallback={console.log.bind(this, "recaptcha loaded")} verifyCallback={this.onCaptcha} /></Row>}
+          {!this.state.done && <Button bsStyle="primary" onClick={this.onClickOrder} disabled={!this.state.captcha && !this.props.loggedIn}>Bestellen</Button>}
           {(this.state.done && this.state.success) && <div className="done"><p>Die Bestellung wurde aufgenommen. Informationen zur Bestellung werden an die E-Mail <span>{this.customerData.email}</span> gesendet.</p><Button bsStyle="primary" onClick={() => {window.open("php/orders/pdf.php?clubid=" + this.state.newclubid + "&id=" + this.state.newid)}}><Glyphicon glyph="print" /> Bestellübersicht drucken</Button></div>}
           {(this.state.done && !this.state.success) && <div className="done"><p>Es gab einen Fehler bei der Bestellung.</p></div>}
         </div>
