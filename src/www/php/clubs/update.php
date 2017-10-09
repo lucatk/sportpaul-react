@@ -23,7 +23,7 @@ if(isset($_FILES["logodata"])) {
   if(move_uploaded_file($_FILES["logodata"]["tmp_name"], "../../clublogos/" . $fileName)) {
     $image = new Imagick();
     $image->readImage("../../clublogos/" . $fileName);
-    $image->resizeImage(400, 400, Imagick::FILTER_CUBIC, 1, true);
+    $image->resizeImage(0, 350, Imagick::FILTER_CUBIC, 1);
     $image->writeImage("../../clublogos/" . $fileName);
     $image->clear();
   }

@@ -1,4 +1,9 @@
 <?php
+if (!function_exists('boolval')) {
+  function boolval($val) {
+    return (bool) $val;
+  }
+}
 function convertToWindowsCharset($string) {
   $charset =  mb_detect_encoding(
     $string,
@@ -9,6 +14,7 @@ function convertToWindowsCharset($string) {
   $string =  mb_convert_encoding($string, "Windows-1252", $charset);
   return $string;
 }
+date_default_timezone_set("Europe/Berlin");
 
 session_start();
 if(!isset($_SESSION["loggedIn"])) {

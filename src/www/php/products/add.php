@@ -10,7 +10,7 @@ if(!isset($_SESSION["loggedIn"])) {
 include('../database.php');
 
 $db = new Database();
-$stmt = $db->execute("SELECT MAX(displayorder)+1 FROM products WHERE clubid = ?", [$_POST["clubid"]]);
+$stmt = $db->execute("SELECT COALESCE(MAX(displayorder), -1)+1 FROM products WHERE clubid = ?", [$_POST["clubid"]]);
 $displayorder = $db->fetchNum($stmt, 1)[0];
 
 if(strlen($_POST["flockingPrice"]) < 1 || $_POST["flockingPrice"] == "null")
@@ -21,21 +21,22 @@ if(isset($_FILES["picture"])) {
   if(move_uploaded_file($_FILES["picture"]["tmp_name"], "../../productpics/" . $fileName)) {
     $image = new Imagick();
     $image->readImage("../../productpics/" . $fileName);
-    $image->resizeImage(400, 400, Imagick::FILTER_CUBIC, 1, true);
+    $image->resizeImage(0, 400, Imagick::FILTER_CUBIC, 1);
     $image->writeImage("../../productpics/" . $fileName);
     $image->clear();
   }
 
-  $stmt = $db->execute("INSERT INTO products(clubid, displayorder, internalid, name, colours, pricegroups, flockingPriceName, flockingPriceLogo, includedFlockingInfo, picture) VALUES(:clubid, :displayorder, :internalid, :name, :colours, :pricegroups, :flockingPriceName, :flockingPriceLogo, :includedFlockingInfo, :picture)", ["clubid" => $_POST["clubid"],
-                                                                                                                                                                                                                                                                                                                                        "displayorder" => $displayorder,
-                                                                                                                                                                                                                                                                                                                                        "internalid" => $_POST["internalid"],
-                                                                                                                                                                                                                                                                                                                                        "colours" => $_POST["colours"],
-                                                                                                                                                                                                                                                                                                                                        "name" => $_POST["name"],
-                                                                                                                                                                                                                                                                                                                                        "pricegroups" => $_POST["pricegroups"],
-                                                                                                                                                                                                                                                                                                                                        "flockingPriceName" => $_POST["flockingPriceName"],
-                                                                                                                                                                                                                                                                                                                                        "flockingPriceLogo" => $_POST["flockingPriceLogo"],
-                                                                                                                                                                                                                                                                                                                                        "includedFlockingInfo" => $_POST["includedFlockingInfo"],
-                                                                                                                                                                                                                                                                                                                                        "picture" => $fileName]);
+  $params = ["clubid" => $_POST["clubid"],
+              "displayorder" => $displayorder,
+              "internalid" => $_POST["internalid"],
+              "colours" => $_POST["colours"],
+              "name" => $_POST["name"],
+              "pricegroups" => $_POST["pricegroups"],
+              "flockingPriceName" => $_POST["flockingPriceName"],
+              "flockingPriceLogo" => $_POST["flockingPriceLogo"],
+              "includedFlockingInfo" => $_POST["includedFlockingInfo"],
+              "picture" => $fileName];
+  $stmt = $db->execute("INSERT INTO products(clubid, displayorder, internalid, name, colours, pricegroups, flockingPriceName, flockingPriceLogo, includedFlockingInfo, picture) VALUES(:clubid, :displayorder, :internalid, :name, :colours, :pricegroups, :flockingPriceName, :flockingPriceLogo, :includedFlockingInfo, :picture)", $params);
 } else {
   $colours = json_decode($_POST["colours"]);
   $coloursUpdated = $colours;

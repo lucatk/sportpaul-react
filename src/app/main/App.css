@@ -74,6 +74,7 @@
 .club-showcase .club-item {
   flex-basis: 25%;
   cursor: pointer;
+  margin: 0 12px 25px;
 }
 
 .club-showcase .club-item .panel-body {
@@ -81,7 +82,7 @@
 }
 
 .club-showcase .club-item .club-item-image {
-  width: 60%;
+  max-height: 20vh;
   display: block;
   margin: 0 auto;
 }
@@ -193,7 +194,9 @@
 .product-list .product-item .right-column .list-group-item span.internalid {
   font-weight: normal;
   font-size: 11px;
-  white-space: pre;
+  white-space: pre-line;
+  max-width: 100%;
+  display: inline-block;
 }
 
 .product-list .product-item .right-column .list-group-item p.pricegroup {

@@ -1,11 +1,12 @@
 {
   "name": "sportpaul-react",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "webpack -d --watch --watch-poll --display-error-details",
-    "build": "webpack -p --config webpack.prod.js"
+    "build": "webpack -p --config webpack.prod.js",
+    "uhlsport-downloader": "node src/uhlsport-downloader/index.js"
   },
   "repository": {
     "type": "git",
