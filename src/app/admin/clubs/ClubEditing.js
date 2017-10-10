@@ -51,7 +51,6 @@ const SortableProductItem = SortableElement(({i, product, events}) => {
         )}
       </td>
       <td className="flocking">
-        {product.includedFlockingInfo.length > 0 ? <p className="included-flocking">Inklusivbeflockung ("{product.includedFlockingInfo}")</p> : ''}
         {product.flockingPriceName !== null && parseFloat(product.flockingPriceName) >= 0
           ? (parseFloat(product.flockingPriceName) > 0
             ? <p>Name ({parseFloat(product.flockingPriceName).toFixed(2).replace('.', ',')} € Aufpreis)</p>
@@ -62,6 +61,12 @@ const SortableProductItem = SortableElement(({i, product, events}) => {
             ? <p>Logo ({parseFloat(product.flockingPriceLogo).toFixed(2).replace('.', ',')} € Aufpreis)</p>
             : <p>Logo (kostenlos)</p>)
           : ''}
+        {JSON.parse(product.flockings).map((flocking, i) =>
+          (parseFloat(flocking.price) > 0
+            ? <p key={i}>{flocking.description} ({parseFloat(flocking.price).toFixed(2).replace('.', ',')} € Aufpreis)</p>
+            : <p>{flocking.description} (kostenlos)</p>)
+        )}
+        {product.includedFlockingInfo.length > 0 ? <p className="included-flocking">Info-Text: "{product.includedFlockingInfo}"</p> : ''}
       </td>
       <td className="buttons">
         <Button bsSize="small" onClick={events.openProductEditModal.bind(this, product.id)}><Glyphicon glyph="pencil" /> Bearbeiten</Button>
@@ -178,8 +183,7 @@ class ClubEditing extends Component {
       product.internalid = e.internalid;
       product.colours = e.colours;
       product.pricegroups = e.pricegroups;
-      product.flockingPriceName = e.flockingPriceName;
-      product.flockingPriceLogo = e.flockingPriceLogo;
+      product.flockings = e.flockings;
       product.picture = e.picture;
       product.includedFlockingInfo = e.includedFlockingInfo;
       product.coloursPictures = e.coloursPictures;
@@ -322,8 +326,7 @@ class ClubEditing extends Component {
       data.append("colours", product.colours);
       data.append("displayorder", product.displayorder);
       data.append("pricegroups", product.pricegroups);
-      data.append("flockingPriceName", product.flockingPriceName);
-      data.append("flockingPriceLogo", product.flockingPriceLogo);
+      data.append("flockings", product.flockings);
       data.append("includedFlockingInfo", product.includedFlockingInfo);
       if(product.coloursPictures && product.coloursPictures.length > 0) {
         product.coloursPictures.forEach((picture, i) => {
@@ -358,8 +361,7 @@ class ClubEditing extends Component {
       data.append("internalid", product.internalid);
       data.append("colours", product.colours);
       data.append("pricegroups", product.pricegroups);
-      data.append("flockingPriceName", product.flockingPriceName);
-      data.append("flockingPriceLogo", product.flockingPriceLogo);
+      data.append("flockings", product.flockings);
       data.append("includedFlockingInfo", product.includedFlockingInfo);
       if(product.coloursPictures && product.coloursPictures.length > 0) {
         product.coloursPictures.forEach((picture, i) => {

@@ -47,3 +47,13 @@
 * ✓ Konsolenausgabe
 
 * ✓ Encoding-Bug
+
+## UPDATE 09.10.17:
+
+* unbegrenzte Anzahl Beflockungen
+  * vordefinierte Beflockung (ja/nein)
+  * benutzerdefinierter Text
+
+* Bestellungen löschen
+
+* Login "Enter"-Bug beheben

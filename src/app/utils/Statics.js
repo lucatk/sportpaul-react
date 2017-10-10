@@ -2,6 +2,10 @@
 export const SizeRegex = /(?: *\,* *((?: *[^\n\r\,\ ]+ *)+) *\,* *)/g;
 
 /*  ENUMS  */
+export const FlockingTypes = {
+  "0": "benutzerdefiniert",
+  "1": "vorgegeben"
+};
 export const OrderStatus = {
   "-1": "storniert",
   "0": "unbestätigt",
@@ -31,4 +35,15 @@ export const ClubDisplayMode = {
   "0": "Versteckt",
   "1": "Bestellungen deaktiviert",
   "2": "Bestellungen aktiviert"
+};
+
+export const asObjects = function(scope) {
+  var objects = [];
+  for(var i in scope) {
+    objects.push({
+      key: i,
+      value: scope[i]
+    });
+  }
+  return objects;
 };

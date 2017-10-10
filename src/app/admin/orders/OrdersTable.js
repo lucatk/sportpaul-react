@@ -23,13 +23,7 @@ class OrdersTable extends Component {
       }
     });
 
-    var orderStatuses = [];
-    for(var i in Statics.OrderStatus) {
-      orderStatuses.push({
-        key: i,
-        status: Statics.OrderStatus[i]
-      });
-    }
+    var orderStatuses = Statics.asObjects(Statics.OrderStatus);
 
     if(this.props.filterClub !== -1 || this.props.filterDate.length > 0 || this.props.filterCustomer.length > 0 || this.props.filterStatus.length > 0 || this.props.filterProduct !== -1) {
       data = data.filter(function(value) {
@@ -201,7 +195,7 @@ class OrdersTable extends Component {
                 <option value="">Filter...</option>
                 <option value="separator" disabled></option>
                 {orderStatuses.map((value, i) =>
-                <option key={i} value={value.key}>{value.status}</option>)}
+                <option key={i} value={value.key}>{value.value}</option>)}
               </FormControl>
             </td>
             <td className="buttons product">
