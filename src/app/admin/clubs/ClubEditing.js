@@ -51,16 +51,6 @@ const SortableProductItem = SortableElement(({i, product, events}) => {
         )}
       </td>
       <td className="flocking">
-        {product.flockingPriceName !== null && parseFloat(product.flockingPriceName) >= 0
-          ? (parseFloat(product.flockingPriceName) > 0
-            ? <p>Name ({parseFloat(product.flockingPriceName).toFixed(2).replace('.', ',')} € Aufpreis)</p>
-            : <p>Name (kostenlos)</p>)
-          : ''}
-        {product.flockingPriceLogo !== null && parseFloat(product.flockingPriceLogo) >= 0
-          ? (parseFloat(product.flockingPriceLogo) > 0
-            ? <p>Logo ({parseFloat(product.flockingPriceLogo).toFixed(2).replace('.', ',')} € Aufpreis)</p>
-            : <p>Logo (kostenlos)</p>)
-          : ''}
         {JSON.parse(product.flockings).map((flocking, i) =>
           (parseFloat(flocking.price) > 0
             ? <p key={i}>{flocking.description} ({parseFloat(flocking.price).toFixed(2).replace('.', ',')} € Aufpreis)</p>

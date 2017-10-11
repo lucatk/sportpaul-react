@@ -27,7 +27,7 @@ class ProductFlockingsControl extends Component {
     data[data.length] = {
       description: '',
       price: 0,
-      type: 0
+      type: "0"
     };
     this.setState({data:data});
   }

@@ -67,6 +67,7 @@ class ClubProductItem extends Component {
 
   render() {
     var productPicture = this.getProductPicture();
+    var flockings = this.props.product.flockings.filter((el) => el.price > 0).map((flocking) => flocking.description + " (" + flocking.price.toFixed(2).replace(".", ",") + " €)");
     return (
       <div className="product-item">
         <div className="panel panel-default">
@@ -95,9 +96,9 @@ class ClubProductItem extends Component {
                     </p>
                   )}
                 </li>
-                {(this.props.orderable || this.props.product.includedFlockingInfo || (this.props.product.flockingPriceName != null && this.props.product.flockingPriceName >= 0)) ? <li className="product-item-action list-group-item">
+                {(this.props.orderable || this.props.product.includedFlockingInfo || flockings.length > 0) ? <li className="product-item-action list-group-item">
                   {this.props.product.includedFlockingInfo && <p className="flocking-info">{this.props.product.includedFlockingInfo}</p>}
-                  {(this.props.product.flockingPriceName != null && this.props.product.flockingPriceName >= 0 && !this.props.orderable) ? <p className="flocking-info">Namens-Beflockung möglich ({this.props.product.flockingPriceName.toFixed(2).replace(".", ",")} €)</p> : ''}
+                  {(flockings.length > 0 && !this.props.orderable) ? <p className="flocking-info">Zusatz-Beflockung (Aufpreis): {flockings.join(", ")}</p> : ''}
                   {this.props.orderable && <div>
                     {this.props.product.colours.length > 1 && <div className="row">
                       <div className="col-xs-12">

@@ -30,16 +30,14 @@ class ProductCartTable extends Component {
                   <td><img className="product-thumbnail" onClick={this.props.onPreview.bind(null, row.colour != null && row.colour.picture != null ? row.colour.picture : row.picture)} src={"productpics/" + (row.colour != null && row.colour.picture != null ? row.colour.picture : row.picture)} />{row.name}</td>
                   <td>{row.internalid}{row.colour != null && [<br />, row.colour.id + " " + row.colour.name]}</td>
                   <td>{row.size}</td>
-                  {((row.flockingName && row.flockingName.length > 0) || row.flockingLogo) ?
+                  {(row.flockings && row.flockings.length > 0) ?
                     <td className="flocking">
-                      {(row.flockingName && row.flockingName.length > 0) && "Name (\"" + row.flockingName + "\")" + (row.flockingLogo?", ":"")}
-                      {row.flockingLogo && "Logo"}
+                      {row.flockings.map((flocking, i) => flocking.description + (flocking.type == "0" ? " (" + flocking.value + ")" : "")).join(", ")}
                     </td>
                   : <td>-</td>}
                   <td>
                     <p>{this.getPriceFromPricegroups(row.pricegroups, row.size).toFixed(2).replace('.', ',')} €</p>
-                    {(row.flockingName && row.flockingName.length > 0 && row.flockingPriceName > 0) && <p className="flocking-price">+{row.flockingPriceName.toFixed(2).replace('.', ',')} €</p>}
-                    {(row.flockingLogo && row.flockingPriceLogo > 0) && <p className="flocking-price">+{row.flockingPriceLogo.toFixed(2).replace('.', ',')} €</p>}
+                    {(row.flockings && row.flockings.length > 0) && row.flockings.filter((el) => el.price > 0).map((flocking) => <p className="flocking-price">+{flocking.price.toFixed(2).replace('.', ',')} €</p>)}
                   </td>
                   <td className="buttons">
                     <ButtonToolbar>
@@ -53,7 +51,7 @@ class ProductCartTable extends Component {
               <tr>
                 <td></td>
                 <td colSpan="4">{this.props.data.length} Artikel</td>
-                <td>{this.props.data.reduce((acc, val) => acc+this.getPriceFromPricegroups(val.pricegroups, val.size)+(val.flockingName.length>0?val.flockingPriceName:0)+(val.flockingLogo?val.flockingPriceLogo:0), 0).toFixed(2).replace('.', ',')} €</td>
+                <td>{this.props.data.reduce((acc, val) => acc+this.getPriceFromPricegroups(val.pricegroups, val.size)+((val.flockings && val.flockings.length>0)?val.flockings.reduce((flacc, flocking) => flacc+flocking.price, 0):0), 0).toFixed(2).replace('.', ',')} €</td>
                 <td></td>
               </tr>
             </tfoot>)] : <tbody><tr className="no-data"><td colSpan="7">Warenkorb leer</td></tr></tbody>}
