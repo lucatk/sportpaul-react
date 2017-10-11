@@ -18,12 +18,19 @@ class LoginForm extends Component {
       loading: false,
       password: ""
     };
-
+    
     this.onPasswordChange = this.onPasswordChange.bind(this);
+    this.onPasswordLoginAction = this.onPasswordLoginAction.bind(this);
     this.login = this.login.bind(this);
   }
   onPasswordChange(ev) {
     this.setState({password:ev.target.value});
+  }
+  onPasswordLoginAction(ev) {
+    if(ev.key === "Enter") {
+      ev.preventDefault();
+      this.login();
+    }
   }
   login() {
     this.setState({loading:true});
@@ -50,7 +57,7 @@ class LoginForm extends Component {
           <div className="input-container">
             <form>
               <FormGroup controlId="inputPassword" validationState={!this.state.password || this.state.password.length < 1 ? 'error' : null}>
-                <FormControl type="password" value={this.state.password} placeholder="Passwort" onChange={this.onPasswordChange} />
+                <FormControl type="password" value={this.state.password} placeholder="Passwort" onChange={this.onPasswordChange} onKeyPress={this.onPasswordLoginAction} />
               </FormGroup>
               <Button bsStyle="primary" onClick={this.login}>Einloggen</Button>
             </form>

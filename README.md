@@ -56,4 +56,4 @@
 
 * Bestellungen löschen
 
-* Login "Enter"-Bug beheben
+* ✓ Login "Enter"-Bug beheben
