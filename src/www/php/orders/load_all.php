@@ -13,18 +13,18 @@ $results = $db->fetchAll($stmt);
 
 $i = 0;
 foreach($results as $row) {
-  $cstmt = $db->execute("SELECT status, price, flockingName, flockingLogo, flockingPriceName, flockingPriceLogo FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $row['clubid'],
-                                                                                                                                                                        "orderid" => $row['id']]);
+  $cstmt = $db->execute("SELECT status, price, flockings FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $row['clubid'],
+                                                                                                                 "orderid" => $row['id']]);
   $cresults = $db->fetchAll($cstmt);
   $total = 0;
   $orderDone = true;
   foreach($cresults as $crow) {
     $total += $crow["price"];
-    if($crow["flockingName"] != null && strlen($crow["flockingName"]) > 0) {
-      $total += $crow["flockingPriceName"];
-    }
-    if($crow["flockingLogo"] != null && $crow["flockingLogo"]) {
-      $total += $crow["flockingPriceLogo"];
+    if($crow["flockings"] != null && strlen($crow["flockings"]) > 0) {
+      $flockings = json_decode($crow["flockings"]);
+      foreach($flockings as $flocking) {
+        $total += $flocking->price;
+      }
     }
     if($row["status"] === 2) {
       if($crow["status"] < 3) $orderDone = false;

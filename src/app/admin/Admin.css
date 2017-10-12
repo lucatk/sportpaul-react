@@ -283,8 +283,19 @@
   min-width: 80px;
 }
 
+.admin .container[data-page=OrderEditing] td.flockings,
 .admin .container[data-page=OrderEditing] td.price {
   min-width: 90px;
+}
+
+.admin .container[data-page=OrderEditing] td.flockings div:not(:first-child):not(:last-child) {
+  margin: 5px 0;
+}
+
+.admin .container[data-page=OrderEditing] td.flockings p.price input {
+  display: inline-block;
+  max-width: 100px;
+  margin-left: 5px;
 }
 
 .admin .container[data-page=OrderEditing] td.status {

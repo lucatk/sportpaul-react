@@ -66,7 +66,7 @@ if($multipleClubs) {
 $orders = array();
 foreach($results as $club) {
   foreach($club["orders"] as $row) {
-    $cstmt = $db->execute("SELECT internalid, name, colour, flockingName, flockingLogo, size, status FROM items WHERE clubid=:clubid AND orderid=:orderid ORDER BY id ASC", ["clubid" => $clubid,
+    $cstmt = $db->execute("SELECT internalid, name, colour, flockings, size, status FROM items WHERE clubid=:clubid AND orderid=:orderid ORDER BY id ASC", ["clubid" => $clubid,
                                                                                                                                                                              "orderid" => $row["id"]]);
     $cresults = $db->fetchAll($cstmt);
     if($skipOrdered)
@@ -127,14 +127,18 @@ foreach($orders as $order) {
             $data[] = "";
           }
           break;
-        case "flockingLogo":
-          $data[] = convertToWindowsCharset($item["flockingLogo"]==1?"ja":"nein");
+        case "flockings":
+          $flockings = json_decode($item["flockings"]);
+          $str = "";
+          foreach($flockings as $flocking) {
+            $str .= $flocking->description . ($flocking->type == "0"?" (" . $flocking->value . ")":"") . ", ";
+          }
+          $data[] = convertToWindowsCharset(substr($str, 0, -2));
           break;
         case "internalid":
           $data[] = convertToWindowsCharset('="' . $item["internalid"] . '"');
           break;
         case "name":
-        case "flockingName":
         case "size":
           $data[] = convertToWindowsCharset($item[$column]);
           break;

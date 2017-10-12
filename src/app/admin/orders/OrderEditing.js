@@ -63,8 +63,7 @@ class OrderEditing extends Component {
     this.onEmailChange = this.onEmailChange.bind(this);
     this.onStatusChange = this.onStatusChange.bind(this);
     this.onItemSizeChange = this.onItemSizeChange.bind(this);
-    this.onItemFlockingPriceNameChange = this.onItemFlockingPriceNameChange.bind(this);
-    this.onItemFlockingPriceLogoChange = this.onItemFlockingPriceLogoChange.bind(this);
+    this.onItemFlockingPriceChange = this.onItemFlockingPriceChange.bind(this);
     this.onItemPriceChange = this.onItemPriceChange.bind(this);
     this.onItemStatusChange = this.onItemStatusChange.bind(this);
     this.onItemStatusUp = this.onItemStatusUp.bind(this);
@@ -116,10 +115,10 @@ class OrderEditing extends Component {
           var parsedItem = item;
           if(item.colour && item.colour.length > 0)
             parsedItem.colour = JSON.parse(item.colour);
-          if(item.pricegroups.length > 0) {
+          if(item.pricegroups.length > 0)
             parsedItem.pricegroups = JSON.parse(item.pricegroups);
-          }
-          parsedItem.flockingLogo = item.flockingLogo == 1;
+          if(item.flockings && item.flockings.length > 0)
+            parsedItem.flockings = JSON.parse(item.flockings);
           parsedItems.push(parsedItem);
         });
 
@@ -283,9 +282,8 @@ class OrderEditing extends Component {
       data.append("orderid", item.orderid);
       data.append("id", item.id);
       data.append("size", item.size);
+      data.append("flockings", JSON.stringify(item.flockings));
       data.append("price", item.price);
-      data.append("flockingPriceName", item.flockingPriceName);
-      data.append("flockingPriceLogo", item.flockingPriceLogo);
       data.append("status", item.status);
       $.post({
         url: 'php/items/update.php',
@@ -387,17 +385,9 @@ class OrderEditing extends Component {
     if(!toUpdate.includes(key)) toUpdate.push(key);
     this.setState({items: items, toUpdateItems: toUpdate, hasChanges: true});
   }
-  onItemFlockingPriceNameChange(key, newPrice) {
+  onItemFlockingPriceChange(key, fkey, newPrice) {
     var items = this.state.items;
-    items[key].flockingPriceName = newPrice;
-    var toUpdate = this.state.toUpdateItems;
-    if(!toUpdate.includes(key)) toUpdate.push(key);
-    this.setState({items: items, toUpdateItems: toUpdate, hasChanges: true});
-    this.calculateTotal(items);
-  }
-  onItemFlockingPriceLogoChange(key, newPrice) {
-    var items = this.state.items;
-    items[key].flockingPriceLogo = newPrice;
+    items[key].flockings[fkey].price = newPrice;
     var toUpdate = this.state.toUpdateItems;
     if(!toUpdate.includes(key)) toUpdate.push(key);
     this.setState({items: items, toUpdateItems: toUpdate, hasChanges: true});
@@ -505,11 +495,8 @@ class OrderEditing extends Component {
     var total = 0;
     items.forEach((item) => {
       total += parseFloat(item.price);
-      if(item.flockingName && item.flockingName.length > 0) {
-        total += parseFloat(item.flockingPriceName);
-      }
-      if(item.flockingLogo) {
-        total += parseFloat(item.flockingPriceLogo);
+      if(item.flockings && item.flockings.length > 0) {
+        total += item.flockings.reduce((acc, val) => acc+parseFloat(val.price), 0);
       }
     });
     this.setState({total: total});
@@ -648,8 +635,6 @@ class OrderEditing extends Component {
                     <th>Artikelnr.</th>
                     <th>Größe</th>
                     <th>Beflockung</th>
-                    <th>Beflockung-Preis Name</th>
-                    <th>Beflockung-Preis Logo</th>
                     <th>Preis</th>
                     <th>Status</th>
                     <th></th>
@@ -673,23 +658,17 @@ class OrderEditing extends Component {
                             </FormControl>
                           : this.state.items[key].size}
                           </td>
-                          {((this.state.items[key].flockingName && this.state.items[key].flockingName.length > 0) || this.state.items[key].flockingLogo) ?
-                            <td className="flocking">
-                              {(this.state.items[key].flockingName && this.state.items[key].flockingName.length > 0) && "Name (\"" + this.state.items[key].flockingName + "\")" + (this.state.items[key].flockingLogo?", ":"")}
-                              {this.state.items[key].flockingLogo && "Logo"}
-                            </td>
-                          : <td>-</td>}
-                          <td className="price">
-                            {(this.state.items[key].flockingName && this.state.items[key].flockingName.length > 0)
-                              ? <FormPriceInput placeholder="0,00 €" value={parseFloat(this.state.items[key].flockingPriceName)} onValueChange={this.onItemFlockingPriceNameChange.bind(this, key)} />
+                          <td className="flockings">
+                            {(this.state.items[key].flockings && this.state.items[key].flockings.length > 0)
+                              ? this.state.items[key].flockings.map((flocking, i) =>
+                                  <div key={i}>
+                                    <p className="info">{flocking.description + (flocking.type == "0" ? " (" + flocking.value + ")" : "")}</p>
+                                    <p className="price">Preis: {(this.state.status >= 3 || this.state.items[key].status >= 3) ? parseFloat(flocking.price).toFixed(2).replace(".", ",") + " €" : <FormPriceInput placeholder="0,00 €" value={parseFloat(flocking.price)} onValueChange={this.onItemFlockingPriceChange.bind(this, key, i)} />}</p>
+                                  </div>
+                                )
                               : '-'}
                           </td>
-                          <td className="price">
-                            {this.state.items[key].flockingLogo
-                              ? <FormPriceInput placeholder="0,00 €" value={parseFloat(this.state.items[key].flockingPriceLogo)} onValueChange={this.onItemFlockingPriceLogoChange.bind(this, key)} />
-                              : '-'}
-                          </td>
-                          <td className="price"><FormPriceInput value={parseFloat(this.state.items[key].price)} onValueChange={this.onItemPriceChange.bind(this, key)} /></td>
+                          <td className="price">{(this.state.status >= 3 || this.state.items[key].status >= 3) ? parseFloat(this.state.items[key].price).toFixed(2).replace(".", ",") + " €" : <FormPriceInput value={parseFloat(this.state.items[key].price)} onValueChange={this.onItemPriceChange.bind(this, key)} />}</td>
                           <td className="status">
                             {this.state.status > 0
                             ? <FormControl componentClass="select" value={this.state.items[key].status} onChange={this.onItemStatusChange.bind(this, key)}>
@@ -705,7 +684,7 @@ class OrderEditing extends Component {
                             </ButtonToolbar>
                           </td>
                         </tr>
-                  ) : <tr className="no-data"><td colSpan="9">Keine Positionen vorhanden</td></tr>}
+                  ) : <tr className="no-data"><td colSpan="7">Keine Positionen vorhanden</td></tr>}
                 </tbody>
               </Table>
             </div>

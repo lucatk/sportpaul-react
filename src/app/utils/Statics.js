@@ -27,8 +27,7 @@ export const ExportColumns = {
   "internalid": "Artikelnummer",
   "name": "Artikel",
   "colour": "Farbe",
-  "flockingName": "Beflockung Name",
-  "flockingLogo": "Beflockung Logo",
+  "flockings": "Beflockung(en)",
   "size": "Größe"
 };
 export const ClubDisplayMode = {

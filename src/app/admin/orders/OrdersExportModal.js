@@ -24,8 +24,7 @@ class OrdersExportModal extends Component {
         "internalid": true,
         "name": true,
         "colour": true,
-        "flockingName": true,
-        "flockingLogo": true,
+        "flockings": true,
         "size": true
       }
     };
@@ -49,8 +48,7 @@ class OrdersExportModal extends Component {
         "internalid": true,
         "name": true,
         "colour": true,
-        "flockingName": true,
-        "flockingLogo": true,
+        "flockings": true,
         "size": true
       }
     });
@@ -68,8 +66,7 @@ class OrdersExportModal extends Component {
         "internalid": true,
         "name": true,
         "colour": true,
-        "flockingName": true,
-        "flockingLogo": true,
+        "flockings": true,
         "size": true
       }
     });
@@ -87,8 +84,7 @@ class OrdersExportModal extends Component {
         "internalid": true,
         "name": true,
         "colour": true,
-        "flockingName": true,
-        "flockingLogo": true,
+        "flockings": true,
         "size": true
       }
     });
