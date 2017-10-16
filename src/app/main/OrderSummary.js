@@ -37,18 +37,16 @@ class OrderSummary extends Component {
         size: product.size,
         price: -1,
         displayPrice: -1,
-        flockingName: product.flockingName,
-        flockingPriceName: product.flockingPriceName,
-        flockingLogo: product.flockingLogo,
-        flockingPriceLogo: product.flockingPriceLogo,
+        flockings: product.flockings,
         includedFlockingInfo: product.includedFlockingInfo
       };
       for(var z in product.pricegroups) {
         if(product.pricegroups[z].sizes.includes(product.size)) {
           this.orderCart[i].price = product.pricegroups[z].price;
           this.orderCart[i].displayPrice = product.pricegroups[z].price;
-          if(product.flockingName && product.flockingName.length > 0) this.orderCart[i].displayPrice += product.flockingPriceName;
-          if(product.flockingLogo) this.orderCart[i].displayPrice += product.flockingPriceLogo;
+          if(product.flockings && product.flockings.length > 0) {
+            this.orderCart[i].displayPrice += product.flockings.reduce((acc, val) => acc+val.price, 0);
+          }
 
           this.total += this.orderCart[i].displayPrice;
         }
@@ -69,6 +67,11 @@ class OrderSummary extends Component {
         item.colour = JSON.stringify(item.colour);
       } else {
         item.colour = "";
+      }
+      if(item.flockings) {
+        item.flockings = JSON.stringify(item.flockings);
+      } else {
+        item.flockings = "[]";
       }
 
       cart[i] = item;
@@ -147,10 +150,9 @@ class OrderSummary extends Component {
                     <td>{row.name}</td>
                     <td>{row.colour !== undefined && row.colour != null && row.colour.id ? row.colour.id + " " + row.colour.name : "-"}</td>
                     <td>{row.size}</td>
-                    {((row.flockingName && row.flockingName.length > 0) || row.flockingLogo) ?
-                      <td>
-                        {(row.flockingName && row.flockingName.length > 0) && "Name (\"" + row.flockingName + "\")" + (row.flockingLogo?", ":"")}
-                        {row.flockingLogo && "Logo"}
+                    {(row.flockings && row.flockings.length > 0) ?
+                      <td className="flocking">
+                        {row.flockings.map((flocking, i) => flocking.description + (flocking.type == "0" ? " (" + flocking.value + ")" : "")).join(", ")}
                       </td>
                     : <td>-</td>}
                     <td>{row.displayPrice.toFixed(2).replace('.', ',')} €</td>

@@ -12,6 +12,7 @@ import FormPriceInput from '../../../utils/FormPriceInput';
 import ImageLightbox from '../../../utils/ImageLightbox';
 import ProductColoursControl from '../ProductColoursControl';
 import ProductPricegroupsControl from '../ProductPricegroupsControl';
+import ProductFlockingsControl from '../ProductFlockingsControl';
 import ImageUploadControl from '../ImageUploadControl';
 
 class ProductAddModal extends Component {
@@ -23,10 +24,7 @@ class ProductAddModal extends Component {
       internalid: '',
       colours: [],
       pricegroups: [],
-      flockingNameEnabled: false,
-      flockingPriceName: 0,
-      flockingLogoEnabled: false,
-      flockingPriceLogo: 0,
+      flockings: [],
       includedFlockingInfo: '',
       picture: null,
       picturePreview: null
@@ -41,10 +39,7 @@ class ProductAddModal extends Component {
     this.onInternalIDChange = this.onInternalIDChange.bind(this);
     this.onColoursChange = this.onColoursChange.bind(this);
     this.onPricegroupsChange = this.onPricegroupsChange.bind(this);
-    this.onFlockingPriceNameChange = this.onFlockingPriceNameChange.bind(this);
-    this.onFlockingNameEnabledChange = this.onFlockingNameEnabledChange.bind(this);
-    this.onFlockingPriceLogoChange = this.onFlockingPriceLogoChange.bind(this);
-    this.onFlockingLogoEnabledChange = this.onFlockingLogoEnabledChange.bind(this);
+    this.onFlockingsChange = this.onFlockingsChange.bind(this);
     this.onIncludedFlockingInfoChange = this.onIncludedFlockingInfoChange.bind(this);
     this.onPictureChange = this.onPictureChange.bind(this);
     this.onPicturePreviewRequest = this.onPicturePreviewRequest.bind(this);
@@ -65,17 +60,8 @@ class ProductAddModal extends Component {
     this.setState({colours: newColours});
     setTimeout((() => { this.forceUpdate(); }).bind(this), 100);
   }
-  onFlockingNameEnabledChange(event) {
-    this.setState({flockingNameEnabled:event.target.checked});
-  }
-  onFlockingPriceNameChange(newPrice) {
-    this.setState({flockingPriceName:newPrice});
-  }
-  onFlockingLogoEnabledChange(event) {
-    this.setState({flockingLogoEnabled:event.target.checked});
-  }
-  onFlockingPriceLogoChange(newPrice) {
-    this.setState({flockingPriceLogo:newPrice});
+  onFlockingsChange(newFlockings) {
+    this.setState({flockings:newFlockings});
   }
   onIncludedFlockingInfoChange(event) {
     this.setState({includedFlockingInfo:event.target.value});
@@ -98,10 +84,7 @@ class ProductAddModal extends Component {
       internalid: '',
       colours: [],
       pricegroups: [],
-      flockingNameEnabled: false,
-      flockingPriceName: 0,
-      flockingLogoEnabled: false,
-      flockingPriceLogo: 0,
+      flockings: [],
       includedFlockingInfo: '',
       picture: null
     };
@@ -121,8 +104,7 @@ class ProductAddModal extends Component {
       internalid: this.state.internalid,
       colours: JSON.stringify(this.state.colours),
       pricegroups: JSON.stringify(this.state.pricegroups),
-      flockingPriceName: this.state.flockingNameEnabled?this.state.flockingPriceName:null,
-      flockingPriceLogo: this.state.flockingLogoEnabled?this.state.flockingPriceLogo:null,
+      flockings: JSON.stringify(this.state.flockings),
       includedFlockingInfo: this.state.includedFlockingInfo,
       picture: this.state.picture,
       coloursPictures: coloursPictures
@@ -132,10 +114,7 @@ class ProductAddModal extends Component {
       internalid: '',
       colours: [],
       pricegroups: [],
-      flockingNameEnabled: false,
-      flockingPriceName: 0,
-      flockingLogoEnabled: false,
-      flockingPriceLogo: 0,
+      flockings: [],
       includedFlockingInfo: '',
       picture: null
     };
@@ -176,20 +155,15 @@ class ProductAddModal extends Component {
                 </div>
               </FormGroup>
               <FormGroup controlId="inputIncludedFlocking">
-                <ControlLabel bsClass="col-sm-4 control-label">Inklusivbeflockung</ControlLabel>
+                <ControlLabel bsClass="col-sm-4 control-label">Beflockung Info-Text</ControlLabel>
                 <div className="col-sm-8 included-flocking-edit">
                   <FormControl type="text" value={this.state.includedFlockingInfo} placeholder="Info-Text (z.B. &quot;inkl. Logo-Beflockung&quot;)" onChange={this.onIncludedFlockingInfoChange} />
                 </div>
               </FormGroup>
               <FormGroup controlId="inputFlocking">
-                <ControlLabel bsClass="col-sm-4 control-label">Zusatzbeflockung</ControlLabel>
-                <div className="col-sm-4 flocking-edit">
-                  <label><input type="checkbox" value="" checked={this.state.flockingNameEnabled} onChange={this.onFlockingNameEnabledChange} /> Name</label>
-                  <FormPriceInput enabled={this.state.flockingNameEnabled} value={this.state.flockingPriceName} onValueChange={this.onFlockingPriceNameChange} />
-                </div>
-                <div className="col-sm-4 flocking-edit">
-                  <label><input type="checkbox" value="" checked={this.state.flockingLogoEnabled} onChange={this.onFlockingLogoEnabledChange} /> Logo</label>
-                  <FormPriceInput enabled={this.state.flockingLogoEnabled} value={this.state.flockingPriceLogo} onValueChange={this.onFlockingPriceLogoChange} />
+                <ControlLabel bsClass="col-sm-4 control-label">Beflockungen</ControlLabel>
+                <div className="col-sm-8 flocking-edit">
+                  <ProductFlockingsControl value={this.state.flockings} onValueChange={this.onFlockingsChange} />
                 </div>
               </FormGroup>
               {this.getColourPictures().length < 1 &&  <FormGroup controlId="inputPicture" validationState={!this.state.picture ? 'error' : null}>

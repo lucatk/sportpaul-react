@@ -252,7 +252,7 @@
 }
 
 .admin .container[data-page=ClubEditing] td.flocking p.included-flocking {
-  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 .admin .container[data-page=ClubEditing] td.buttons button,
@@ -283,8 +283,19 @@
   min-width: 80px;
 }
 
+.admin .container[data-page=OrderEditing] td.flockings,
 .admin .container[data-page=OrderEditing] td.price {
   min-width: 90px;
+}
+
+.admin .container[data-page=OrderEditing] td.flockings div:not(:first-child):not(:last-child) {
+  margin: 5px 0;
+}
+
+.admin .container[data-page=OrderEditing] td.flockings p.price input {
+  display: inline-block;
+  max-width: 100px;
+  margin-left: 5px;
 }
 
 .admin .container[data-page=OrderEditing] td.status {
@@ -371,10 +382,6 @@
   font-size: 18px;
 }
 
-.modal-dialog .form-group .flocking-edit input {
-  max-width: 175px;
-}
-
 .modal-dialog .form-group .flocking-edit label,
 .modal-dialog .form-group .included-flocking-edit label {
   font-weight: normal;
@@ -382,18 +389,21 @@
 }
 
 .modal-dialog .form-group .colours-edit .row,
-.modal-dialog .form-group .pricegroups-edit .row {
+.modal-dialog .form-group .pricegroups-edit .row,
+.modal-dialog .form-group .flocking-edit .row {
   margin-left: -2px;
   margin-right: 0;
 }
 
 .modal-dialog .form-group .colours-edit .row div,
-.modal-dialog .form-group .pricegroups-edit .row div {
+.modal-dialog .form-group .pricegroups-edit .row div,
+.modal-dialog .form-group .flocking-edit .row div {
   padding: 2px;
 }
 
 .modal-dialog .form-group .colours-edit .row input,
-.modal-dialog .form-group .pricegroups-edit .row input {
+.modal-dialog .form-group .pricegroups-edit .row input,
+.modal-dialog .form-group .flocking-edit .row input {
   max-width: none;
 }
 

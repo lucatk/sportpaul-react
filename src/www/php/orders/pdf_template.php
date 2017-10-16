@@ -95,7 +95,7 @@ $toPrint = count($orders);
           <th style="width:10%;padding-top:15px;padding-bottom:0;">Art. Nr.</th>
           <th style="width:15%;">Farbe</th>
           <th style="width:27.5%;">Bezeichnung</th>
-          <th style="width:22.5%;">Beflockung</th>
+          <th style="width:22.5%;">Beflockung(en)</th>
           <th style="width:10%;">Größe</th>
           <th style="width:15%;">Preis</th>
         </tr>
@@ -106,7 +106,12 @@ $toPrint = count($orders);
         $totalThisPage = 0;
         foreach($order["items"] as $item) {
           $colour = json_decode($item["colour"]);
-          $price = floatval($item["price"]) + floatval($item["flockingPriceName"]) + floatval($item["flockingPriceLogo"]);
+          $flockings = json_decode($item["flockings"]);
+          $flockingPrices = 0;
+          foreach($flockings as $flocking) {
+            $flockingPrices += $flocking->price;
+          }
+          $price = floatval($item["price"]) + floatval($flockingPrices);
           $total += $price;
           $totalThisPage += $price;
           if(strlen($item["flockingName"]) > 10) {
@@ -117,7 +122,15 @@ $toPrint = count($orders);
             <td><?php echo $item["internalid"]; ?></td>
             <td><?php echo $colour->id . " " . $colour->name; ?></td>
             <td style="width:25%;padding-top:15px;padding-bottom:0;"><?php echo $item["name"]; ?></td>
-            <td><?php echo (strlen($item["flockingName"]) > 0 ? '"' . $item["flockingName"] . '"' . ($item["flockingLogo"] ? ", " : "") : "") . ($item["flockingLogo"] ? "Logo" : ""); ?></td>
+            <td>
+              <?php
+                foreach($flockings as $flocking) {
+                  $str = $flocking->description . ($flocking->type == "0"?" (" . $flocking->value . ")":"");
+                  if(strlen($str) > 10) $str = substr($str, 0, 7) . "...";
+              ?>
+              <p><?php echo $str; ?></p>
+              <?php } ?>
+            </td>
             <td><?php echo $item["size"]; ?></td>
             <td><?php echo number_format($price, 2, ",", ""); ?> €</td>
           </tr>

@@ -32,11 +32,10 @@ if(isset($_FILES["picture"])) {
               "colours" => $_POST["colours"],
               "name" => $_POST["name"],
               "pricegroups" => $_POST["pricegroups"],
-              "flockingPriceName" => $_POST["flockingPriceName"],
-              "flockingPriceLogo" => $_POST["flockingPriceLogo"],
+              "flockings" => $_POST["flockings"],
               "includedFlockingInfo" => $_POST["includedFlockingInfo"],
               "picture" => $fileName];
-  $stmt = $db->execute("INSERT INTO products(clubid, displayorder, internalid, name, colours, pricegroups, flockingPriceName, flockingPriceLogo, includedFlockingInfo, picture) VALUES(:clubid, :displayorder, :internalid, :name, :colours, :pricegroups, :flockingPriceName, :flockingPriceLogo, :includedFlockingInfo, :picture)", $params);
+  $stmt = $db->execute("INSERT INTO products(clubid, displayorder, internalid, name, colours, pricegroups, flockings, includedFlockingInfo, picture) VALUES(:clubid, :displayorder, :internalid, :name, :colours, :pricegroups, :flockings, :includedFlockingInfo, :picture)", $params);
 } else {
   $colours = json_decode($_POST["colours"]);
   $coloursUpdated = $colours;
@@ -65,15 +64,14 @@ if(isset($_FILES["picture"])) {
     }
   }
   $coloursUpdated = json_encode($coloursUpdated, JSON_UNESCAPED_UNICODE);
-  $stmt = $db->execute("INSERT INTO products(clubid, displayorder, internalid, name, colours, pricegroups, flockingPriceName, flockingPriceLogo, includedFlockingInfo) VALUES(:clubid, :displayorder, :internalid, :name, :colours, :pricegroups, :flockingPriceName, :flockingPriceLogo, :includedFlockingInfo)", ["clubid" => $_POST["clubid"],
-                                                                                                                                                                                                                                                                                                                     "displayorder" => $displayorder,
-                                                                                                                                                                                                                                                                                                                     "internalid" => $_POST["internalid"],
-                                                                                                                                                                                                                                                                                                                     "name" => $_POST["name"],
-                                                                                                                                                                                                                                                                                                                     "colours" => $coloursUpdated,
-                                                                                                                                                                                                                                                                                                                     "pricegroups" => $_POST["pricegroups"],
-                                                                                                                                                                                                                                                                                                                     "flockingPriceName" => $_POST["flockingPriceName"],
-                                                                                                                                                                                                                                                                                                                     "flockingPriceLogo" => $_POST["flockingPriceLogo"],
-                                                                                                                                                                                                                                                                                                                     "includedFlockingInfo" => $_POST["includedFlockingInfo"]]);
+  $stmt = $db->execute("INSERT INTO products(clubid, displayorder, internalid, name, colours, pricegroups, flockings, includedFlockingInfo) VALUES(:clubid, :displayorder, :internalid, :name, :colours, :pricegroups, :flockings, :includedFlockingInfo)", ["clubid" => $_POST["clubid"],
+                                                                                                                                                                                                                                                             "displayorder" => $displayorder,
+                                                                                                                                                                                                                                                             "internalid" => $_POST["internalid"],
+                                                                                                                                                                                                                                                             "name" => $_POST["name"],
+                                                                                                                                                                                                                                                             "colours" => $coloursUpdated,
+                                                                                                                                                                                                                                                             "pricegroups" => $_POST["pricegroups"],
+                                                                                                                                                                                                                                                             "flockings" => $_POST["flockings"],
+                                                                                                                                                                                                                                                             "includedFlockingInfo" => $_POST["includedFlockingInfo"]]);
 }
 
 die(json_encode([

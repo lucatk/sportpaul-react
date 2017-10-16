@@ -12,18 +12,18 @@ $stmt = $db->execute("SELECT * FROM orders WHERE clubid=:clubid AND id=:orderid"
                                                                                     "clubid" => $_POST["clubid"]]);
 $results = $db->fetchAssoc($stmt, 1);
 
-$cstmt = $db->execute("SELECT status, flockingName, flockingLogo, flockingPriceName, flockingPriceLogo, price FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $_POST["clubid"],
-                                                                                                                             "orderid" => $_POST["id"]]);
+$cstmt = $db->execute("SELECT status, flockings, price FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $_POST["clubid"],
+                                                                                                               "orderid" => $_POST["id"]]);
 $cresults = $db->fetchAll($cstmt);
 $total = 0;
 $orderDone = true;
 foreach($cresults as $crow) {
   $total += $crow["price"];
-  if($crow["flockingName"] != null && strlen($crow["flockingName"]) > 0) {
-    $total += $crow["flockingPriceName"];
-  }
-  if($crow["flockingLogo"] != null && $crow["flockingLogo"]) {
-    $total += $crow["flockingPriceLogo"];
+  if($crow["flockings"] != null && strlen($crow["flockings"]) > 0) {
+    $flockings = json_decode($crow["flockings"]);
+    foreach($flockings as $flocking) {
+      $total += $flocking->price;
+    }
   }
   if($results["status"] === 2) {
     if($crow["status"] < 3) $orderDone = false;

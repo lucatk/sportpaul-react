@@ -39,8 +39,7 @@ class App extends Component {
       loading: true,
       flockingModal: {
         target: -1,
-        inputName: '',
-        inputLogo: false
+        inputs: []
       },
       customerData: null,
       loggedIn: false,
@@ -63,8 +62,7 @@ class App extends Component {
     this.onProductRemoveFromCart = this.onProductRemoveFromCart.bind(this);
     this.onProductPreviewRequest = this.onProductPreviewRequest.bind(this);
     this.onCloseProductPreview = this.onCloseProductPreview.bind(this);
-    this.onFlockingModalInputName = this.onFlockingModalInputName.bind(this);
-    this.onFlockingModalToggleLogo = this.onFlockingModalToggleLogo.bind(this);
+    this.onFlockingModalInputChange = this.onFlockingModalInputChange.bind(this);
     this.onShowOrderProcess = this.onShowOrderProcess.bind(this);
     this.onShowOrderSummary = this.onShowOrderSummary.bind(this);
     this.onOrder = this.onOrder.bind(this);
@@ -87,8 +85,7 @@ class App extends Component {
             var parsedProduct = product;
             parsedProduct.colours = JSON.parse(product.colours);
             parsedProduct.pricegroups = JSON.parse(product.pricegroups);
-            parsedProduct.flockingPriceName = parseFloat(product.flockingPriceName);
-            parsedProduct.flockingPriceLogo = parseFloat(product.flockingPriceLogo);
+            parsedProduct.flockings = JSON.parse(product.flockings);
             parsedProducts.push(parsedProduct);
           });
           parsedClub.products = parsedProducts;
@@ -134,27 +131,20 @@ class App extends Component {
       id: product.id,
       name: product.name,
       internalid: product.internalid,
-      flockingName: '',
-      flockingLogo: false,
-      flockingPriceName: product.flockingPriceName,
-      flockingPriceLogo: product.flockingPriceLogo,
+      flockings: product.flockings,
       includedFlockingInfo: product.includedFlockingInfo,
       size: input.selectedSize,
       pricegroups: product.pricegroups,
       picture: product.picture,
       colour: product.colours[input.selectedColour]
     };
-    if(product.flockingPriceLogo != null && product.flockingPriceLogo == 0) {
-      cartProduct.flockingLogo = true;
-    }
     newContents[this.state.cartContents.length] = cartProduct;
     this.setState({cartContents: newContents, clubInUse: this.state.selectedClub});
-    if((product.flockingPriceName != null && product.flockingPriceName >= 0) || (product.flockingPriceLogo != null && product.flockingPriceLogo > 0)) {
+    if(product.flockings != null && product.flockings.length > 0) {
       this.setState({
         flockingModal: {
           target: newContents.length-1,
-          inputName: '',
-          inputLogo: false
+          inputs: product.flockings.map((flocking) => flocking.type=="0"?'':flocking.price <= 0)
         }
       });
     }
@@ -178,16 +168,17 @@ class App extends Component {
     this.setState({previewProductPicture: null});
   }
 
-  onFlockingModalInputName(ev) {
+  onFlockingModalInputChange(i, ev) {
     var flockingModal = this.state.flockingModal;
-    flockingModal.inputName = ev.target.value;
-    this.setState(flockingModal);
-  }
-
-  onFlockingModalToggleLogo(ev) {
-    var flockingModal = this.state.flockingModal;
-    flockingModal.inputLogo = ev.target.checked;
-    this.setState(flockingModal);
+    switch(this.state.cartContents[this.state.flockingModal.target].flockings[i].type) {
+      case "0":
+        flockingModal.inputs[i] = ev.target.value;
+        break;
+      case "1":
+        flockingModal.inputs[i] = ev.target.checked;
+        break;
+    }
+    this.setState({flockingModal:flockingModal});
   }
 
   onShowOrderProcess() {
@@ -204,14 +195,25 @@ class App extends Component {
   onFlockingModalClose(success) {
     var newContents = this.state.cartContents.slice();
     if(success) {
-      newContents[this.state.flockingModal.target].flockingName = this.state.flockingModal.inputName;
-      if(newContents[this.state.flockingModal.target].flockingPriceLogo && newContents[this.state.flockingModal.target].flockingPriceLogo > 0) {
-        newContents[this.state.flockingModal.target].flockingLogo = this.state.flockingModal.inputLogo;
-      }
+      var flockings = [];
+      this.state.cartContents[this.state.flockingModal.target].flockings.forEach((flocking, i) => {
+        var input = this.state.flockingModal.inputs[i];
+        if(typeof(input) === 'string' || input instanceof String) {
+          if(input.length > 0) {
+            flocking.value = input;
+            flockings.push(flocking);
+          }
+        } else {
+          if(input) {
+            flockings.push(flocking);
+          }
+        }
+      });
+      newContents[this.state.flockingModal.target].flockings = flockings;
     } else {
       newContents.splice(this.state.flockingModal.target);
     }
-    this.setState({cartContents:newContents,flockingModal:{target:-1,inputName:'',inputLogo:false}});
+    this.setState({cartContents:newContents,flockingModal:{target:-1,inputs:[]}});
   }
 
   onOrder(success) {
@@ -264,13 +266,16 @@ class App extends Component {
             <Modal.Title>Beflockung hinzufügen...</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {this.state.cartContents[this.state.flockingModal.target].flockingPriceName != null && <FormGroup controlId="flocking-name">
-              <ControlLabel className="no-fontweight">Namens-Beflockung hinzufügen ({this.state.cartContents[this.state.flockingModal.target].flockingPriceName>0?'Aufpreis: ' + this.state.cartContents[this.state.flockingModal.target].flockingPriceName.toFixed(2).replace('.', ',') + ' €':'kostenlos'}):</ControlLabel>
-              <FormControl type="text" value={this.state.flockingModal.inputName} onChange={this.onFlockingModalInputName} placeholder="Leer lassen falls keine Namens-Beflockung erwünscht" />
-            </FormGroup>}
-            {(this.state.cartContents[this.state.flockingModal.target].flockingPriceLogo != null && this.state.cartContents[this.state.flockingModal.target].flockingPriceLogo > 0) && <FormGroup controlId="flocking-logo">
-              <label className="no-fontweight"><input type="checkbox" value="" checked={this.state.flockingModal.inputLogo} onChange={this.onFlockingModalToggleLogo} /> Logo-Beflockung hinzufügen (Aufpreis: {this.state.cartContents[this.state.flockingModal.target].flockingPriceLogo.toFixed(2).replace('.', ',')} €)</label>
-            </FormGroup>}
+            {this.state.cartContents[this.state.flockingModal.target].flockings.map((flocking, i) => <FormGroup key={i} controlId={"flocking-"+i}>
+              {flocking.type == "0" ? [
+                <ControlLabel className="no-fontweight">Beflockung "{flocking.description}" hinzufügen ({flocking.price>0?'Aufpreis: ' + flocking.price.toFixed(2).replace('.', ',') + ' €':'kostenlos'}):</ControlLabel>,
+                <FormControl type="text" value={this.state.flockingModal.inputs[i]} onChange={this.onFlockingModalInputChange.bind(this, i)} placeholder="Leer lassen falls keine Beflockung erwünscht" />
+              ] : [
+                <label className="no-fontweight">
+                  <input type="checkbox" value="" checked={this.state.flockingModal.inputs[i]} onChange={this.onFlockingModalInputChange.bind(this, i)} /> Beflockung "{flocking.description}" hinzufügen ({flocking.price>0?'Aufpreis: ' + flocking.price.toFixed(2).replace('.', ',') + ' €':'kostenlos'})
+                </label>
+              ]}
+            </FormGroup>)}
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.onFlockingModalClose.bind(this, false)}>Abbrechen</Button>
