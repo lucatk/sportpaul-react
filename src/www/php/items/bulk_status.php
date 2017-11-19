@@ -7,9 +7,6 @@ if(!isset($_SESSION["loggedIn"])) {
   ]));
 }
 
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
-
 include('../database.php');
 
 $db = new Database();

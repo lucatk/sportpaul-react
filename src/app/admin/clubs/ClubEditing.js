@@ -318,30 +318,84 @@ class ClubEditing extends Component {
       data.append("pricegroups", product.pricegroups);
       data.append("flockings", product.flockings);
       data.append("includedFlockingInfo", product.includedFlockingInfo);
-      if(product.coloursPictures && product.coloursPictures.length > 0) {
-        product.coloursPictures.forEach((picture, i) => {
-          if(picture != null && picture instanceof File)
-            data.append(i, picture);
-        });
-      } else {
-        if(typeof product.picture === "object")
-          data.append("picture", product.picture);
-      }
-      $.post({
-        url: 'php/products/update.php',
-        contentType: false,
-        processData: false,
-        data: data,
-        success: function(data) {
-          var result = JSON.parse(data);
-          if(result.error != 0 && result.rowsAffected < 1) {
-            error = true;
-            console.log("Error:", result.error);
+
+      var donePictures = function() {
+        $.post({
+          url: 'php/products/update.php',
+          contentType: false,
+          processData: false,
+          data: data,
+          success: function(data) {
+            var result = JSON.parse(data);
+            if(result.error != 0 && result.rowsAffected < 1) {
+              error = true;
+              console.log("Error:", result.error);
+            }
+            toUpdateCount--;
+            doneProcess();
           }
-          toUpdateCount--;
-          doneProcess();
+        });
+      };
+      if(product.coloursPictures && product.coloursPictures.length > 0) {
+        var toUploadUhlsport = [];
+        var coloursParsed = JSON.parse(product.colours);
+        product.coloursPictures.forEach((picture, i) => {
+          if(picture != null && picture instanceof File) {
+            data.append(i, picture);
+          } else if(picture == "uhlsport") {
+            toUploadUhlsport.push(i);
+          }
+        });
+        if(toUploadUhlsport.length > 0) {
+          var toUpload = toUploadUhlsport.length;
+          toUploadUhlsport.forEach((i) => {
+            $.post({
+              url: 'php/uhlsport/saveimage.php',
+              data: {
+                id: product.internalid.replace(/[^A-Za-z0-9]/g, "") + coloursParsed[i].id
+              },
+              success: function(rdata) {
+                var result = JSON.parse(rdata);
+                if(result.error) {
+                  error = true;
+                  console.log("Error:", result.error);
+                } else {
+                  data.append(i, result.url);
+                }
+                toUpload--;
+                if(toUpload <= 0) {
+                  donePictures();
+                }
+              }
+            });
+          });
+        } else {
+          donePictures();
         }
-      });
+      } else {
+        if(typeof product.picture === "object") {
+          data.append("picture", product.picture);
+          donePictures();
+        } else if(product.picture == "uhlsport") {
+          $.post({
+            url: 'php/uhlsport/saveimage.php',
+            data: {
+              id: product.internalid.replace(/[^A-Za-z0-9]/g, "")
+            },
+            success: function(rdata) {
+              var result = JSON.parse(rdata);
+              if(result.error) {
+                error = true;
+                console.log("Error:", result.error);
+              } else {
+                data.append("picture", result.url);
+              }
+              donePictures();
+            }
+          });
+        }
+      }
+
     });
     this.state.toAddProducts.forEach((product, id) => {
       if(product == undefined || product == null) return;
@@ -353,30 +407,83 @@ class ClubEditing extends Component {
       data.append("pricegroups", product.pricegroups);
       data.append("flockings", product.flockings);
       data.append("includedFlockingInfo", product.includedFlockingInfo);
-      if(product.coloursPictures && product.coloursPictures.length > 0) {
-        product.coloursPictures.forEach((picture, i) => {
-          if(picture != null && picture instanceof File)
-            data.append(i, picture);
-        });
-      } else {
-        if(typeof product.picture === "object")
-          data.append("picture", product.picture);
-      }
-      $.post({
-        url: 'php/products/add.php',
-        contentType: false,
-        processData: false,
-        data: data,
-        success: function(data) {
-          var result = JSON.parse(data);
-          if(result.error != 0 && result.rowsAffected < 1) {
-            error = true;
-            console.log("Error:", result.error);
+
+      var donePictures = function() {
+        $.post({
+          url: 'php/products/add.php',
+          contentType: false,
+          processData: false,
+          data: data,
+          success: function(data) {
+            var result = JSON.parse(data);
+            if(result.error != 0 && result.rowsAffected < 1) {
+              error = true;
+              console.log("Error:", result.error);
+            }
+            toAddCount--;
+            doneProcess();
           }
-          toAddCount--;
-          doneProcess();
+        });
+      };
+      if(product.coloursPictures && product.coloursPictures.length > 0) {
+        var toUploadUhlsport = [];
+        var coloursParsed = JSON.parse(product.colours);
+        product.coloursPictures.forEach((picture, i) => {
+          if(picture != null && picture instanceof File) {
+            data.append(i, picture);
+          } else if(picture == "uhlsport") {
+            toUploadUhlsport.push(i);
+          }
+        });
+        if(toUploadUhlsport.length > 0) {
+          var toUpload = toUploadUhlsport.length;
+          toUploadUhlsport.forEach((i) => {
+            $.post({
+              url: 'php/uhlsport/saveimage.php',
+              data: {
+                id: product.internalid.replace(/[^A-Za-z0-9]/g, "") + coloursParsed[i].id
+              },
+              success: function(rdata) {
+                var result = JSON.parse(rdata);
+                if(result.error) {
+                  error = true;
+                  console.log("Error:", result.error);
+                } else {
+                  data.append(i, result.url);
+                }
+                toUpload--;
+                if(toUpload <= 0) {
+                  donePictures();
+                }
+              }
+            });
+          });
+        } else {
+          donePictures();
         }
-      });
+      } else {
+        if(typeof product.picture === "object") {
+          data.append("picture", product.picture);
+          donePictures();
+        } else if(product.picture == "uhlsport") {
+          $.post({
+            url: 'php/uhlsport/saveimage.php',
+            data: {
+              id: product.internalid.replace(/[^A-Za-z0-9]/g, "")
+            },
+            success: function(data) {
+              var result = JSON.parse(data);
+              if(result.error) {
+                error = true;
+                console.log("Error:", result.error);
+              } else {
+                data.append("picture", result.url);
+              }
+              donePictures();
+            }
+          });
+        }
+      }
     });
     this.state.toRemoveProducts.forEach((product, id) => {
       if(product == undefined || product == null) return;

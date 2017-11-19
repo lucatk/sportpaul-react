@@ -22,7 +22,8 @@ class OrderSummary extends Component {
       success: false,
       newid: -1,
       newclubid: -1,
-      captcha: null
+      captcha: null,
+      error: 0
     };
 
     this.total = 0;
@@ -60,7 +61,7 @@ class OrderSummary extends Component {
   }
 
   onClickOrder() {
-    this.setState({loading:true});
+    this.setState({loading:true, erorr: 0});
     var cart = this.orderCart;
     this.orderCart.forEach((item, i) => {
       if(item.colour) {
@@ -98,7 +99,7 @@ class OrderSummary extends Component {
         if(parsed.error !== "00000" || parsed.rowsAffected < 1) {
           console.log("Error: ", parsed.error);
 
-          this.setState({success:false});
+          this.setState({success:false, error:parsed.error});
         } else {
           success = true;
           this.setState({success:true,newid:parsed.newid,newclubid:clubid});
@@ -170,7 +171,7 @@ class OrderSummary extends Component {
           {(!this.state.done && !this.props.loggedIn) && <Row><Recaptcha sitekey={this.props.recaptchaKey} render="explicit" onloadCallback={console.log.bind(this, "recaptcha loaded")} verifyCallback={this.onCaptcha} /></Row>}
           {!this.state.done && <Button bsStyle="primary" onClick={this.onClickOrder} disabled={!this.state.captcha && !this.props.loggedIn}>Bestellen</Button>}
           {(this.state.done && this.state.success) && <div className="done"><p>Die Bestellung wurde aufgenommen. Informationen zur Bestellung werden an die E-Mail <span>{this.customerData.email}</span> gesendet.</p><Button bsStyle="primary" onClick={() => {window.open("php/orders/pdf.php?clubid=" + this.state.newclubid + "&id=" + this.state.newid)}}><Glyphicon glyph="print" /> Bestellübersicht drucken</Button></div>}
-          {(this.state.done && !this.state.success) && <div className="done"><p>Es gab einen Fehler bei der Bestellung.</p></div>}
+          {(this.state.done && !this.state.success) && <div className="done"><p>Es gab einen Fehler bei der Bestellung.</p>{this.state.error == -98 && <p>Ihre Kundendaten sind bereits mit einem Verein verknüpft. Bitte wenden Sie sich an die Filiale!</p>}</div>}
         </div>
       </div>
     );

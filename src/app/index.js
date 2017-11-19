@@ -40,6 +40,16 @@ const OrderEditing = LoadableComponent({
   loader: () => import(/* webpackChunkName: "admin_orders_OrderEditing" */ './admin/orders/OrderEditing')
 });
 
+const Customers = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_customers_Customers" */ './admin/customers/Customers')
+});
+const CustomerView = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_customers_CustomerView" */ './admin/customers/CustomerView')
+});
+const CustomerEditing = LoadableComponent({
+  loader: () => import(/* webpackChunkName: "admin_customers_CustomerEditing" */ './admin/customers/CustomerEditing')
+});
+
 const Settings = LoadableComponent({
   loader: () => import(/* webpackChunkName: "admin_settings_Settings" */ './admin/settings/Settings')
 });
@@ -68,6 +78,12 @@ ReactDOM.render(
         <Route path="/admin/orders/edit/:clubid/:orderid" component={OrderEditing}></Route>
       </Route>
       <Route path="/admin/orders/club/:club" component={Orders}></Route>
+      <Route path="/admin/orders/customer/:customer" component={Orders}></Route>
+      <Route path="/admin/customers" component={Customers}>
+        <Route path="/admin/customers/view/:customerid" component={CustomerView}></Route>
+        <Route path="/admin/customers/edit/:customerid" component={CustomerEditing}></Route>
+      </Route>
+      <Route path="/admin/customers/club/:club" component={Customers}></Route>
       <Route path="/admin/settings" component={Settings}>
         <IndexRedirect to="/admin/settings/general"></IndexRedirect>
         <Route name="settings-general" path="/admin/settings/general" component={SettingsGeneral}></Route>

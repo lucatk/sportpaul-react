@@ -72,7 +72,8 @@ class Admin extends Component {
                 {/* <NavItem eventKey={1} href="#/admin">Home</NavItem>*/}
                 <NavItem eventKey={2} href="#/admin/clubs">Vereine</NavItem>
                 <NavItem eventKey={3} href="#/admin/orders">Bestellungen</NavItem>
-                <NavItem eventKey={4} href="#/admin/settings">Einstellungen</NavItem>
+                <NavItem eventKey={4} href="#/admin/customers">Kunden</NavItem>
+                <NavItem eventKey={5} href="#/admin/settings">Einstellungen</NavItem>
               </Nav>
               <Nav pullRight>
                 <NavItem eventKey={-2} onClick={this.logout}>Logout</NavItem>

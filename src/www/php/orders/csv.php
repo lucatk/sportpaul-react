@@ -82,9 +82,9 @@ if(count($orders) < 1) {
   die("<script>window.close();</script>");
 }
 
-$name = $orders[0]["clubname"];
+$name = "orders_" . $orders[0]["clubname"];
 if($multipleClubs)
-  $name = "export_" . date("d-m-Y_h-i");
+  $name = "orders_" . date("d-m-Y_h-i");
 header("Content-Disposition: attachment; filename=\"" . $name . ".csv\"");
 header("Content-Type: text/csv");
 

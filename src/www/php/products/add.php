@@ -16,7 +16,18 @@ $displayorder = $db->fetchNum($stmt, 1)[0];
 if(strlen($_POST["flockingPrice"]) < 1 || $_POST["flockingPrice"] == "null")
   $_POST["flockingPrice"] = null;
 
-if(isset($_FILES["picture"])) {
+if(isset($_POST["picture"]) && strlen($_POST["picture"]) > 0) {
+  $params = ["clubid" => $_POST["clubid"],
+              "displayorder" => $displayorder,
+              "internalid" => $_POST["internalid"],
+              "colours" => $_POST["colours"],
+              "name" => $_POST["name"],
+              "pricegroups" => $_POST["pricegroups"],
+              "flockings" => $_POST["flockings"],
+              "includedFlockingInfo" => $_POST["includedFlockingInfo"],
+              "picture" => $_POST["picture"]];
+  $stmt = $db->execute("INSERT INTO products(clubid, displayorder, internalid, name, colours, pricegroups, flockings, includedFlockingInfo, picture) VALUES(:clubid, :displayorder, :internalid, :name, :colours, :pricegroups, :flockings, :includedFlockingInfo, :picture)", $params);
+} else if(isset($_FILES["picture"])) {
   $fileName = time() . "-" . $_FILES["picture"]["name"];
   if(move_uploaded_file($_FILES["picture"]["tmp_name"], "../../productpics/" . $fileName)) {
     $image = new Imagick();
@@ -61,6 +72,19 @@ if(isset($_FILES["picture"])) {
         }
       }
       $coloursUpdated[$i] = $colour;
+    }
+  } else {
+    if(isset($_POST["0"])) {
+      foreach($colours as $i => $colour) {
+        if(isset($_POST[$i])) {
+          $colour->picture = $_POST[$i];
+        } else {
+          if(isset($colour->picture)) {
+            unset($colour->picture);
+          }
+        }
+        $coloursUpdated[$i] = $colour;
+      }
     }
   }
   $coloursUpdated = json_encode($coloursUpdated, JSON_UNESCAPED_UNICODE);

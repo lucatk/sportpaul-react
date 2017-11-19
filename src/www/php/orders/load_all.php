@@ -8,7 +8,7 @@ include('../database.php');
 
 $db = new Database();
 
-$stmt = $db->execute("SELECT id, clubid, clubname, firstname, lastname, status, created FROM orders", NULL);
+$stmt = $db->execute("SELECT orders.id, orders.clubid, orders.clubname, orders.customerid, customers.firstname, customers.lastname, orders.status, orders.created FROM orders LEFT JOIN customers ON orders.customerid = customers.id", NULL);
 $results = $db->fetchAll($stmt);
 
 $i = 0;

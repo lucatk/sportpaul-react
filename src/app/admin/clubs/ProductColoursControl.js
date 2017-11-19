@@ -98,7 +98,11 @@ class ProductColoursControl extends Component {
     this.props.onValueChange(data);
   }
   showPicturePreview(i) {
-    this.props.onPicturePreviewRequest(this.state.data[i].picture);
+    if(this.state.data[i].picture == "uhlsport") {
+      this.props.onPicturePreviewRequest("php/uhlsport/loadimage.php?id=" + this.props.productid.replace(/[^A-Za-z0-9]/g, "") + this.state.data[i].id);
+    } else {
+      this.props.onPicturePreviewRequest(this.state.data[i].picture);
+    }
   }
   onSortEnd({oldIndex, newIndex}) {
     var data = arrayMove(this.state.data, oldIndex, newIndex);

@@ -50,13 +50,12 @@ class Orders extends Component {
     if(this.props.params["club"]) {
       this.state.filterClub = parseInt(this.props.params["club"]);
       this.loadClubProducts(this.state.filterClub);
+    } else if(this.props.params["customer"]) {
+      this.state.filterCustomer = parseInt(this.props.params["customer"]);
     }
 
-    this.openRemoveModal = this.openRemoveModal.bind(this);
-    this.closeRemoveModal = this.closeRemoveModal.bind(this);
     this.openOrdersExportModal = this.openOrdersExportModal.bind(this);
     this.closeOrdersExportModal = this.closeOrdersExportModal.bind(this);
-    this.removeOrder = this.removeOrder.bind(this);
     this.onFilterClubChange = this.onFilterClubChange.bind(this);
     this.onFilterDateModifierChange = this.onFilterDateModifierChange.bind(this);
     this.onFilterDateChange = this.onFilterDateChange.bind(this);
@@ -65,7 +64,6 @@ class Orders extends Component {
     this.onFilterProductChange = this.onFilterProductChange.bind(this);
     this.onSortingScopeChanged = this.onSortingScopeChanged.bind(this);
     this.onOrderExportCheckChange = this.onOrderExportCheckChange.bind(this);
-    this.onClickExport = this.onClickExport.bind(this);
   }
   loadOrders() {
     this.setState({loading:true});
@@ -117,35 +115,6 @@ class Orders extends Component {
       success: function(data) {
         this.combineClubs = (JSON.parse(data)["export_combineclubs"] == "1");
       }.bind(this)
-    });
-  }
-  removeOrder(e) {
-    $.post({
-      url: 'php/orders/remove.php',
-      data: {
-        id: this.state.removeModalScope.id,
-        clubid: this.state.removeModalScope.clubid
-      },
-      success: function(data) {
-        this.loadOrders();
-      }.bind(this)
-    });
-    this.closeRemoveModal();
-  }
-  closeRemoveModal() {
-    this.setState({
-      showRemoveModal: false,
-      removeModalScope: {
-        id: -1,
-        clubid: -1,
-        club: ''
-      }
-    });
-  }
-  openRemoveModal(e) {
-    this.setState({
-      showRemoveModal: true,
-      removeModalScope: e.target.parentElement.parentElement.parentElement.dataset
     });
   }
   onOrderExportCheckChange(clubid, id) {
@@ -262,10 +231,10 @@ class Orders extends Component {
         Object.keys(toExport).forEach((key) => {
           clubStrings.push(key + ":" + toExport[key].join(","));
         });
-        window.open("php/orders/csv.php?columns=" + columns.join(",") + "&columnnames=" + columns.map(c => Statics.ExportColumns[c]).join(",") + "&multipleclubs=1&request=" + clubStrings.join(";") + "&skipordered=" + (answer.skipOrdered ? 1 : 0));
+        window.open("php/orders/csv.php?columns=" + columns.join(",") + "&columnnames=" + columns.map(c => Statics.OrdersExportColumns[c]).join(",") + "&multipleclubs=1&request=" + clubStrings.join(";") + "&skipordered=" + (answer.skipOrdered ? 1 : 0));
       } else {
         Object.keys(toExport).forEach((key) => {
-          window.open("php/orders/csv.php?columns=" + columns.join(",") + "&columnnames=" + columns.map(c => Statics.ExportColumns[c]).join(",") + "&clubid=" + key + "&request=" + toExport[key].join(",") + "&skipordered=" + (answer.skipOrdered ? 1 : 0));
+          window.open("php/orders/csv.php?columns=" + columns.join(",") + "&columnnames=" + columns.map(c => Statics.OrdersExportColumns[c]).join(",") + "&clubid=" + key + "&request=" + toExport[key].join(",") + "&skipordered=" + (answer.skipOrdered ? 1 : 0));
         });
       }
 
@@ -328,113 +297,6 @@ class Orders extends Component {
       }
     }
   }
-  onClickExport() {
-    this.setState({loading: true});
-
-    var toExport = {};
-    var toExportCount = 0;
-    var hasOrderedArticles = false;
-    this.state.orders.forEach((order) => {
-      if(order.export) {
-        var exports = toExport[order.clubid];
-        if(!exports) exports = [];
-        exports.push(order.id);
-        toExport[order.clubid] = exports;
-        toExportCount++;
-
-        if(!hasOrderedArticles) {
-          for(var i in order.items) {
-            if(order.items[i].status >= 0) {
-              hasOrderedArticles = true;
-              break;
-            }
-          }
-        }
-      }
-    });
-
-    var skipOrdered = false;
-    var onAnswer = () => {
-      if(this.combineClubs) {
-        var clubStrings = [];
-        Object.keys(toExport).forEach((key) => {
-          clubStrings.push(key + ":" + toExport[key].join(","));
-        });
-        window.open("php/orders/csv.php?multipleclubs=1&request=" + clubStrings.join(";") + "&skipordered=" + (skipOrdered ? 1 : 0));
-      } else {
-        Object.keys(toExport).forEach((key) => {
-          window.open("php/orders/csv.php?clubid=" + key + "&request=" + toExport[key].join(",") + "&skipordered=" + (skipOrdered ? 1 : 0));
-        });
-      }
-
-      var toUpdateOrders = [];
-      var toUpdateItems = [];
-      this.state.orders.forEach((order) => {
-        if(toExport[order.clubid] != undefined && toExport[order.clubid].includes(order.id)) {
-          if(order.status < 2)
-            toUpdateOrders.push({clubid: order.clubid, id: order.id});
-          Object.values(order.items).forEach((item) => {
-            if(item.status < 0)
-              toUpdateItems.push({clubid: order.clubid, orderid: order.id, id: item.id});
-          });
-        }
-      });
-
-      if(toUpdateOrders.length > 0 || toUpdateItems.length > 0) {
-        this.popupModal.showModal("Bestellungen exportieren...", "Es wurden " + toExportCount + " Bestellungen exportiert. " + toUpdateOrders.length + " dieser Bestellung(en) und " + toUpdateItems.length + " Artikel werden nun auf den Status " + Statics.OrderStatus[2] + " gesetzt. Fortfahren?", (answer) => {
-          if(answer) {
-            var doneOrders = false;
-            var doneItems = false;
-            var done = (() => {
-              if(doneOrders && doneItems)
-                this.loadOrders();
-            }).bind(this);
-            var ordersData = new FormData();
-            ordersData.append("data", JSON.stringify(toUpdateOrders));
-            ordersData.append("status", "2");
-            $.post({
-              url: 'php/orders/bulk_status.php',
-              contentType: false,
-              processData: false,
-              data: ordersData,
-              success: function(data) {
-                doneOrders = true;
-                done();
-              }.bind(this)
-            });
-            var itemsData = new FormData();
-            itemsData.append("data", JSON.stringify(toUpdateItems));
-            itemsData.append("status", "0");
-            $.post({
-              url: 'php/items/bulk_status.php',
-              contentType: false,
-              processData: false,
-              data: itemsData,
-              success: function(data) {
-                doneItems = true;
-                done();
-              }.bind(this)
-            });
-          } else {
-            this.setState({loading:false});
-            this.uncheckAll();
-          }
-        }, "Ja", "Nein");
-      } else {
-        this.setState({loading:false});
-        this.uncheckAll();
-      }
-    };
-
-    if(hasOrderedArticles) {
-      this.popupModal.showModal("Bestellungen exportieren...", "Dieser Exportvorgang enthält Bestellungen mit Artikeln, die bereits den Status " + Statics.ItemStatus[0] + " besitzen. Sollen diese Artikel übersprungen werden?", (answer) => {
-        skipOrdered = answer;
-        onAnswer();
-      }, "Ja, bereits bestellte Artikel überspringen", "Nein, nicht überspringen");
-    } else {
-      onAnswer();
-    }
-  }
   uncheckAll() {
     var newOrders = this.state.orders;
     this.state.orders.forEach((order, i) => {
@@ -448,6 +310,8 @@ class Orders extends Component {
     }
     if(nextProps.params["club"]) {
       this.setState({filterClub:parseInt(nextProps.params["club"])});
+    } else if(nextProps.params["customer"]) {
+      this.setState({filterCustomer:parseInt(nextProps.params["customer"])});
     }
   }
   render() {
@@ -483,21 +347,7 @@ class Orders extends Component {
                 onFilterStatusChange={this.onFilterStatusChange}
                 onFilterProductChange={this.onFilterProductChange}
                 onSortingScopeChanged={this.onSortingScopeChanged}
-                onExportCheckChange={this.onOrderExportCheckChange}
-                onRemove={this.openRemoveModal} />
-
-              <Modal show={this.state.showRemoveModal} onHide={this.closeRemoveModal} data-scope={this.state.removeModalScope.id}>
-                <Modal.Header closeButton>
-                  <Modal.Title>Bestellung löschen...</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <p>Möchten Sie die Bestellung mit der ID {this.state.removeModalScope.id} beim Verein mit der ID {this.state.removeModalScope.clubid} unwiderruflich löschen?</p>
-                </Modal.Body>
-                <Modal.Footer>
-                  <Button onClick={this.closeRemoveModal}>Abbrechen</Button>
-                  <Button bsStyle="danger" onClick={this.removeOrder}>Löschen</Button>
-                </Modal.Footer>
-              </Modal>
+                onExportCheckChange={this.onOrderExportCheckChange} />
             </div>}
           {(!this.state.loadedOrders && !this.state.loading) && <p className="loading-error">Es ist ein Fehler aufgetreten. Bitte laden Sie die Seite neu!</p>}
 
