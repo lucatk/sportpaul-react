@@ -107,6 +107,7 @@
 .product-list .product-item {
   margin: 0 12px 25px;
   flex-basis: calc(100% - 24px);
+  display: flex;
 }
 
 .product-list .product-item:last-child,
@@ -122,6 +123,11 @@
   transition: all .3s;
 }
 
+.product-list .product-item .panel {
+  display: flex;
+  flex: 1;
+}
+
 .product-list .product-item .panel:hover,
 .club-showcase .club-item .panel:hover {
   border: 1px solid rgba(51,122,183, 1);
@@ -132,6 +138,7 @@
 .product-list .product-item .panel-body {
   padding: 0;
   position: relative;
+  flex: 1;
 }
 
 .product-list .product-item .left-column,
@@ -165,16 +172,25 @@
 .product-list .product-item .right-column {
   float: right;
   padding: 0;
+  display: flex;
+  flex: 1;
+  border-left: 1px solid #ddd;
 }
 
 .product-list .product-item .right-column .list-group {
   margin: 0;
   border-radius: 0;
   box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
 }
 
 .product-list .product-item .right-column .list-group-item {
-  border-right: 0;
+  border: 0;
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 1px;
 }
 
 .product-list .product-item .right-column .list-group-item:first-child {
