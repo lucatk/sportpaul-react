@@ -9,29 +9,29 @@ import {
 
 import * as Statics from "../../utils/Statics";
 
-class OrdersExportModal extends Component {
+class CustomersExportModal extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
       data: null,
-      skipOrdered: true,
       exportMode: 0,
       columns: {
-        "clubname": true,
         "id": true,
-        "customer": true,
-        "internalid": true,
-        "name": true,
-        "colour": true,
-        "flockings": true,
-        "size": true
+        "clubname": true,
+        "firstname": true,
+        "lastname": true,
+        "address": true,
+        "postcode": true,
+        "town": true,
+        "email": true,
+        "phone": true,
+        "amountOrders": true
       }
     };
 
     this.closeModal = this.closeModal.bind(this);
     this.export = this.export.bind(this);
-    this.onChangeSkipOrdered = this.onChangeSkipOrdered.bind(this);
     this.onChangeExportMode = this.onChangeExportMode.bind(this);
     this.onChangeColumnState = this.onChangeColumnState.bind(this);
   }
@@ -39,17 +39,18 @@ class OrdersExportModal extends Component {
     this.props.onClose();
     this.setState({
       data: null,
-      skipOrdered: true,
       exportMode: 0,
       columns: {
-        "clubname": true,
         "id": true,
-        "customer": true,
-        "internalid": true,
-        "name": true,
-        "colour": true,
-        "flockings": true,
-        "size": true
+        "clubname": true,
+        "firstname": true,
+        "lastname": true,
+        "address": true,
+        "postcode": true,
+        "town": true,
+        "email": true,
+        "phone": true,
+        "amountOrders": true
       }
     });
   }
@@ -57,17 +58,18 @@ class OrdersExportModal extends Component {
     this.props.onClose(this.state);
     this.setState({
       data: null,
-      skipOrdered: true,
       exportMode: 0,
       columns: {
-        "clubname": true,
         "id": true,
-        "customer": true,
-        "internalid": true,
-        "name": true,
-        "colour": true,
-        "flockings": true,
-        "size": true
+        "clubname": true,
+        "firstname": true,
+        "lastname": true,
+        "address": true,
+        "postcode": true,
+        "town": true,
+        "email": true,
+        "phone": true,
+        "amountOrders": true
       }
     });
   }
@@ -75,22 +77,20 @@ class OrdersExportModal extends Component {
     if(!nextProps.scope || nextProps.scope == null) return;
     this.setState({
       data: nextProps.scope,
-      skipOrdered: true,
       exportMode: 0,
       columns: {
-        "clubname": true,
         "id": true,
-        "customer": true,
-        "internalid": true,
-        "name": true,
-        "colour": true,
-        "flockings": true,
-        "size": true
+        "clubname": true,
+        "firstname": true,
+        "lastname": true,
+        "address": true,
+        "postcode": true,
+        "town": true,
+        "email": true,
+        "phone": true,
+        "amountOrders": true
       }
     });
-  }
-  onChangeSkipOrdered(ev) {
-    this.setState({skipOrdered:ev.target.checked});
   }
   onChangeExportMode(mode) {
     this.setState({
@@ -110,24 +110,19 @@ class OrdersExportModal extends Component {
             <Modal.Title>Exportieren...</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <form className="orders-export">
-              <FormGroup controlId="inputSkipOrdered">
-                <div className="col-sm-12">
-                  <Checkbox checked={this.state.skipOrdered} onChange={this.onChangeSkipOrdered}>Bereits bestellte Artikel überspringen</Checkbox>
-                </div>
-              </FormGroup>
+            <form className="customers-export">
               <FormGroup controlId="inputExportMode">
                 <ControlLabel bsClass="col-sm-4 control-label">Export-Modus</ControlLabel>
                 <div className="col-sm-8">
-                  <Radio name="groupExportMode" checked={this.state.exportMode == 0} onChange={this.onChangeExportMode.bind(this, 0)} inline>Alle Bestellungen zusammenführen</Radio>
-                  <Radio name="groupExportMode" checked={this.state.exportMode == 1} onChange={this.onChangeExportMode.bind(this, 1)} inline>Bestellungen der Vereine in separate Dateien</Radio>
+                  <Radio name="groupExportMode" checked={this.state.exportMode == 0} onChange={this.onChangeExportMode.bind(this, 0)} inline>Alle Vereine zusammenführen</Radio>
+                  <Radio name="groupExportMode" checked={this.state.exportMode == 1} onChange={this.onChangeExportMode.bind(this, 1)} inline>Kunden der Vereine in separate Dateien</Radio>
                 </div>
               </FormGroup>
               <FormGroup controlId="inputColumns">
                 <ControlLabel bsClass="col-sm-4 control-label">Spalten</ControlLabel>
                 <div className="col-sm-8">
                   {Object.keys(this.state.columns).map(c => (
-                    <Checkbox checked={this.state.columns[c]} onChange={this.onChangeColumnState.bind(this, c)}>{Statics.OrdersExportColumns[c]}</Checkbox>
+                    <Checkbox checked={this.state.columns[c]} onChange={this.onChangeColumnState.bind(this, c)}>{Statics.CustomersExportColumns[c]}</Checkbox>
                   ))}
                 </div>
               </FormGroup>
@@ -143,4 +138,4 @@ class OrdersExportModal extends Component {
   }
 }
 
-export default OrdersExportModal;
+export default CustomersExportModal;

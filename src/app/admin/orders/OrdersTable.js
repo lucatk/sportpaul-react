@@ -25,7 +25,7 @@ class OrdersTable extends Component {
 
     var orderStatuses = Statics.asObjects(Statics.OrderStatus);
 
-    if(this.props.filterClub !== -1 || this.props.filterDate.length > 0 || this.props.filterCustomer.length > 0 || this.props.filterStatus.length > 0 || this.props.filterProduct !== -1) {
+    if(this.props.filterClub !== -1 || this.props.filterDate.length > 0 || (typeof this.props.filterCustomer == "number" || this.props.filterCustomer.length > 0) || this.props.filterStatus.length > 0 || this.props.filterProduct !== -1) {
       data = data.filter(function(value) {
         var matcher;
         if(this.props.filterClub !== -1) {
@@ -51,12 +51,15 @@ class OrdersTable extends Component {
               if(!matcher.test(value.created)) return false;
           }
         }
-        if(this.props.filterCustomer.length > 0) {
+        if(typeof this.props.filterCustomer == "number") {
+          if(value.customerid != this.props.filterCustomer) return false;
+        } else if(this.props.filterCustomer.length > 0) {
           matcher = new RegExp(".*" + this.props.filterCustomer.split("*").join(".*") + ".*", "i");
           if(!matcher.test(value.firstname + " " + value.lastname)) return false;
         }
         if(this.props.filterStatus.length > 0) {
           matcher = new RegExp(this.props.filterStatus, "i");
+          if(value.status == -1 && this.props.filterStatus != -1) return false;
           if(!matcher.test(value.status)) return false;
         }
         if(this.props.filterProduct !== -1) {
@@ -187,7 +190,7 @@ class OrdersTable extends Component {
                 <Col xs={8}><FormControl type="text" value={this.props.filterDate} placeholder="Datum..." onChange={this.props.onFilterDateChange} /></Col>
               </Row>
             </td>
-            <td className="customer"><FormControl type="text" value={this.props.filterCustomer} placeholder="Filter..." onChange={this.props.onFilterCustomerChange} /></td>
+            <td className="customer">{typeof this.props.filterCustomer != "number"&&<FormControl type="text" value={this.props.filterCustomer} placeholder="Filter..." onChange={this.props.onFilterCustomerChange} />}</td>
             <td></td>
             <td></td>
             <td className="status">

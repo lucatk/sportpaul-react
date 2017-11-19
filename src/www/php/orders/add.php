@@ -60,17 +60,45 @@ if($results["displaymode"] < 2) {
   }
 }
 
-$stmt = $db->execute("INSERT INTO orders(clubid, clubname, firstname, lastname, address, postcode, town, email, phone, created, updated) VALUES(:clubid, :clubname, :firstname, :lastname, :address, :postcode, :town, :email, :phone, NOW(), NOW())",
+$cistmt = $db->execute("SELECT id, clubid FROM customers WHERE firstname=:firstname AND lastname=:lastname AND address=:address AND postcode=:postcode", ["firstname" => $_POST["firstname"],
+                       "lastname" => $_POST["lastname"],
+                       "address" => $_POST["address"],
+                       "postcode" => $_POST["postcode"]]);
+$customerid = -1;
+if($cistmt->rowCount() < 1) {
+  $cistmt = $db->execute("INSERT INTO customers(clubid, clubname, firstname, lastname, address, postcode, town, email, phone) VALUES(:clubid, :clubname, :firstname, :lastname, :address, :postcode, :town, :email, :phone)",
+                        ["clubid" => $_POST["clubid"],
+                         "clubname" => $results["name"],
+                         "firstname" => $_POST["firstname"],
+                         "lastname" => $_POST["lastname"],
+                         "address" => $_POST["address"],
+                         "postcode" => $_POST["postcode"],
+                         "town" => $_POST["town"],
+                         "email" => $_POST["email"],
+                         "phone" => $_POST["phone"]]);
+  if($cistmt->errorCode() !== "00000") {
+    die(json_encode([
+      "error" => $cistmt->errorCode(),
+      "rowsAffected" => 0
+    ]));
+  }
+  $customerid = $db->lastInsertId();
+} else {
+  $ciresults = $db->fetchAssoc($cistmt, 1);
+  if(intval($ciresults["clubid"]) == intval($_POST["clubid"])) {
+    $customerid = $ciresults["id"];
+  } else {
+    die(json_encode([
+      "error" => -98,
+      "rowsAffected" => 0
+    ]));
+  }
+}
+
+$stmt = $db->execute("INSERT INTO orders(clubid, clubname, customerid, created, updated) VALUES(:clubid, :clubname, :customerid, NOW(), NOW())",
                     ["clubid" => $_POST["clubid"],
                      "clubname" => $results["name"],
-                     "firstname" => $_POST["firstname"],
-                     "lastname" => $_POST["lastname"],
-                     "address" => $_POST["address"],
-                     "postcode" => $_POST["postcode"],
-                     "town" => $_POST["town"],
-                     "email" => $_POST["email"],
-                     "phone" => $_POST["phone"]]);
-
+                     "customerid" => $customerid]);
 $rowsAffected += $stmt->rowCount();
 $id = -1;
 

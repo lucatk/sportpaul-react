@@ -45,15 +45,19 @@
 }
 
 .admin .container[data-page=OrderView] .form-group:not(:first-of-type) label,
-.admin .container[data-page=OrderView] .form-group table {
+.admin .container[data-page=OrderView] .form-group table,
+.admin .container[data-page=CustomerView] .form-group:not(:first-of-type) label,
+.admin .container[data-page=CustomerView] .form-group table {
   margin: 10px 0;
 }
 
-.admin .container[data-page=OrderView] label[for=inputCustomerInfo]:last-child {
+.admin .container[data-page=OrderView] label[for=inputCustomerInfo]:last-child,
+.admin .container[data-page=CustomerView] label[for=inputCustomerInfo]:last-child {
   margin-bottom: 0;
 }
 
-.admin .container[data-page=OrderView] label[for=inputCustomerInfo] p {
+.admin .container[data-page=OrderView] label[for=inputCustomerInfo] p,
+.admin .container[data-page=CustomerView] label[for=inputCustomerInfo] p {
   margin: 0 0 5px;
 }
 
@@ -115,21 +119,29 @@
   cursor: default;
 }
 
-.admin .container[data-page=OrderEditing] .form-group .editing-container {
+.admin .container[data-page=CustomerEditing] .form-group label[for=inputClub] div {
+  padding: 0;
+}
+
+.admin .container[data-page=OrderEditing] .form-group .editing-container,
+.admin .container[data-page=CustomerEditing] .form-group .editing-container {
   max-width: 60%;
 }
 
-.admin .container[data-page=OrderEditing] .form-group .row {
+.admin .container[data-page=OrderEditing] .form-group .row,
+.admin .container[data-page=CustomerEditing] .form-group .row {
   margin-left: -3px;
   margin-right: -3px;
 }
 
-.admin .container[data-page=OrderEditing] .form-group .row > div {
+.admin .container[data-page=OrderEditing] .form-group .row > div,
+.admin .container[data-page=CustomerEditing] .form-group .row > div {
   padding-left: 3px;
   padding-right: 3px;
 }
 
-.admin .container[data-page=OrderEditing] .form-group .row .form-group {
+.admin .container[data-page=OrderEditing] .form-group .row .form-group,
+.admin .container[data-page=CustomerEditing] .form-group .row .form-group {
   margin-bottom: 5px;
 }
 
@@ -149,12 +161,14 @@
   color: rgba(0, 0, 0, 0.3);
 }
 
-.admin .container[data-page=Orders] td.export-check {
+.admin .container[data-page=Orders] td.export-check,
+.admin .container[data-page=Customers] td.action-check {
   width: 4%;
   min-width: 40px;
 }
 
-.admin .container[data-page=Orders] td.export-check input {
+.admin .container[data-page=Orders] td.export-check input,
+.admin .container[data-page=Customers] td.action-check input {
   display: block;
   margin: 0 auto;
 }
@@ -171,13 +185,14 @@
 .admin .container[data-page=Clubs] td.product-name,
 .admin .container[data-page=Clubs] td.buttons,
 .admin .container[data-page=ClubEditing] td.product-name,
-.admin .container[data-page=ClubEditing] td.pricegroups
+.admin .container[data-page=ClubEditing] td.pricegroups,
 .admin .container[data-page=ClubCreation] td.product-name,
 .admin .container[data-page=ClubCreation] td.pricegroups {
   width: 25%;
 }
 
-.admin .container[data-page=Orders] thead tr th {
+.admin .container[data-page=Orders] thead tr th,
+.admin .container[data-page=Customers] thead tr th {
   cursor: pointer;
 }
 
@@ -185,12 +200,17 @@
   font-weight: normal;
 }
 
-.admin .container[data-page=Orders] thead tr th span.glyphicon {
+.admin .container[data-page=Orders] thead tr th span.glyphicon,
+.admin .container[data-page=Customers] thead tr th span.glyphicon {
   font-size: 12px;
 }
 
 .admin .container[data-page=Orders] tr.filter-row td.club input {
   width: 11em;
+}
+
+.admin .container[data-page=Customers] tr td.club {
+  min-width: 150px;
 }
 
 .admin .container[data-page=Orders] tr.filter-row td.date .row {
@@ -205,7 +225,8 @@
   width: 7em;
 }
 
-.admin .container[data-page=Orders] tr[data-export=true] td:not(.buttons) {
+.admin .container[data-page=Orders] tr[data-export=true] td:not(.buttons),
+.admin .container[data-page=Customers] tr[data-check=true] td:not(.buttons) {
   color: #F44336;
 }
 
@@ -218,12 +239,26 @@
 }
 
 .admin .container[data-page=Orders] td.product-name,
-.admin .container[data-page=Orders] td.buttons {
+.admin .container[data-page=Orders] td.buttons,
+.admin .container[data-page=Customers] td.buttons {
   width: 20%;
 }
 
-.admin .container[data-page=Orders] td.buttons {
+.admin .container[data-page=Orders] td.buttons,
+.admin .container[data-page=Customers] td.buttons {
   min-width: 220px;
+}
+
+.admin .container[data-page=Customers] > button {
+  margin: 0 5px;
+}
+
+.admin .container[data-page=Customers] > button:first-of-type {
+  margin-left: 0;
+}
+
+.admin .container[data-page=Customers] > button:last-of-type {
+  margin-right: 0;
 }
 
 .admin .container[data-page=OrderView] td.product-name,
@@ -265,7 +300,7 @@
   /*background: initial;*/
 }
 
-.admin .container[data-page=ClubCreation] .form-group .mini-btn
+.admin .container[data-page=ClubCreation] .form-group .mini-btn,
 .admin .container[data-page=ClubEditing] .form-group .mini-btn {
   margin-left: 5px;
   line-height: 35px;
@@ -430,8 +465,31 @@
   margin-top: 3px;
 }
 
-.modal-dialog form.orders-export .form-group:first-child .col-sm-8 {
+.modal-dialog form.orders-export .form-group:first-child .col-sm-8,
+.modal-dialog form.customers-export .form-group:first-child .col-sm-8 {
   margin-top: 7px;
+}
+
+.modal-dialog form.customers-contact .form-group textarea {
+  min-height: 150px
+}
+
+.modal-dialog form.customers-contact .form-group .col-sm-2 {
+  padding: 0;
+}
+
+.modal-dialog form.customers-contact .form-group .text-presets-info,
+.modal-dialog form.customers-contact .form-group .text-preset {
+  margin: 0;
+}
+
+.modal-dialog form.customers-contact .form-group .text-presets-info {
+  font-weight: bold;
+}
+
+.modal-dialog form.customers-contact .form-group .text-preset:hover {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .colour-sortable-helper {

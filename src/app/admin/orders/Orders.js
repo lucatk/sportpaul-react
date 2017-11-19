@@ -50,13 +50,12 @@ class Orders extends Component {
     if(this.props.params["club"]) {
       this.state.filterClub = parseInt(this.props.params["club"]);
       this.loadClubProducts(this.state.filterClub);
+    } else if(this.props.params["customer"]) {
+      this.state.filterCustomer = parseInt(this.props.params["customer"]);
     }
 
-    this.openRemoveModal = this.openRemoveModal.bind(this);
-    this.closeRemoveModal = this.closeRemoveModal.bind(this);
     this.openOrdersExportModal = this.openOrdersExportModal.bind(this);
     this.closeOrdersExportModal = this.closeOrdersExportModal.bind(this);
-    this.removeOrder = this.removeOrder.bind(this);
     this.onFilterClubChange = this.onFilterClubChange.bind(this);
     this.onFilterDateModifierChange = this.onFilterDateModifierChange.bind(this);
     this.onFilterDateChange = this.onFilterDateChange.bind(this);
@@ -262,10 +261,10 @@ class Orders extends Component {
         Object.keys(toExport).forEach((key) => {
           clubStrings.push(key + ":" + toExport[key].join(","));
         });
-        window.open("php/orders/csv.php?columns=" + columns.join(",") + "&columnnames=" + columns.map(c => Statics.ExportColumns[c]).join(",") + "&multipleclubs=1&request=" + clubStrings.join(";") + "&skipordered=" + (answer.skipOrdered ? 1 : 0));
+        window.open("php/orders/csv.php?columns=" + columns.join(",") + "&columnnames=" + columns.map(c => Statics.OrdersExportColumns[c]).join(",") + "&multipleclubs=1&request=" + clubStrings.join(";") + "&skipordered=" + (answer.skipOrdered ? 1 : 0));
       } else {
         Object.keys(toExport).forEach((key) => {
-          window.open("php/orders/csv.php?columns=" + columns.join(",") + "&columnnames=" + columns.map(c => Statics.ExportColumns[c]).join(",") + "&clubid=" + key + "&request=" + toExport[key].join(",") + "&skipordered=" + (answer.skipOrdered ? 1 : 0));
+          window.open("php/orders/csv.php?columns=" + columns.join(",") + "&columnnames=" + columns.map(c => Statics.OrdersExportColumns[c]).join(",") + "&clubid=" + key + "&request=" + toExport[key].join(",") + "&skipordered=" + (answer.skipOrdered ? 1 : 0));
         });
       }
 
@@ -448,6 +447,8 @@ class Orders extends Component {
     }
     if(nextProps.params["club"]) {
       this.setState({filterClub:parseInt(nextProps.params["club"])});
+    } else if(nextProps.params["customer"]) {
+      this.setState({filterCustomer:parseInt(nextProps.params["customer"])});
     }
   }
   render() {

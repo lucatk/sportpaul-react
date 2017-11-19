@@ -20,7 +20,7 @@ export const ItemStatus = {
   "2": "erhalten",
   "3": "erledigt"
 };
-export const ExportColumns = {
+export const OrdersExportColumns = {
   "clubname": "Verein",
   "id": "Bestellung",
   "customer": "Kunde",
@@ -30,6 +30,28 @@ export const ExportColumns = {
   "flockings": "Beflockung(en)",
   "size": "Größe"
 };
+export const CustomersExportColumns = {
+  "id": "Kunde",
+  "clubname": "Verein",
+  "firstname": "Vorname",
+  "lastname": "Nachname",
+  "address": "Adresse",
+  "postcode": "PLZ",
+  "town": "Stadt",
+  "email": "E-Mail",
+  "phone": "Telefon",
+  "amountOrders": "Anzahl Bestellungen"
+}
+export const CustomersContactTextPresets = {
+  "clubname": "Vereinsname",
+  "firstname": "Vorname",
+  "lastname": "Nachname",
+  "address": "Adresse",
+  "postcode": "PLZ",
+  "town": "Stadt",
+  "email": "E-Mail",
+  "phone": "Telefon"
+}
 export const ClubDisplayMode = {
   "0": "Versteckt",
   "1": "Bestellungen deaktiviert",
