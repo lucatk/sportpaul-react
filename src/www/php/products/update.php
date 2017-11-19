@@ -11,7 +11,43 @@ include('../database.php');
 
 $db = new Database();
 
-if(isset($_FILES["picture"])) {
+if(isset($_POST["picture"]) && strlen($_POST["picture"]) > 0) {
+  $cstmt = $db->execute("SELECT colours, picture FROM products WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
+                                                                                        "clubid" => $_POST["clubid"]]);
+  $cresults = $db->fetchAssoc($cstmt, 1);
+  $colours = $_POST["colours"];
+  if($cresults["colours"] !== null && strlen($cresults["colours"]) > 0) {
+    $newPics = [];
+    $coloursDecoded = json_decode($colours);
+    foreach($coloursDecoded as $i => $colour) {
+      if(isset($colour->picture) && is_string($colour->picture)) {
+        $newPics[] = $colour->picture;
+      }
+    }
+
+    $oldColours = json_decode($cresults["colours"]);
+    foreach($oldColours as $i => $colour) {
+      if(isset($colour->picture) && is_string($colour->picture)) {
+        if(!in_array($colour->picture, $newPics)) {
+          unlink("../../productpics/" . $colour->picture);
+        }
+      }
+    }
+  }
+  if($cresults["picture"] !== null && strlen($cresults["picture"]) > 0) {
+    unlink("../../productpics/" . $cresults["picture"]);
+  }
+  $stmt = $db->execute("UPDATE products SET displayorder=:displayorder, internalid=:internalid, name=:name, colours=:colours, pricegroups=:pricegroups, flockings=:flockings, includedFlockingInfo=:includedFlockingInfo, picture=:picture WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
+                                                                                                                                                                                                                                                            "clubid" => $_POST["clubid"],
+                                                                                                                                                                                                                                                            "displayorder" => $_POST["displayorder"],
+                                                                                                                                                                                                                                                            "internalid" => $_POST["internalid"],
+                                                                                                                                                                                                                                                            "name" => $_POST["name"],
+                                                                                                                                                                                                                                                            "colours" => $colours,
+                                                                                                                                                                                                                                                            "pricegroups" => $_POST["pricegroups"],
+                                                                                                                                                                                                                                                            "flockings" => $_POST["flockings"],
+                                                                                                                                                                                                                                                            "includedFlockingInfo" => $_POST["includedFlockingInfo"],
+                                                                                                                                                                                                                                                            "picture" => $_POST["picture"]]);
+} else if(isset($_FILES["picture"])) {
   $stmt = $db->execute("SELECT picture FROM products WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
                                                                                         "clubid" => $_POST["clubid"]]);
   $results = $db->fetchAssoc($stmt, 1);
@@ -55,8 +91,9 @@ if(isset($_FILES["picture"])) {
                                                                                                                                                                                                                                                                               "includedFlockingInfo" => $_POST["includedFlockingInfo"],
                                                                                                                                                                                                                                                                               "picture" => $fileName]);
 } else {
+  $colours = json_decode($_POST["colours"]);
+  $coloursUpdated = $colours;
   if(isset($_FILES) && count($_FILES) > 0) {
-    $colours = json_decode($_POST["colours"]);
     $savedFiles = [];
     foreach($_FILES as $i => $file) {
       $fileName = time() . "-" . $i . "-" . $file["name"];
@@ -77,7 +114,6 @@ if(isset($_FILES["picture"])) {
     if($cresults["colours"] !== null && strlen($cresults["colours"]) > 0) {
       $oldColours = json_decode($cresults["colours"]);
     }
-    $coloursUpdated = $colours;
     foreach($colours as $i => $colour) {
       if(isset($colour->picture) && is_object($colour->picture)) {
         if($oldColours != null && isset($oldColours[$i]->picture) && is_string($oldColours[$i]->picture)) {
@@ -91,25 +127,26 @@ if(isset($_FILES["picture"])) {
       }
       $coloursUpdated[$i] = $colour;
     }
-    $coloursUpdated = json_encode($coloursUpdated, JSON_UNESCAPED_UNICODE);
-    $stmt = $db->execute("UPDATE products SET displayorder=:displayorder, internalid=:internalid, name=:name, colours=:colours, pricegroups=:pricegroups, flockings=:flockings, includedFlockingInfo=:includedFlockingInfo WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
-                                                                                                                                                                                                                                                              "clubid" => $_POST["clubid"],
-                                                                                                                                                                                                                                                              "displayorder" => $_POST["displayorder"],
-                                                                                                                                                                                                                                                              "internalid" => $_POST["internalid"],
-                                                                                                                                                                                                                                                              "name" => $_POST["name"],
-                                                                                                                                                                                                                                                              "colours" => $coloursUpdated,
-                                                                                                                                                                                                                                                              "pricegroups" => $_POST["pricegroups"],
-                                                                                                                                                                                                                                                              "flockings" => $_POST["flockings"],
-                                                                                                                                                                                                                                                              "includedFlockingInfo" => $_POST["includedFlockingInfo"]]);
   } else {
+    if(isset($_POST["0"])) {
+      foreach($colours as $i => $colour) {
+        if(isset($_POST[$i])) {
+          $colour->picture = $_POST[$i];
+        } else {
+          if(isset($colour->picture)) {
+            unset($colour->picture);
+          }
+        }
+        $coloursUpdated[$i] = $colour;
+      }
+    }
+
     $cstmt = $db->execute("SELECT colours FROM products WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
                                                                                           "clubid" => $_POST["clubid"]]);
     $cresults = $db->fetchAssoc($cstmt, 1);
-    $colours = $_POST["colours"];
     if($cresults["colours"] !== null && strlen($cresults["colours"]) > 0) {
       $newPics = [];
-      $coloursDecoded = json_decode($colours);
-      foreach($coloursDecoded as $i => $colour) {
+      foreach($coloursUpdated as $i => $colour) {
         if(isset($colour->picture) && is_string($colour->picture)) {
           $newPics[] = $colour->picture;
         }
@@ -124,16 +161,17 @@ if(isset($_FILES["picture"])) {
         }
       }
     }
-    $stmt = $db->execute("UPDATE products SET displayorder=:displayorder, internalid=:internalid, name=:name, colours=:colours, pricegroups=:pricegroups, flockings=:flockings, includedFlockingInfo=:includedFlockingInfo WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
-                                                                                                                                                                                                                                                              "clubid" => $_POST["clubid"],
-                                                                                                                                                                                                                                                              "displayorder" => $_POST["displayorder"],
-                                                                                                                                                                                                                                                              "internalid" => $_POST["internalid"],
-                                                                                                                                                                                                                                                              "name" => $_POST["name"],
-                                                                                                                                                                                                                                                              "colours" => $colours,
-                                                                                                                                                                                                                                                              "pricegroups" => $_POST["pricegroups"],
-                                                                                                                                                                                                                                                              "flockings" => $_POST["flockings"],
-                                                                                                                                                                                                                                                              "includedFlockingInfo" => $_POST["includedFlockingInfo"]]);
   }
+  $coloursUpdated = json_encode($coloursUpdated, JSON_UNESCAPED_UNICODE);
+  $stmt = $db->execute("UPDATE products SET displayorder=:displayorder, internalid=:internalid, name=:name, colours=:colours, pricegroups=:pricegroups, flockings=:flockings, includedFlockingInfo=:includedFlockingInfo WHERE id=:id AND clubid=:clubid", ["id" => $_POST["id"],
+                                                                                                                                                                                                                                                            "clubid" => $_POST["clubid"],
+                                                                                                                                                                                                                                                            "displayorder" => $_POST["displayorder"],
+                                                                                                                                                                                                                                                            "internalid" => $_POST["internalid"],
+                                                                                                                                                                                                                                                            "name" => $_POST["name"],
+                                                                                                                                                                                                                                                            "colours" => $coloursUpdated,
+                                                                                                                                                                                                                                                            "pricegroups" => $_POST["pricegroups"],
+                                                                                                                                                                                                                                                            "flockings" => $_POST["flockings"],
+                                                                                                                                                                                                                                                            "includedFlockingInfo" => $_POST["includedFlockingInfo"]]);
 }
 
 die(json_encode([

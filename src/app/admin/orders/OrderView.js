@@ -40,6 +40,10 @@ class OrderView extends Component {
     }
 
     this.componentWillReceiveProps(this.props);
+
+    this.openRemoveModal = this.openRemoveModal.bind(this);
+    this.closeRemoveModal = this.closeRemoveModal.bind(this);
+    this.removeOrder = this.removeOrder.bind(this);
   }
   componentWillReceiveProps(nextProps) {
     this.setState({
@@ -100,6 +104,29 @@ class OrderView extends Component {
       }.bind(this)
     });
   }
+  removeOrder(e) {
+    $.post({
+      url: 'php/orders/remove.php',
+      data: {
+        id: this.state.id,
+        clubid: this.state.clubid
+      },
+      success: function(data) {
+        this.props.router.push("/admin/orders");
+      }.bind(this)
+    });
+    this.closeRemoveModal();
+  }
+  closeRemoveModal() {
+    this.setState({
+      showRemoveModal: false
+    });
+  }
+  openRemoveModal(e) {
+    this.setState({
+      showRemoveModal: true
+    });
+  }
   render() {
     return (
       <div className="container" data-page="OrderView">
@@ -111,6 +138,7 @@ class OrderView extends Component {
           Bestellung: Details
           <small> ID: {this.state.clubid}/{this.state.id}</small>
           <Link to={"/admin/orders/edit/" + this.state.clubid + "/" + this.state.id}><Button bsSize="small"><Glyphicon glyph="pencil" /> Bearbeiten</Button></Link>
+          <Button bsSize="small" bsStyle="danger" onClick={this.openRemoveModal}><Glyphicon glyph="trash" /> Löschen</Button>
           <Link to="/admin/orders"><Button bsSize="small"><Glyphicon bsClass="flipped glyphicon" glyph="share-alt" /> Zurück</Button></Link>
         </h1>
         <form>
@@ -207,6 +235,19 @@ class OrderView extends Component {
             <ControlLabel bsClass="col-sm-11">{parseFloat(this.state.total).toFixed(2).replace(".", ",")} €</ControlLabel>
           </FormGroup>
         </form>
+
+        <Modal show={this.state.showRemoveModal} onHide={this.closeRemoveModal}>
+          <Modal.Header closeButton>
+            <Modal.Title>Bestellung löschen...</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Möchten Sie die Bestellung mit der ID {this.state.id} beim Verein "{this.state.clubname}" wirklich unwiderruflich löschen?</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button onClick={this.closeRemoveModal}>Abbrechen</Button>
+            <Button bsStyle="danger" onClick={this.removeOrder}>Löschen</Button>
+          </Modal.Footer>
+        </Modal>
       </div>
     );
   }

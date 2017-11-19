@@ -7,13 +7,18 @@ import {
   ButtonToolbar, Button,
   Glyphicon
 } from 'react-bootstrap';
+import FontAwesome from 'react-fontawesome';
 
 import FormPriceInput from '../../../utils/FormPriceInput';
 import ImageLightbox from '../../../utils/ImageLightbox';
+import PopupModal from '../../../utils/PopupModal';
 import ProductColoursControl from '../ProductColoursControl';
 import ProductPricegroupsControl from '../ProductPricegroupsControl';
 import ProductFlockingsControl from '../ProductFlockingsControl';
 import ImageUploadControl from '../ImageUploadControl';
+
+import UhlsportImageLoader from '../../../utils/UhlsportImageLoader';
+import UhlsportLightbox from '../../../utils/UhlsportLightbox';
 
 class ProductAddModal extends Component {
   constructor(props) {
@@ -27,13 +32,18 @@ class ProductAddModal extends Component {
       flockings: [],
       includedFlockingInfo: '',
       picture: null,
-      picturePreview: null
+      picturePreview: null,
+      uhlsportImageIds: [],
+      uhlsportImagesLoadedCount: 0,
+      uhlsportLoading: false
     };
 
     this.fileReader = new FileReader();
     this.fileReader.onload = ((e) => {
       this.setState({picturePreview: e.target.result});
     }).bind(this);
+
+    this.uhlsportLoader = new UhlsportImageLoader();
 
     this.onNameChange = this.onNameChange.bind(this);
     this.onInternalIDChange = this.onInternalIDChange.bind(this);
@@ -44,6 +54,8 @@ class ProductAddModal extends Component {
     this.onPictureChange = this.onPictureChange.bind(this);
     this.onPicturePreviewRequest = this.onPicturePreviewRequest.bind(this);
     this.onClosePicturePreview = this.onClosePicturePreview.bind(this);
+    this.onLoadedUhlsportLightbox = this.onLoadedUhlsportLightbox.bind(this);
+    this.onLoadFromUhlsportClick = this.onLoadFromUhlsportClick.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.addProduct = this.addProduct.bind(this);
   }
@@ -70,12 +82,74 @@ class ProductAddModal extends Component {
     this.setState({picture:newPicture});
   }
   onPicturePreviewRequest(picture) {
-    if(picture && typeof picture === "object")
+    if(picture && typeof picture === "object") {
       this.fileReader.readAsDataURL(picture);
+    } else if(picture == "uhlsport") {
+      picture = "php/uhlsport/loadimage.php?id=" + this.state.internalid.replace(/[^A-Za-z0-9]/g, "");
+    }
     this.setState({picturePreview: picture});
   }
   onClosePicturePreview() {
     this.setState({picturePreview: null});
+  }
+  onLoadFromUhlsportClick() {
+    this.setState({uhlsportLoading: true});
+    var toLoad = 0;
+    var ids = [];
+    var checksDone = function() {
+      this.setState({uhlsportImageIds: ids, uhlsportImagesLoadedCount: 0});
+      if(ids.length < 1) {
+        this.setState({uhlsportLoading: false});
+        this.popupModal.showModal("Keine Uhlsport-Bilder gefunden", "Es konnten keine Uhlsport-Bilder für diese(s) Produkt/Farbe(n) gefunden werden.", null, "Okay");
+      }
+    }.bind(this);
+    var check = (success, id) => {
+      toLoad--;
+      if(success) {
+        ids.push(id);
+      }
+      if(toLoad < 1)
+        checksDone();
+    };
+    if(this.state.colours && this.state.colours.length > 0) {
+      toLoad = this.state.colours.length;
+      this.state.colours.forEach(((el) => {
+        this.uhlsportLoader.checkImage(this.state.internalid + el.id, check);
+      }).bind(this));
+    } else {
+      toLoad = 1;
+      this.uhlsportLoader.checkImage(this.state.internalid, check);
+    }
+  }
+  onLoadedUhlsportLightbox() {
+    var newCount = this.state.uhlsportImagesLoadedCount+1;
+    this.setState({uhlsportImagesLoadedCount: newCount});
+    if(newCount >= this.state.uhlsportImageIds.length) {
+      this.setState({uhlsportLoading: false});
+    }
+  }
+  onCloseUhlsportLightbox(id, response) {
+    var ids = this.state.uhlsportImageIds;
+    var index = ids.indexOf(id);
+    if(index !== -1) ids.splice(index);
+    this.setState({uhlsportImageIds: ids});
+    if(this.state.uhlsportImagesLoadedCount > 0 && this.state.uhlsportImagesLoadedCount >= ids.length) {
+      this.setState({uhlsportLoading: false});
+    }
+
+    if(response) {
+      var newColours = this.state.colours;
+      if(newColours.length > 0) {
+        this.state.colours.forEach((colour, i) => {
+          if((this.state.internalid.replace(/[^A-Za-z0-9]/g, "") + colour.id) == id) {
+            newColours[i].picture = "uhlsport";
+          }
+        });
+        this.setState({colours: newColours});
+      } else {
+        this.setState({picture: "uhlsport"});
+      }
+    }
   }
   closeModal() {
     this.props.onClose();
@@ -86,7 +160,11 @@ class ProductAddModal extends Component {
       pricegroups: [],
       flockings: [],
       includedFlockingInfo: '',
-      picture: null
+      picture: null,
+      picturePreview: null,
+      uhlsportImageIds: [],
+      uhlsportImagesLoadedCount: 0,
+      uhlsportLoading: false
     };
   }
   addProduct() {
@@ -95,7 +173,7 @@ class ProductAddModal extends Component {
 
     var coloursPictures = [];
     this.state.colours.forEach((colour, i) => {
-      if(colour.picture && colour.picture instanceof File) {
+      if(colour.picture && (colour.picture instanceof File || (colour.picture == "uhlsport"))) {
         coloursPictures[i] = colour.picture;
       }
     });
@@ -116,13 +194,18 @@ class ProductAddModal extends Component {
       pricegroups: [],
       flockings: [],
       includedFlockingInfo: '',
-      picture: null
+      picture: null,
+      picturePreview: null,
+      uhlsportImageIds: [],
+      uhlsportImagesLoadedCount: 0,
+      uhlsportLoading: false
     };
   }
   render() {
     return (
       <div>
-        {this.state.picturePreview && <ImageLightbox image={this.state.picturePreview.startsWith("data:image/") ? this.state.picturePreview : "productpics/" + this.state.picturePreview} onClose={this.onClosePicturePreview} />}
+        <PopupModal ref={(ref) => {this.popupModal = ref;}} />
+        {this.state.picturePreview && <ImageLightbox image={(this.state.picturePreview.startsWith("data:image/") || this.state.picturePreview.startsWith("php/uhlsport/loadimage.php")) ? this.state.picturePreview : "productpics/" + this.state.picturePreview} onClose={this.onClosePicturePreview} />}
         <Modal show={this.props.show} onHide={this.closeModal}>
           {/*this.state.picturePreview && <div className="preview-backdrop"></div>*/}
           <Modal.Header closeButton>
@@ -145,7 +228,7 @@ class ProductAddModal extends Component {
               <FormGroup controlId="inputProductColours">
                 <ControlLabel bsClass="col-sm-4 control-label">Farbe(n)</ControlLabel>
                 <div className="col-sm-8 colours-edit">
-                  <ProductColoursControl value={this.state.colours} onValueChange={this.onColoursChange} onPicturePreviewRequest={this.onPicturePreviewRequest} />
+                  <ProductColoursControl productid={this.state.internalid} value={this.state.colours} onValueChange={this.onColoursChange} onPicturePreviewRequest={this.onPicturePreviewRequest} />
                 </div>
               </FormGroup>
               <FormGroup controlId="inputProductPricegroups" validationState={!this.state.pricegroups || this.state.pricegroups.length < 1 ? 'error' : null}>
@@ -166,13 +249,19 @@ class ProductAddModal extends Component {
                   <ProductFlockingsControl value={this.state.flockings} onValueChange={this.onFlockingsChange} />
                 </div>
               </FormGroup>
-              {this.getColourPictures().length < 1 &&  <FormGroup controlId="inputPicture" validationState={!this.state.picture ? 'error' : null}>
+              <FormGroup controlId="inputPicture" validationState={(!this.state.picture && this.getColourPictures().length < 1) ? 'error' : null}>
                 <ControlLabel bsClass="col-sm-4 control-label">Vorschaubild</ControlLabel>
                 <div className="col-sm-8 picture-edit">
-                  <div className="upload-control"><ImageUploadControl showPreview={false} value={this.state.picture} searchPath="productpics/" onChange={this.onPictureChange} /></div>
-                  <Button bsSize="small" bsClass="mini-btn btn" onClick={this.onPicturePreviewRequest.bind(this, this.state.picture)} disabled={this.state.picture == null}><Glyphicon glyph="search" /></Button>
+                  {this.getColourPictures().length < 1 && [
+                    <div className="upload-control"><ImageUploadControl showPreview={false} value={this.state.picture} searchPath="productpics/" onChange={this.onPictureChange} /></div>,
+                    <Button bsSize="small" bsClass="mini-btn btn" onClick={this.onPicturePreviewRequest.bind(this, this.state.picture)} disabled={this.state.picture == null}><Glyphicon glyph="search" /></Button>
+                  ]}
+                  <div className={"uhlsport-actions" + (this.getColourPictures().length > 0?" bind-left":"")}>
+                    {this.state.uhlsportLoading && <FontAwesome name="spinner" pulse fixedWidth />}
+                    <Button className="uhlsport-download" bsSize="small" onClick={this.onLoadFromUhlsportClick} disabled={this.state.uhlsportLoading || !this.state.internalid || this.state.internalid.length < 1}>Von Uhlsport laden</Button>
+                  </div>
                 </div>
-              </FormGroup>}
+              </FormGroup>
             </form>
           </Modal.Body>
           <Modal.Footer>
@@ -181,6 +270,7 @@ class ProductAddModal extends Component {
                     disabled={!this.state.name || this.state.name.length < 1 || !this.state.internalid || this.state.internalid.length < 1 || !this.state.pricegroups || this.state.pricegroups.length < 1 || !(this.state.picture || this.getColourPictures().length > 0)}>Hinzufügen</Button>
           </Modal.Footer>
         </Modal>
+        {this.state.uhlsportImageIds && this.state.uhlsportImageIds.map((el, i) => <UhlsportLightbox key={i} id={el} show={this.state.uhlsportImagesLoadedCount >= this.state.uhlsportImageIds.length} onLoaded={this.onLoadedUhlsportLightbox} onClose={this.onCloseUhlsportLightbox.bind(this, el)}/>)}
       </div>
     );
   }

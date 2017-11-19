@@ -59,11 +59,18 @@ span.glyphicon.flipped {
   z-index: 1051;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,.7);
   display: flex;
   justify-content: center;
   align-items: center;
   cursor: zoom-out;
+}
+
+.image-lightbox .hidden {
+  display: none;
+}
+
+.image-lightbox:first-of-type {
+  background: rgba(0,0,0,.7);
 }
 
 .image-lightbox-inner {
@@ -86,6 +93,25 @@ span.glyphicon.flipped {
   max-height: 100%;
   padding: 15px;
   background: white;
+}
+
+.image-lightbox-inner .title {
+  background: white;
+  padding: 10px 10px 0;
+}
+
+.image-lightbox-inner .title h4 {
+  margin: 0;
+  text-align: left;
+}
+
+.image-lightbox-inner .buttons {
+  background: white;
+  padding: 0 7px 10px;
+}
+
+.image-lightbox-inner .buttons button {
+  margin: 0 3px;
 }
 
 .no-fontweight {

@@ -504,6 +504,14 @@
   line-height: 35px;
 }
 
+.modal-dialog .form-group .picture-edit .uhlsport-actions:not(.bind-left) {
+  float: right;
+}
+
+.modal-dialog .form-group .picture-edit .uhlsport-actions span {
+  margin-right: 5px;
+}
+
 .modal-dialog .preview-backdrop {
   /*position: fixed;
   top: 0;
