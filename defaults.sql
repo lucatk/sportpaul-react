@@ -1,24 +1,5 @@
--- phpMyAdmin SQL Dump
--- version 4.6.5.2
--- https://www.phpmyadmin.net/
---
--- Host: localhost:3306
--- Generation Time: Sep 17, 2017 at 06:08 PM
--- Server version: 5.6.35
--- PHP Version: 5.5.38
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
-
---
--- Database: `sportpaul`
---
-
--- --------------------------------------------------------
-
---
--- Table structure for table `clubs`
---
 
 CREATE TABLE `clubs` (
   `id` int(11) NOT NULL,
@@ -27,11 +8,18 @@ CREATE TABLE `clubs` (
   `displaymode` int(11) NOT NULL DEFAULT '1'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci ROW_FORMAT=COMPACT;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `items`
---
+CREATE TABLE `customers` (
+  `id` int(11) NOT NULL,
+  `clubid` int(11) NOT NULL,
+  `clubname` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `firstname` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `lastname` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `address` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `postcode` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `town` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `email` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `phone` varchar(256) COLLATE latin1_german1_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci;
 
 CREATE TABLE `items` (
   `clubid` int(11) NOT NULL,
@@ -41,42 +29,21 @@ CREATE TABLE `items` (
   `internalid` varchar(256) COLLATE latin1_german1_ci NOT NULL,
   `name` varchar(256) COLLATE latin1_german1_ci NOT NULL,
   `colour` varchar(256) COLLATE latin1_german1_ci NOT NULL DEFAULT '',
-  `flockingName` varchar(256) COLLATE latin1_german1_ci NOT NULL DEFAULT '',
-  `flockingLogo` tinyint(1) NOT NULL DEFAULT '0',
   `size` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `flockings` varchar(1024) COLLATE latin1_german1_ci NOT NULL DEFAULT '[]',
   `price` decimal(6,2) NOT NULL,
-  `flockingPriceName` decimal(6,2) NOT NULL,
-  `flockingPriceLogo` decimal(6,2) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '-1'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci ROW_FORMAT=DYNAMIC;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `orders`
---
 
 CREATE TABLE `orders` (
   `clubid` int(11) NOT NULL,
   `id` int(11) NOT NULL,
   `clubname` varchar(256) COLLATE latin1_german1_ci NOT NULL,
-  `firstname` varchar(256) COLLATE latin1_german1_ci NOT NULL,
-  `lastname` varchar(256) COLLATE latin1_german1_ci NOT NULL,
-  `address` varchar(256) COLLATE latin1_german1_ci NOT NULL,
-  `postcode` varchar(256) COLLATE latin1_german1_ci NOT NULL,
-  `town` varchar(256) COLLATE latin1_german1_ci NOT NULL,
-  `email` varchar(256) COLLATE latin1_german1_ci NOT NULL,
-  `phone` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `customerid` int(11) NOT NULL,
   `status` tinyint(4) NOT NULL DEFAULT '0',
   `created` datetime NOT NULL,
   `updated` datetime NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci ROW_FORMAT=DYNAMIC;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `products`
---
 
 CREATE TABLE `products` (
   `clubid` int(11) NOT NULL,
@@ -86,94 +53,58 @@ CREATE TABLE `products` (
   `name` varchar(256) COLLATE latin1_german1_ci NOT NULL,
   `colours` varchar(1024) COLLATE latin1_german1_ci NOT NULL DEFAULT '[]',
   `pricegroups` varchar(1024) COLLATE latin1_german1_ci NOT NULL DEFAULT '[]',
-  `flockingPriceName` decimal(6,2) DEFAULT NULL,
-  `flockingPriceLogo` decimal(6,2) DEFAULT NULL,
+  `flockings` varchar(1024) COLLATE latin1_german1_ci NOT NULL DEFAULT '[]',
   `includedFlockingInfo` varchar(256) COLLATE latin1_german1_ci NOT NULL,
   `picture` varchar(1024) COLLATE latin1_german1_ci NOT NULL DEFAULT ''
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci ROW_FORMAT=DYNAMIC;
 
--- --------------------------------------------------------
-
---
--- Table structure for table `settings`
---
-
 CREATE TABLE `settings` (
   `name` varchar(255) COLLATE latin1_german1_ci NOT NULL,
-  `value` varchar(256) COLLATE latin1_german1_ci NOT NULL
+  `value` varchar(256) COLLATE latin1_german1_ci NOT NULL,
+  `private` tinyint(1) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci ROW_FORMAT=COMPACT;
 
---
--- Dumping data for table `settings`
---
+INSERT INTO `settings` (`name`, `value`, `private`) VALUES
+('general_adminpassword', '57881609590c944ee342f92b139e3c03', 0), -- "sportpaul"
+('mail_address', 'mail@example.com', 1),
+('mail_enablenotifications', '1', 1),
+('mail_from', 'Max Mustermann', 1),
+('mail_host', 'smtp.example.com', 1),
+('mail_password', '', 1),
+('mail_port', '587', 1),
+('mail_username', 'mail@example.com', 1),
+('subject_articlereceivedinfo', 'Ihre Bestellung ist abholbar!', 1),
+('subject_orderconfirmed', 'Ihre Bestellung wurde bestätigt.', 1),
+('general_recaptcha_site', '6LfEAjEUAAAAAEVEXOe5F6VQVzS2u-PvnOSUU2yW', 0),
+('general_recaptcha_secret', '6LfEAjEUAAAAAPTVLnEw-IeWLCHfQ8cMiW-VzVup', 1);
 
-INSERT INTO `settings` (`name`, `value`) VALUES
-('general_adminpassword', '57881609590c944ee342f92b139e3c03'), -- 'sportpaul'
-('mail_address', 'mail@example.com'),
-('mail_enablenotifications', '1'),
-('mail_from', 'Max Mustermann'),
-('mail_host', 'smtp.example.com'),
-('mail_password', ''),
-('mail_port', '587'),
-('mail_username', 'mail@example.com'),
-('subject_articlereceivedinfo', 'Ihre Bestellung ist abholbar!'),
-('subject_orderconfirmed', 'Ihre Bestellung wurde bestätigt.');
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `clubs`
---
 ALTER TABLE `clubs`
   ADD PRIMARY KEY (`id`);
 
---
--- Indexes for table `items`
---
+ALTER TABLE `customers`
+  ADD PRIMARY KEY (`id`);
+
 ALTER TABLE `items`
   ADD PRIMARY KEY (`clubid`,`orderid`,`id`);
 
---
--- Indexes for table `orders`
---
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`clubid`,`id`);
 
---
--- Indexes for table `products`
---
 ALTER TABLE `products`
   ADD PRIMARY KEY (`clubid`,`id`);
 
---
--- Indexes for table `settings`
---
 ALTER TABLE `settings`
   ADD PRIMARY KEY (`name`);
 
---
--- AUTO_INCREMENT for dumped tables
---
 
---
--- AUTO_INCREMENT for table `clubs`
---
 ALTER TABLE `clubs`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `items`
---
+ALTER TABLE `customers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `items`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `orders`
---
 ALTER TABLE `orders`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
---
--- AUTO_INCREMENT for table `products`
---
 ALTER TABLE `products`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
