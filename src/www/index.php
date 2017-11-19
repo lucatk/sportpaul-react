@@ -1,3 +1,11 @@
+<?php
+if(!file_exists('clublogos')) {
+  mkdir('clublogos', 0777, true);
+}
+if(!file_exists('productpics')) {
+  mkdir('productpics', 0777, true);
+}
+?>
 <!doctype html>
 <html lang="de">
   <head>
