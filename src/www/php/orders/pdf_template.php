@@ -34,11 +34,10 @@
   #items-table {
     margin-top: 30px;
     padding-left: 20px;
-    width: 95%;
+    table-layout: fixed;
     border-collapse: collapse;
   }
   #items-table th, #items-table td {
-    padding: 2px 10px;
     vertical-align: middle;
     text-overflow: ellipsis;
     white-space: normal;
@@ -71,7 +70,8 @@
 </style>
 <?php
 $printHeader = true;
-$toPrint = count($orders);
+// $toPrint = count($orders);
+$toPrint = 1;
 ?>
 <page backtop="0" backbottom="0" footer="date;time;page" hideheader="<?php echo implode(",", range(2, $toPrint>2?$toPrint:2)); ?>">
   <page_header>
@@ -89,15 +89,15 @@ $toPrint = count($orders);
     <p><?php echo $order["postcode"] . " " . $order["town"]; ?></p>
   </div>
   <!-- <div class="contents"> -->
-    <table id="items-table">
+    <table id="items-table" style="table-layout:fixed;width:100%;">
       <thead>
         <tr>
-          <th style="width:10%;padding-top:15px;padding-bottom:0;">Art. Nr.</th>
-          <th style="width:15%;">Farbe</th>
-          <th style="width:27.5%;">Bezeichnung</th>
-          <th style="width:22.5%;">Beflockung(en)</th>
-          <th style="width:10%;">Größe</th>
-          <th style="width:15%;">Preis</th>
+          <th style="width:5%;padding:0 10px;">Art. Nr.</th>
+          <th style="width:15%;padding:0 10px;">Farbe</th>
+          <th style="width:25%;padding:0 10px;">Bezeichnung</th>
+          <th style="width:25%;padding:0 10px;">Beflockung(en)</th>
+          <th style="width:10%;padding:0 10px;">Größe</th>
+          <th style="width:10%;padding:0 10px;">Preis</th>
         </tr>
       </thead>
       <tbody>
@@ -114,33 +114,39 @@ $toPrint = count($orders);
           $price = floatval($item["price"]) + floatval($flockingPrices);
           $total += $price;
           $totalThisPage += $price;
-          if(strlen($item["flockingName"]) > 10) {
-            $item["flockingName"] = substr($item["flockingName"], 0, 7) . "...";
-          }
+          // if(strlen($item["flockingName"]) > 10) {
+          //   $item["flockingName"] = substr($item["flockingName"], 0, 7) . "...";
+          // }
           ?>
           <tr>
-            <td><?php echo $item["internalid"]; ?></td>
-            <td><?php echo $colour->id . " " . $colour->name; ?></td>
-            <td style="width:25%;padding-top:15px;padding-bottom:0;"><?php echo $item["name"]; ?></td>
-            <td>
+            <td style="width:5%;padding:0 10px;"><?php echo $item["internalid"]; ?></td>
+            <td style="width:15%;padding:0 10px;hyphens:auto;word-wrap:break-word;"><?php echo $colour->id . " " . $colour->name; ?></td>
+            <td style="width:25%;padding:0 10px;"><?php echo $item["name"]; ?></td>
+            <td style="width:25%;padding:0 10px 10px;hyphens:auto;word-wrap:break-word;">
               <?php
                 foreach($flockings as $flocking) {
                   $str = $flocking->description . ($flocking->type == "0"?" (" . $flocking->value . ")":"");
-                  if(strlen($str) > 10) $str = substr($str, 0, 7) . "...";
+                  // if(strlen($str) > 10) $str = substr($str, 0, 7) . "...";
+                  if(strlen($str)>23) {
+                    $splitEvery = (int)(strlen($str)/20);
+                    for($i = 1; $i <= $splitEvery; $i++) {
+                      $str = substr_replace($str, '- ', $i*20, 0);
+                    }
+                  }
               ?>
               <p><?php echo $str; ?></p>
               <?php } ?>
             </td>
-            <td><?php echo $item["size"]; ?></td>
-            <td><?php echo number_format($price, 2, ",", ""); ?> €</td>
+            <td style="width:10%;padding:0 10px;"><?php echo $item["size"]; ?></td>
+            <td style="width:10%;padding:15px 10px 0;"><?php echo number_format($price, 2, ",", ""); ?> €</td>
           </tr>
           <?php
         }
         ?>
         <tr>
           <th colspan="4" style="border-left:none;border-bottom:none;"></th>
-          <th style="text-align:right;">Gesamt:</th>
-          <th><?php echo number_format($totalThisPage, 2, ",", ""); ?></th>
+          <th style="text-align:center;">Gesamt:</th>
+          <th style="text-align:center;"><?php echo number_format($totalThisPage, 2, ",", ""); ?> €</th>
         </tr>
       </tbody>
     </table>
