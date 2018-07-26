@@ -25,6 +25,10 @@ class Database {
     return $stmt;
   }
 
+  public function execute_raw($query) {
+    return $this->conn->exec($query);
+  }
+
   public function lastInsertId() {
     return $this->conn->lastInsertId();
   }
