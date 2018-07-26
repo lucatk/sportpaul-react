@@ -85,7 +85,7 @@ if($cistmt->rowCount() < 1) {
   $customerid = $db->lastInsertId();
 } else {
   $ciresults = $db->fetchAssoc($cistmt, 1);
-  if(intval($ciresults["clubid"]) == intval($_POST["clubid"])) {
+  if(isset($_SESSION["loggedIn"]) || intval($ciresults["clubid"]) == intval($_POST["clubid"])) {
     $customerid = $ciresults["id"];
   } else {
     die(json_encode([
