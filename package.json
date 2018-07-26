@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "webpack -d --watch --watch-poll --display-error-details",
     "build": "webpack -p --config webpack.prod.js",
+    "demo-build": "webpack -p --config webpack.demo.js",
     "uhlsport-downloader": "node src/uhlsport-downloader/index.js"
   },
   "repository": {
