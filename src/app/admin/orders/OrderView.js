@@ -29,6 +29,7 @@ class OrderView extends Component {
       town: '',
       email: '',
       phone: '',
+      customerid: -1,
       created: null,
       updated: null,
       status: '',
@@ -68,6 +69,7 @@ class OrderView extends Component {
       success: function(data) {
         var parsed = JSON.parse(data);
 
+        console.log(parsed);
         loadedInfo = true;
         doneProcess();
 
@@ -147,7 +149,7 @@ class OrderView extends Component {
             <ControlLabel bsClass="col-sm-11"><Link to={"/admin/orders/club/" + this.state.clubid}>{this.state.clubname} <span className="text-muted">(ID: {this.state.clubid})</span></Link></ControlLabel>
           </FormGroup>
           <FormGroup controlId="inputCustomerInfo">
-            <ControlLabel bsClass="col-sm-1 control-label">Kunde</ControlLabel>
+            <ControlLabel bsClass="col-sm-1 control-label">Kunde<br /><Link to={"/admin/customers/view/" + this.state.customerid}><Glyphicon glyph="share-alt" /> Details</Link></ControlLabel>
             <ControlLabel bsClass="col-sm-11">
               <p className="name">{this.state.firstname} {this.state.lastname}</p>
               <p className="address">{this.state.address}</p>

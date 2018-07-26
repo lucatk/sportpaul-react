@@ -58,7 +58,8 @@
 }
 
 .club-list li a[role="button show-all"] {
-  padding: 0;
+  padding: 5px 0 8px;
+  justify-content: center;
   text-align: center;
   color: #337ab7 !important;
   background-color: #fff !important;
@@ -117,7 +118,7 @@
 
 .product-list .product-item:last-child,
 .club-showcase .club-item:last-child {
-  margin-right: auto;
+  /*margin-right: auto;*/
 }
 
 .product-list .product-item .panel,

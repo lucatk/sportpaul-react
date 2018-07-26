@@ -376,6 +376,7 @@ class CustomerEditing extends Component {
           </Modal.Header>
           <Modal.Body>
             <p>Möchten Sie den Kunden "{this.state.firstname} {this.state.lastname}", beim Verein "{this.state.clubname}", und seine Daten unwiderruflich löschen?</p>
+            {parseInt(this.state.ordersAmount) > 0 && <p>Mit diesem Kunden sind {this.state.ordersAmount} Bestellungen verknüpft. Wenn Sie den Kunden löschen werden auch alle seine Bestellungen gelöscht!</p>}
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.closeRemoveModal}>Abbrechen</Button>

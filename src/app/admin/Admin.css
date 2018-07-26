@@ -57,12 +57,35 @@
 }
 
 .admin .container[data-page=OrderView] label[for=inputCustomerInfo] p,
-.admin .container[data-page=CustomerView] label[for=inputCustomerInfo] p {
+.admin .container[data-page=CustomerView] label[for=inputCustomerInfo] p,
+.admin .container[data-page=OrderEditing] label[for=inputCustomerInfo] p {
   margin: 0 0 5px;
+  min-height: 20px;
+}
+
+.admin .container[data-page=OrderView] label[for=inputCustomerInfo],
+.admin .container[data-page=OrderEditing] label[for=inputCustomerInfo] {
+  position: relative;
+}
+
+.admin .container[data-page=OrderView] label[for=inputCustomerInfo] a,
+.admin .container[data-page=OrderEditing] label[for=inputCustomerInfo] a {
+  font-weight: normal;
+  color: #337ab7 !important;
+  position: absolute;
+  bottom: -25px;
+  min-width: 100px;
+  z-index: 2;
+}
+
+.admin .container[data-page=OrderView] label[for=inputCustomerInfo] a:hover,
+.admin .container[data-page=OrderEditing] label[for=inputCustomerInfo] a:hover {
+  color: #23527c !important;
 }
 
 .admin .container .form-group label {
   margin-top: 6px;
+  min-height: 20px;
 }
 
 .admin .container .form-group label a:not(:hover) {
@@ -230,6 +253,13 @@
   color: #F44336;
 }
 
+.admin .container[data-page=Orders] tr td,
+.admin .container[data-page=Customers] tr td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .admin .container[data-page=Orders] td.items {
   min-width: 110px;
 }
@@ -242,6 +272,11 @@
 .admin .container[data-page=Orders] td.buttons,
 .admin .container[data-page=Customers] td.buttons {
   width: 20%;
+}
+
+.admin .container[data-page=Orders] td.nocustomer {
+  font-size: 13px;
+  color: #aaa;
 }
 
 .admin .container[data-page=Orders] td.buttons,

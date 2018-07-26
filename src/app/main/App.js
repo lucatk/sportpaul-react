@@ -3,7 +3,8 @@ import $ from 'jquery';
 import {
   Modal,
   Button,
-  FormGroup, FormControl, ControlLabel
+  FormGroup, FormControl, ControlLabel,
+  Alert
 } from 'react-bootstrap';
 import {Helmet} from "react-helmet";
 
@@ -16,7 +17,6 @@ import ProductCart from './ProductCart.js';
 import OrderProcess from './OrderProcess';
 import OrderSummary from './OrderSummary';
 
-import '../utils/NavLink.js';
 import './App.css';
 
 class App extends Component {
@@ -289,6 +289,11 @@ class App extends Component {
               <ClubList clubs={this.state.clubs} selectedClub={this.state.selectedClub} showCart={this.state.cartContents.length > 0} cartContent={this.state.cartContents.length} loggedIn={this.state.loggedIn} onChange={this.onClubChange} />
             </div>
             <div className="col-xs-12 col-sm-9 col-md-10 col-xxl-9">
+              {(this.state.selectedClub >= 0 && (this.state.loggedIn || this.getClubWithId(this.state.selectedClub).displaymode >= 2) && this.state.clubInUse != -1 && this.state.clubInUse != this.state.selectedClub) && (
+                <Alert bsStyle="warning">
+                  Hinweis: Ihr Warenkorb enthält bereits Produkte eines anderen Vereins. Sie können daher keine Produkte dieses Vereins in den Warenkorb legen.
+                </Alert>
+              )}
               {this.state.selectedClub >= 0 ? (
                 <ClubProducts clubName={this.getClubWithId(this.state.selectedClub).name} productList={this.getClubWithId(this.state.selectedClub).products || []} orderable={(this.state.loggedIn || this.getClubWithId(this.state.selectedClub).displaymode >= 2) && (this.state.clubInUse == -1 || this.state.clubInUse == this.state.selectedClub)} onProductAddToCart={this.onProductAddToCart} onProductPreviewRequest={this.onProductPreviewRequest} />
               ) : this.state.selectedClub === -2 ? (

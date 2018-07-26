@@ -41,8 +41,12 @@ class ClubProductItem extends Component {
           if(this.props.product.colours[0].picture != null)
             return this.props.product.colours[0].picture;
         } else {
-          if(this.props.product.colours[this.state.selectedColour].picture != null)
+          if(this.props.product.colours[this.state.selectedColour].picture != null) {
             return this.props.product.colours[this.state.selectedColour].picture;
+          } else {
+            if(this.props.product.colours[0].picture != null)
+              return this.props.product.colours[0].picture;
+          }
         }
       }
     }

@@ -231,7 +231,7 @@ class OrdersTable extends Component {
                       minute: "2-digit"
                     })} Uhr
                   </td>
-                  <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{row.firstname} {row.lastname}</td>
+                  <td className={(!row.firstname || !row.lastname || (row.firstname.length < 1 && row.lastname.length < 1) || row.customerid == -1) ? "nocustomer" : ""} onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{(!row.firstname || !row.lastname || (row.firstname.length < 1 && row.lastname.length < 1) || row.customerid == -1) ? "Keine Daten vorhanden" : row.firstname + " " + row.lastname}</td>
                   <td className="items" onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{row.itemCount} Position{row.itemCount==1?'':'en'}</td>
                   <td className="price" onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{parseFloat(row.total).toFixed(2).replace(".", ",")} €</td>
                   <td onClick={this.props.onExportCheckChange.bind(this, row.clubid, row.id)}>{Statics.OrderStatus[row.status]}</td>

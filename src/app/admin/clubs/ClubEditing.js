@@ -308,6 +308,7 @@ class ClubEditing extends Component {
 
     this.state.toUpdateProducts.forEach((product, id) => {
       if(product == undefined || product == null) return;
+      console.log(product, id);
       var data = new FormData();
       data.append("id", product.id);
       data.append("clubid", product.clubid);
@@ -393,6 +394,8 @@ class ClubEditing extends Component {
               donePictures();
             }
           });
+        } else {
+          donePictures();
         }
       }
 

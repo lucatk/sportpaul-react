@@ -33,6 +33,7 @@ class OrderEditing extends Component {
       town: '',
       email: '',
       phone: '',
+      customerid: -1,
       created: null,
       updated: null,
       status: '',
@@ -57,13 +58,6 @@ class OrderEditing extends Component {
     this.openRemoveModal = this.openRemoveModal.bind(this);
     this.closeRemoveModal = this.closeRemoveModal.bind(this);
     this.removeOrder = this.removeOrder.bind(this);
-    this.onFirstNameChange = this.onFirstNameChange.bind(this);
-    this.onLastNameChange = this.onLastNameChange.bind(this);
-    this.onAddressChange = this.onAddressChange.bind(this);
-    this.onPostcodeChange = this.onPostcodeChange.bind(this);
-    this.onTownChange = this.onTownChange.bind(this);
-    this.onPhoneChange = this.onPhoneChange.bind(this);
-    this.onEmailChange = this.onEmailChange.bind(this);
     this.onStatusChange = this.onStatusChange.bind(this);
     this.onItemSizeChange = this.onItemSizeChange.bind(this);
     this.onItemFlockingPriceChange = this.onItemFlockingPriceChange.bind(this);
@@ -276,13 +270,6 @@ class OrderEditing extends Component {
     var data = new FormData();
     data.append("orderid", this.state.id);
     data.append("clubid", this.state.clubid);
-    data.append("firstName", this.state.firstname);
-    data.append("lastName", this.state.lastname);
-    data.append("address", this.state.address);
-    data.append("postCode", this.state.postcode);
-    data.append("town", this.state.town);
-    data.append("email", this.state.email);
-    data.append("phone", this.state.phone);
     data.append("status", this.state.status);
     $.post({
       url: 'php/orders/update.php',
@@ -327,27 +314,6 @@ class OrderEditing extends Component {
         }
       });
     });
-  }
-  onFirstNameChange(ev) {
-    this.setState({firstname: ev.target.value, hasChanges: true});
-  }
-  onLastNameChange(ev) {
-    this.setState({lastname: ev.target.value, hasChanges: true});
-  }
-  onAddressChange(ev) {
-    this.setState({address: ev.target.value, hasChanges: true});
-  }
-  onPostcodeChange(ev) {
-    this.setState({postcode: ev.target.value, hasChanges: true});
-  }
-  onTownChange(ev) {
-    this.setState({town: ev.target.value, hasChanges: true});
-  }
-  onPhoneChange(ev) {
-    this.setState({phone: ev.target.value, hasChanges: true});
-  }
-  onEmailChange(ev) {
-    this.setState({email: ev.target.value, hasChanges: true});
   }
   onStatusChange(ev) {
     if(ev.target.value == -1) {
@@ -551,67 +517,21 @@ class OrderEditing extends Component {
             <ControlLabel bsClass="col-sm-11"><Link to={"/admin/orders/club/" + this.state.clubid}>{this.state.clubname} <span className="text-muted">(ID: {this.state.clubid})</span></Link></ControlLabel>
           </FormGroup>
           <FormGroup controlId="inputCustomerInfo">
-            <ControlLabel bsClass="col-sm-1 control-label">Kunde</ControlLabel>
-            <Col sm={11}>
-              <div className="editing-container">
-                <Row>
-                  <Col sm={6}>
-                    <FormGroup controlId="inputFirstname">
-                      <FormControl type="text" value={this.state.firstname} onChange={this.onFirstNameChange} />
-                    </FormGroup>
-                  </Col>
-                  <Col sm={6}>
-                    <FormGroup controlId="inputLastname">
-                      <FormControl type="text" value={this.state.lastname} onChange={this.onLastNameChange} />
-                    </FormGroup>
-                  </Col>
-                </Row>
-                <Row>
-                  <Col sm={6}>
-                    <Row>
-                      <FormGroup controlId="inputAddress" bsClass="form-group col-sm-12">
-                        <FormControl type="text" value={this.state.address} onChange={this.onAddressChange} />
-                      </FormGroup>
-                    </Row>
-                  </Col>
-                  <Col sm={6}>
-                    <Row>
-                      <FormGroup controlId="inputPostcode" bsClass="form-group col-sm-6">
-                        <FormControl type="text" value={this.state.postcode} onChange={this.onPostcodeChange} />
-                      </FormGroup>
-                      <FormGroup controlId="inputTown" bsClass="form-group col-sm-6">
-                        <FormControl type="text" value={this.state.town} onChange={this.onTownChange} />
-                      </FormGroup>
-                    </Row>
-                  </Col>
-                </Row>
-              </div>
-            </Col>
+            <ControlLabel bsClass="col-sm-1 control-label">Kunde<br /><Link to={"/admin/customers/edit/" + this.state.customerid}><Glyphicon glyph="pencil" /> bearbeiten</Link></ControlLabel>
+            <ControlLabel bsClass="col-sm-11">
+              <p className="name">{this.state.firstname} {this.state.lastname}</p>
+              <p className="address">{this.state.address}</p>
+              <p className="town">{this.state.postcode} {this.state.town}</p>
+            </ControlLabel>
           </FormGroup>
           <FormGroup controlId="inputPhone">
             <ControlLabel bsClass="col-sm-1 control-label">Telefon</ControlLabel>
-            <Col sm={11}>
-              <Row>
-                <Col sm={3}>
-                  <FormGroup controlId="inputPhone">
-                    <FormControl value={this.state.phone} onChange={this.onPhoneChange} />
-                  </FormGroup>
-                </Col>
-              </Row>
-            </Col>
+            <ControlLabel bsClass="col-sm-11">{this.state.phone}</ControlLabel>
           </FormGroup>
-          <FormGroup controlId="inputEmail">
+          {this.state.email.length > 0 && <FormGroup controlId="inputEmail">
             <ControlLabel bsClass="col-sm-1 control-label">E-Mail</ControlLabel>
-            <Col sm={11}>
-              <Row>
-                <Col sm={3}>
-                  <FormGroup controlId="inputEmail">
-                    <FormControl type="text" value={this.state.email} onChange={this.onEmailChange} />
-                  </FormGroup>
-                </Col>
-              </Row>
-            </Col>
-          </FormGroup>
+            <ControlLabel bsClass="col-sm-11">{this.state.email}</ControlLabel>
+          </FormGroup>}
           <FormGroup controlId="inputDate">
             <ControlLabel bsClass="col-sm-1 control-label">Bestelldatum</ControlLabel>
             <ControlLabel bsClass="col-sm-11">
