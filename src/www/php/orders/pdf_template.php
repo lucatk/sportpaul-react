@@ -19,15 +19,20 @@
   .header #clublogo {
     position: absolute;
     top: 20mm;
-    right: 0;
+    right: 40mm;
     height: 25mm;
-    float: right;
+    /* float: right; */
   }
-  .customer-info {
+  .customer-info-right {
+    position: absolute;
+    right: 35mm;
+  }
+  .customer-info-left, .customer-info-right {
     margin-top: 35mm;
     padding: 3mm 12mm;
   }
-  .customer-info h2, .customer-info p {
+  .customer-info-left h2, .customer-info-left p,
+  .customer-info-right h2, .customer-info-right p {
     margin: 1px 0;
     font-size: 14px;
   }
@@ -82,11 +87,13 @@ $toPrint = 1;
       <img id="clublogo" src="../../clublogos/<?php echo $order["clublogo"]; ?>">
     </div>
   </page_header>
-  <div class="customer-info">
+  <div class="customer-info-left">
     <h2><?php echo $order["clubname"]; ?></h2>
     <p><?php echo $order["firstname"] . " " . $order["lastname"]; ?></p>
     <p><?php echo $order["address"]; ?></p>
     <p><?php echo $order["postcode"] . " " . $order["town"]; ?></p>
+  </div>
+  <div class="customer-info-right">
     <?php if(strlen($order["phone"]) > 0) { ?><p>Telefon: <?php echo $order["phone"]; ?></p><?php } ?>
     <?php if(strlen($order["email"]) > 0) { ?><p>E-Mail: <?php echo $order["email"]; ?></p><?php } ?>
   </div>

@@ -11,7 +11,7 @@ use Spipu\Html2Pdf\Html2Pdf;
 
 $db = new Database();
 
-$stmt = $db->execute("SELECT orders.id, orders.clubname, customers.firstname, customers.lastname, customers.address, customers.postcode, customers.town, customers.phone, customers.email, orders.created FROM orders LEFT JOIN customers ON orders.customerid = customers.id WHERE orders.clubid=:clubid AND orders.id=:orderid", ["clubid" => $_GET["clubid"],
+$stmt = $db->execute("SELECT orders.id, orders.clubname, customers.firstname, customers.lastname, customers.address, customers.postcode, customers.town, customers.email, orders.created FROM orders LEFT JOIN customers ON orders.customerid = customers.id WHERE orders.clubid=:clubid AND orders.id=:orderid", ["clubid" => $_GET["clubid"],
                                                                                                                                                                                                                                                                                                                    "orderid" => $_GET["id"]]);
 $order = $db->fetchAssoc($stmt, 1);
 $cstmt = $db->execute("SELECT internalid, name, colour, flockings, size, price FROM items WHERE clubid=:clubid AND orderid=:orderid ORDER BY id ASC", ["clubid" => $_GET["clubid"],
