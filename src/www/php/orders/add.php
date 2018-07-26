@@ -95,10 +95,17 @@ if($cistmt->rowCount() < 1) {
   }
 }
 
-$stmt = $db->execute("INSERT INTO orders(clubid, clubname, customerid, created, updated) VALUES(:clubid, :clubname, :customerid, NOW(), NOW())",
-                    ["clubid" => $_POST["clubid"],
-                     "clubname" => $results["name"],
-                     "customerid" => $customerid]);
+if(!isset($_SESSION["loggedIn"])) {
+  $stmt = $db->execute("INSERT INTO orders(clubid, clubname, customerid, created, updated) VALUES(:clubid, :clubname, :customerid, NOW(), NOW())",
+                      ["clubid" => $_POST["clubid"],
+                       "clubname" => $results["name"],
+                       "customerid" => $customerid]);
+} else {
+  $stmt = $db->execute("INSERT INTO orders(clubid, clubname, customerid, status, created, updated) VALUES(:clubid, :clubname, :customerid, 1, NOW(), NOW())",
+                      ["clubid" => $_POST["clubid"],
+                       "clubname" => $results["name"],
+                       "customerid" => $customerid]);
+}
 $rowsAffected += $stmt->rowCount();
 $id = -1;
 
