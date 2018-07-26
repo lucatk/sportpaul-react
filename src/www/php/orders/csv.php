@@ -52,14 +52,14 @@ if($multipleClubs) {
     $ids = explode(",", $clubSplit[1]);
 
     $in = str_repeat("?,", count($ids) - 1) . "?";
-    $stmt = $db->execute("SELECT id, clubname, firstname, lastname FROM orders WHERE clubid=? AND id IN($in) ORDER BY id ASC", array_merge([$clubid], $ids));
+    $stmt = $db->execute("SELECT orders.id, orders.clubname, customers.firstname, customers.lastname FROM orders LEFT JOIN customers ON orders.customerid = customers.id WHERE orders.clubid=? AND orders.id IN($in) ORDER BY orders.id ASC", array_merge([$clubid], $ids));
     $results[] = ["clubid" => $clubid, "orders" => $db->fetchAll($stmt)];
   }
 } else {
   $clubid = $_GET["clubid"];
   $ids = explode(",", $_GET["request"]);
   $in = str_repeat("?,", count($ids) - 1) . "?";
-  $stmt = $db->execute("SELECT id, clubname, firstname, lastname FROM orders WHERE clubid=? AND id IN($in) ORDER BY id ASC", array_merge([$clubid], $ids));
+  $stmt = $db->execute("SELECT orders.id, orders.clubname, customers.firstname, customers.lastname FROM orders LEFT JOIN customers ON orders.customerid = customers.id WHERE orders.clubid=? AND orders.id IN($in) ORDER BY orders.id ASC", array_merge([$clubid], $ids));
   $results[] = ["clubid" => $clubid, "orders" => $db->fetchAll($stmt)];
 }
 
@@ -67,7 +67,7 @@ $orders = array();
 foreach($results as $club) {
   foreach($club["orders"] as $row) {
     $cstmt = $db->execute("SELECT internalid, name, colour, flockings, size, status FROM items WHERE clubid=:clubid AND orderid=:orderid ORDER BY id ASC", ["clubid" => $clubid,
-                                                                                                                                                                             "orderid" => $row["id"]]);
+                                                                                                                                                            "orderid" => $row["id"]]);
     $cresults = $db->fetchAll($cstmt);
     if($skipOrdered)
       $cresults = array_filter($cresults, function($var) { return intval($var["status"]) < 0; });
