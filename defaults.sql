@@ -41,8 +41,8 @@ CREATE TABLE `orders` (
   `clubname` varchar(256) COLLATE latin1_german1_ci NOT NULL DEFAULT '',
   `customerid` int(11) NOT NULL DEFAULT '-1',
   `status` tinyint(4) NOT NULL DEFAULT '0',
-  `created` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+  `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `updated` datetime NOT NULL DEFAULT '0000-00-00 00:00:00'
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_german1_ci ROW_FORMAT=DYNAMIC;
 
 CREATE TABLE `products` (
