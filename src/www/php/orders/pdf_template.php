@@ -87,6 +87,8 @@ $toPrint = 1;
     <p><?php echo $order["firstname"] . " " . $order["lastname"]; ?></p>
     <p><?php echo $order["address"]; ?></p>
     <p><?php echo $order["postcode"] . " " . $order["town"]; ?></p>
+    <?php if(strlen($order["phone"]) > 0) { ?><p>Telefon: <?php echo $order["phone"]; ?></p><?php } ?>
+    <?php if(strlen($order["email"]) > 0) { ?><p>E-Mail: <?php echo $order["email"]; ?></p><?php } ?>
   </div>
   <!-- <div class="contents"> -->
     <table id="items-table" style="table-layout:fixed;width:100%;">
