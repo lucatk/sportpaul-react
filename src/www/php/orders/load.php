@@ -9,8 +9,18 @@ include('../database.php');
 $db = new Database();
 
 $stmt = $db->execute("SELECT customers.*, customers.id AS customerid, orders.* FROM orders LEFT JOIN customers ON orders.customerid = customers.id WHERE orders.clubid=:clubid AND orders.id=:orderid", ["orderid" => $_POST["id"],
-                                                                                                                                                          "clubid" => $_POST["clubid"]]);
+                                                                                                                                                                                                         "clubid" => $_POST["clubid"]]);
 $results = $db->fetchAssoc($stmt, 1);
+
+if($results["customerid"] == "-1") {
+  $results["firstname"] = "";
+  $results["lastname"] = "";
+  $results["address"] = "";
+  $results["postcode"] = "";
+  $results["town"] = "";
+  $results["phone"] = "";
+  $results["email"] = "";
+}
 
 $cstmt = $db->execute("SELECT status, flockings, price FROM items WHERE clubid=:clubid AND orderid=:orderid", ["clubid" => $_POST["clubid"],
                                                                                                                "orderid" => $_POST["id"]]);
