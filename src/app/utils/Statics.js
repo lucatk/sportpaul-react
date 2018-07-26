@@ -17,7 +17,7 @@ export const ItemStatus = {
   "-1": "",
   "0": "bestellt",
   "1": "verspätet",
-  "2": "erhalten",
+  "2": "abholbereit",
   "3": "erledigt"
 };
 export const OrdersExportColumns = {
