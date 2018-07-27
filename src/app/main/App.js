@@ -31,11 +31,13 @@ class App extends Component {
     }
     this.state = {
       clubs: [],
+      customers: [],
       selectedClub: -1,
       clubInUse: clubInUse,
       cartContents: cartContents,
       previewProductPicture: null,
       loadedClubs: false,
+      loadedCustomers: false,
       loading: true,
       flockingModal: {
         target: -1,
@@ -101,6 +103,22 @@ class App extends Component {
     });
   }
 
+  loadCustomers() {
+    this.setState({loading: true});
+    $.get({
+      url: 'php/customers/load_all.php',
+      success: function(data) {
+        var customers = JSON.parse(data);
+
+        this.setState({
+          customers: customers,
+          loadedCustomers: true,
+          loading: false
+        });
+      }.bind(this)
+    });
+  }
+
   checkAuth() {
     $.ajax({
       url: "php/auth/check.php",
@@ -109,6 +127,7 @@ class App extends Component {
         var result = JSON.parse(data);
         this.setState({loggedIn:result.loggedIn});
         this.loadClubs();
+        this.loadCustomers();
       }.bind(this)
     });
   }
@@ -246,6 +265,7 @@ class App extends Component {
   componentWillReceiveProps(nextProps) {
     if(this.state.loggedIn) {
       this.loadClubs();
+      this.loadCustomers();
     }
   }
 
@@ -283,7 +303,7 @@ class App extends Component {
           </Modal.Footer>
         </Modal>}
 
-        {this.state.loadedClubs &&
+        {(this.state.loadedClubs && this.state.loadedCustomers) &&
           <div>
             <div className="club-list-container col-xs-12 col-sm-3 col-md-2 col-xxl-3">
               <ClubList clubs={this.state.clubs} selectedClub={this.state.selectedClub} showCart={this.state.cartContents.length > 0} cartContent={this.state.cartContents.length} loggedIn={this.state.loggedIn} onChange={this.onClubChange} />
@@ -299,7 +319,7 @@ class App extends Component {
               ) : this.state.selectedClub === -2 ? (
                 <ProductCart contents={this.state.cartContents} onProductRemoveFromCart={this.onProductRemoveFromCart} onProductPreviewRequest={this.onProductPreviewRequest} onContinue={this.onShowOrderProcess} />
               ) : this.state.selectedClub === -3 ? (
-                <OrderProcess productCart={this.state.cartContents} onContinue={this.onShowOrderSummary} />
+                <OrderProcess productCart={this.state.cartContents} onContinue={this.onShowOrderSummary} customers={this.state.customers} />
               ) : this.state.selectedClub === -4 ? (
                 <OrderSummary productCart={this.state.cartContents} customerData={this.state.customerData} clubid={this.state.clubInUse} onOrder={this.onOrder} recaptchaKey={this.state.recaptchaSiteKey} loggedIn={this.state.loggedIn} />
               ) : (
