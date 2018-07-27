@@ -108,6 +108,13 @@ class App extends Component {
     $.get({
       url: 'php/customers/load_all.php',
       success: function(data) {
+        if(data.length < 1) {
+          this.setState({
+            loadedCustomers: true,
+            loading: false
+          });
+          return;
+        }
         var customers = JSON.parse(data);
 
         this.setState({
