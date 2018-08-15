@@ -32,6 +32,7 @@ class App extends Component {
     this.state = {
       clubs: [],
       customers: [],
+      sortedClubList: [],
       selectedClub: -1,
       clubInUse: clubInUse,
       cartContents: cartContents,
@@ -91,6 +92,7 @@ class App extends Component {
             parsedProducts.push(parsedProduct);
           });
           parsedClub.products = parsedProducts;
+          parsedClub.displayorder = parseInt(parsedClub.displayorder);
           parsedClubs.push(parsedClub);
         });
 
@@ -99,6 +101,9 @@ class App extends Component {
           loadedClubs: true,
           loading: false
         });
+        setTimeout(() => {
+          this.sortClubList();
+        }, 100);
       }.bind(this)
     });
   }
@@ -123,6 +128,12 @@ class App extends Component {
           loading: false
         });
       }.bind(this)
+    });
+  }
+
+  sortClubList() {
+    this.setState({
+      sortedClubList: this.state.clubs.concat().sort((a, b) => (a.displayorder == b.displayorder ? parseInt(a.id) - parseInt(b.id) : a.displayorder - b.displayorder))
     });
   }
 
@@ -313,7 +324,7 @@ class App extends Component {
         {(this.state.loadedClubs && this.state.loadedCustomers) &&
           <div>
             <div className="club-list-container col-xs-12 col-sm-3 col-md-2 col-xxl-3">
-              <ClubList clubs={this.state.clubs} selectedClub={this.state.selectedClub} showCart={this.state.cartContents.length > 0} cartContent={this.state.cartContents.length} loggedIn={this.state.loggedIn} onChange={this.onClubChange} />
+              <ClubList clubs={this.state.sortedClubList} selectedClub={this.state.selectedClub} showCart={this.state.cartContents.length > 0} cartContent={this.state.cartContents.length} loggedIn={this.state.loggedIn} onChange={this.onClubChange} />
             </div>
             <div className="col-xs-12 col-sm-9 col-md-10 col-xxl-9">
               {(this.state.selectedClub >= 0 && (this.state.loggedIn || this.getClubWithId(this.state.selectedClub).displaymode >= 2) && this.state.clubInUse != -1 && this.state.clubInUse != this.state.selectedClub) && (
@@ -330,7 +341,7 @@ class App extends Component {
               ) : this.state.selectedClub === -4 ? (
                 <OrderSummary productCart={this.state.cartContents} customerData={this.state.customerData} clubid={this.state.clubInUse} onOrder={this.onOrder} recaptchaKey={this.state.recaptchaSiteKey} loggedIn={this.state.loggedIn} />
               ) : (
-                <ClubShowcase clubList={this.state.clubs} onChange={this.onClubChange} />
+                <ClubShowcase clubList={this.state.sortedClubList} onChange={this.onClubChange} />
               )}
             </div>
           </div>
